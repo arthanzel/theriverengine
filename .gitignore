@@ -9,3 +9,6 @@ target
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
 .idea/libraries
+
+# Contains machine-specific SDK defs
+.idea/misc.xml
