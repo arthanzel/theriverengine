@@ -28,9 +28,9 @@ public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> {
         Ini ini;
         try {
             ini = new Ini(RiverNetwork.class.getResource(resource));
-        } catch(InvalidFileFormatException e) {
+        } catch (InvalidFileFormatException e) {
             throw e;
-        } catch(IOException | NullPointerException e) {
+        } catch (IOException | NullPointerException e) {
             throw new IOException("Can't find file " + resource);
         }
 

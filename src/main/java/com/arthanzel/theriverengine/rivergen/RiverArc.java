@@ -1,5 +1,7 @@
 package com.arthanzel.theriverengine.rivergen;
 
+import javafx.geometry.Point2D;
+
 /**
  * Represents a run of a river system between two RiverNodes.
  *
