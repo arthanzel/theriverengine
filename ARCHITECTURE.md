@@ -5,3 +5,19 @@ RiverNetwork: Extension of a directed graph that holds the physical configuratio
 RiverRunner: Class responsible for taking a RiverSystem and simulating it. Parallellism will be done on this level.
 
 RiverViewer: Swing or JFX frame that renders a RiverSystem.
+
+Movement:
+
+- Random - position or velocity jumps?
+    - Bias for river flow? Water speed?
+- Density-dependent
+- Nutrient-dependent
+    - Resources appearing/disappearing independent of state (constant alpha) vs dependent on state (game of life)
+    - Nutrient overlays: apply to a new graph structure to get rid of superfluous pixels, and to enable flow of nutrients?
+- -> Weighted result?
+
+Todo:
+
+    - Random movement
+    - Generation and representation of overlays
+    - Dynamics of overlays
