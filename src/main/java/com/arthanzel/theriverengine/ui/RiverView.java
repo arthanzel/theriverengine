@@ -7,9 +7,11 @@ import com.arthanzel.theriverengine.sim.agent.Agent;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
@@ -64,6 +66,16 @@ public class RiverView extends Stage {
                     dest.getPosition().getY());
             root.getChildren().add(l);
         }
+    }
+
+    private void drawScaleBar() {
+        Group scaleGroup = new Group();
+        Line scaleLine = new Line(0, 0, 100, 0);
+        scaleLine.setStrokeWidth(4);
+        scaleLine.setStrokeLineCap(StrokeLineCap.SQUARE);
+        scaleLine.setStroke(Color.BLACK);
+        scaleGroup.getChildren().add(scaleLine);
+        this.root.getChildren().add(scaleLine);
     }
 
     private void initAgentMarkers(Group root) {

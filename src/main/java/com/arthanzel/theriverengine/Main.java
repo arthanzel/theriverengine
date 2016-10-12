@@ -16,10 +16,13 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage main) throws IOException {
-        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 50);
-        system.initAgentsRandomly();
-        RiverView view = new RiverView(system);
-        view.show();
+        TestUI tui = new TestUI();
+        tui.show();
+
+//        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 50);
+//        system.initAgentsRandomly();
+//        RiverView view = new RiverView(system);
+//        view.show();
     }
 
     public static void main(String[] args) {
