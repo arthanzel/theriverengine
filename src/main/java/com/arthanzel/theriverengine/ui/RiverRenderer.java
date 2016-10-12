@@ -7,6 +7,7 @@ import com.arthanzel.theriverengine.sim.RiverSystem;
 import javafx.scene.Group;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 
 /**
  * TODO: Documentation
@@ -16,6 +17,13 @@ import javafx.scene.shape.Line;
 public class RiverRenderer extends Region {
     Group root;
     Group scaleGroup;
+
+    public RiverRenderer() {
+        Rectangle clip = new Rectangle(this.getWidth(), this.getHeight());
+        clip.widthProperty().bind(this.widthProperty());
+        clip.heightProperty().bind(this.heightProperty());
+        this.setClip(clip);
+    }
 
     /**
      * Initialize this RiverRenderer to a RiverNetwork and performs one-time drawing operations, such as drawing the

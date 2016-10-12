@@ -27,4 +27,13 @@ public class RiverViewController {
     public void setRiverRenderer(RiverRenderer riverRenderer) {
         this.riverRenderer = riverRenderer;
     }
+
+    public RiverSystem getSystem() {
+        return system;
+    }
+
+    public void setSystem(RiverSystem system) {
+        this.system = system;
+        this.riverRenderer.initialize(this.system);
+    }
 }
