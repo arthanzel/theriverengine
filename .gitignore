@@ -3,13 +3,5 @@
 target
 
 # User-specific stuff:
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/dictionaries
-.idea/vcs.xml
-.idea/jsLibraryMappings.xml
-.idea/libraries
-
-# Contains machine-specific defs
-.idea/misc.xml
-.idea/codeStyleSettings.xml
+.idea
+*.iml
