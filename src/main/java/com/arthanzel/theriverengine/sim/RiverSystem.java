@@ -18,6 +18,8 @@ public class RiverSystem {
     public RiverSystem(RiverNetwork network, int numAgents) {
         this.agents = new Agent[numAgents];
         this.network = network;
+
+        initAgentsRandomly();
     }
 
     /**

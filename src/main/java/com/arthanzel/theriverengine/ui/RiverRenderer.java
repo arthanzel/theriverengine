@@ -4,6 +4,7 @@ import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.rivergen.RiverNode;
 import com.arthanzel.theriverengine.sim.RiverSystem;
+import com.arthanzel.theriverengine.sim.agent.Agent;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -62,6 +63,7 @@ public class RiverRenderer extends Pane {
         }
 
         drawNetwork(system.getNetwork());
+        drawAgents(system.getAgents());
     }
 
     // region UI
@@ -123,11 +125,30 @@ public class RiverRenderer extends Pane {
     // region Drawing Methods
     // ======================
 
+    /**
+     * Draws markers that represent agents.
+     * @param agents Array of agents.
+     */
+    private void drawAgents(Agent[] agents) {
+        gfx.setFill(Color.BLACK);
+        for (Agent a : agents) {
+            Point2D point = a.getLocation().getPoint();
+            double size = 5 / scale;
+            gfx.fillOval(point.getX() - size / 2, point.getY() - size / 2, size, size);
+        }
+    }
+
+    /**
+     * Draws a visualization of a river network.
+     * @param network A river network.
+     */
     private void drawNetwork(RiverNetwork network) {
         for (RiverArc arc : network.edgeSet()) {
             RiverNode origin = arc.getUpstreamNode();
             RiverNode dest = arc.getDownstreamNode();
             gfx.setLineCap(StrokeLineCap.ROUND);
+            gfx.setLineWidth(1.2 / this.scale);
+            gfx.setStroke(Color.MEDIUMBLUE);
             gfx.strokeLine(origin.getPosition().getX(),
                     origin.getPosition().getY(),
                     dest.getPosition().getX(),
@@ -135,14 +156,19 @@ public class RiverRenderer extends Pane {
         }
     }
 
+    /**
+     * Draws elements that are statically-positioned on the screen, and are not affected by the
+     * translate and scale transforms, such as the coordinate display and the scale bar.
+     */
     private void drawScreenSpaceElements() {
         double w = this.getWidth();
         double h = this.getHeight();
 
         // Draw the world coordinates under the mouse
         gfx.setFont(new Font(12));
+        gfx.setFill(Color.BLACK);
         gfx.setTextBaseline(VPos.BOTTOM);
-        gfx.fillText("(" + worldMouseX + ", " + worldMouseY + ")",
+        gfx.fillText(String.format("(%.2f, %.2f)", this.worldMouseX, this.worldMouseY),
                 UIConstants.PADDING_X,
                 h - UIConstants.PADDING_Y);
 
