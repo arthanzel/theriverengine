@@ -11,6 +11,7 @@ import javafx.scene.effect.Light;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
@@ -48,8 +49,6 @@ public class RiverRenderer extends Pane {
     }
 
     public void update(RiverSystem system) {
-        System.out.println(gfx.getTransform().transform(0, 0));
-
         gfx.save();
         gfx.setTransform(new Affine());
         gfx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -87,7 +86,7 @@ public class RiverRenderer extends Pane {
         // Zoom on scroll
         this.setOnScroll(se -> {
             Affine transform = gfx.getTransform(); // Returns a copy
-            Point2D original = transform.transform(se.getX(), se.getY());
+            Point2D preTransformMouse = toWorldSpace(transform, se.getX(), se.getY());
 
             // Scale the canvas
             if (se.getDeltaY() > 0) {
@@ -96,8 +95,11 @@ public class RiverRenderer extends Pane {
                 transform.appendScale(1 / UIConstants.ZOOM_FACTOR, 1 / UIConstants.ZOOM_FACTOR);
             }
 
-            Point2D picked = transform.transform(se.getX() * UIConstants.ZOOM_FACTOR, se.getY() * UIConstants.ZOOM_FACTOR);
-            transform.appendTranslation(se.getX() - picked.getX(), se.getY() - picked.getY());
+            Point2D postTransformMouse = new Point2D(0, 0);
+            postTransformMouse = toWorldSpace(transform, se.getX(), se.getY());
+
+            transform.appendTranslation(postTransformMouse.getX() - preTransformMouse.getX(),
+                    postTransformMouse.getY() - preTransformMouse.getY());
 
             gfx.setTransform(transform);
         });
@@ -112,6 +114,7 @@ public class RiverRenderer extends Pane {
         for (RiverArc arc : network.edgeSet()) {
             RiverNode origin = arc.getUpstreamNode();
             RiverNode dest = arc.getDownstreamNode();
+            gfx.setLineCap(StrokeLineCap.ROUND);
             gfx.strokeLine(origin.getPosition().getX(),
                     origin.getPosition().getY(),
                     dest.getPosition().getX(),
@@ -136,13 +139,13 @@ public class RiverRenderer extends Pane {
     // region Utility Methods
     // ======================
 
-    private Point2D toScreenSpace(double x, double y) {
-        return this.gfx.getTransform().transform(x, y);
+    private Point2D toScreenSpace(Affine transform, double x, double y) {
+        return transform.transform(x, y);
     }
 
-    private Point2D toWorldSpace(double x, double y) {
+    private Point2D toWorldSpace(Affine transform, double x, double y) {
         try {
-            return this.gfx.getTransform().inverseTransform(x, y);
+            return transform.inverseTransform(x, y);
         } catch (NonInvertibleTransformException e) {
             System.out.println("Non invertible on " + x + ", " + y);
             return new Point2D(0, 0);
