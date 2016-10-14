@@ -1,8 +1,5 @@
 package com.arthanzel.theriverengine;
 
-import com.arthanzel.theriverengine.rivergen.RiverNetwork;
-import com.arthanzel.theriverengine.sim.RiverSystem;
-import com.arthanzel.theriverengine.ui.RiverView;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

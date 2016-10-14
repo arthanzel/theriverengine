@@ -34,7 +34,7 @@
         </Accordion>
     </right>
     <center>
-        <RiverRenderer fx:id="riverRenderer" style="-fx-background-color: #ef8;" BorderPane.alignment="TOP_LEFT" />
+        <RiverRenderer fx:id="riverRenderer" style="-fx-background-color: #fff;" BorderPane.alignment="TOP_LEFT" />
     </center>
     <top>
         <HBox alignment="CENTER_LEFT" spacing="5.0" BorderPane.alignment="CENTER">
