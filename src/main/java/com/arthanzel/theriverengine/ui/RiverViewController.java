@@ -17,9 +17,15 @@ public class RiverViewController {
     @SuppressWarnings("unused")
     public void initialize() {
         AnimationTimer anim = new AnimationTimer() {
+            double skip = 0;
+
             @Override
             public void handle(long now) {
-                riverRenderer.update(system);
+                skip++;
+                if (skip == 3) {
+                    skip = 0;
+                    riverRenderer.update(system);
+                }
             }
         };
         anim.start();

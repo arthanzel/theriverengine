@@ -5,13 +5,14 @@ import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.rivergen.RiverNode;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import javafx.geometry.Point2D;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.Light;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Line;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
@@ -52,6 +53,7 @@ public class RiverRenderer extends Pane {
         gfx.save();
         gfx.setTransform(new Affine());
         gfx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawScreenSpaceElements();
         gfx.restore();
 
         if (system == null) {
@@ -66,6 +68,8 @@ public class RiverRenderer extends Pane {
     // =========
 
     private double originalX, originalY;
+    private double worldMouseX, worldMouseY;
+    private double scale = 1; // For easy use by this class
 
     private void initUIEvents() {
         // Pan on drag
@@ -83,6 +87,13 @@ public class RiverRenderer extends Pane {
             originalY = me.getY();
         });
 
+        // Update world coordinates
+        this.setOnMouseMoved(me -> {
+            Point2D worldMouse = toWorldSpace(gfx.getTransform(), me.getX(), me.getY());
+            worldMouseX = worldMouse.getX();
+            worldMouseY = worldMouse.getY();
+        });
+
         // Zoom on scroll
         this.setOnScroll(se -> {
             Affine transform = gfx.getTransform(); // Returns a copy
@@ -91,8 +102,10 @@ public class RiverRenderer extends Pane {
             // Scale the canvas
             if (se.getDeltaY() > 0) {
                 transform.appendScale(UIConstants.ZOOM_FACTOR, UIConstants.ZOOM_FACTOR);
+                scale *= UIConstants.ZOOM_FACTOR;
             } else {
                 transform.appendScale(1 / UIConstants.ZOOM_FACTOR, 1 / UIConstants.ZOOM_FACTOR);
+                scale /= UIConstants.ZOOM_FACTOR;
             }
 
             Point2D postTransformMouse = new Point2D(0, 0);
@@ -122,17 +135,30 @@ public class RiverRenderer extends Pane {
         }
     }
 
-//    private void drawScaleBar() {
-//        scaleGroup.getChildren().clear();
-//        Line line = new Line(0, 0, 100, 0);
-//        line.setStrokeWidth(4);
-//        line.setStrokeLineCap(StrokeLineCap.SQUARE);
-//        scaleGroup.getChildren().add(line);
-//
-//        scaleGroup.setTranslateX(20);
-//        System.out.println(this.getHeight());
-//        scaleGroup.setTranslateY(this.getHeight() - 140);
-//    }
+    private void drawScreenSpaceElements() {
+        double w = this.getWidth();
+        double h = this.getHeight();
+
+        // Draw the world coordinates under the mouse
+        gfx.setFont(new Font(12));
+        gfx.setTextBaseline(VPos.BOTTOM);
+        gfx.fillText("(" + worldMouseX + ", " + worldMouseY + ")",
+                UIConstants.PADDING_X,
+                h - UIConstants.PADDING_Y);
+
+        // Draw the scale bar
+        double lineSize = 100;
+        gfx.setLineCap(StrokeLineCap.SQUARE);
+        gfx.setStroke(Color.BLACK);
+        gfx.setLineWidth(4);
+        gfx.strokeLine(w - UIConstants.PADDING_X - lineSize,
+                h - UIConstants.PADDING_Y - 20,
+                w - UIConstants.PADDING_X,
+                h - UIConstants.PADDING_Y - 20);
+        gfx.fillText(String.format("%.2f m", 100 * scale),
+                w - UIConstants.PADDING_X - lineSize,
+                h - UIConstants.PADDING_Y);
+    }
 
     // endregion
 
