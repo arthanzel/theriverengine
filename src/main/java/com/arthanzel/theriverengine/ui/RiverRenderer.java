@@ -4,21 +4,42 @@ import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.rivergen.RiverNode;
 import com.arthanzel.theriverengine.sim.RiverSystem;
-import javafx.scene.Group;
-import javafx.scene.layout.Region;
+import javafx.geometry.Point2D;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.Light;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.NonInvertibleTransformException;
 
 /**
  * TODO: Documentation
  *
  * @author Martin
  */
-public class RiverRenderer extends Region {
-    private Group root;
+public class RiverRenderer extends Pane {
+    private Canvas canvas;
+    private GraphicsContext gfx;
 
     public RiverRenderer() {
+        // Set up the canvas.
+        // The canvas must be redrawn every time this pane is resized.
+        this.canvas = new Canvas();
+        this.getChildren().add(canvas);
+        canvas.widthProperty().bind(this.widthProperty());
+        canvas.heightProperty().bind(this.heightProperty());
+        this.widthProperty().addListener(ev -> {
+            // TODO: Don't redraw the canvas, but show a message until the next update.
+            update(null);
+        });
+        this.heightProperty().addListener(ev -> {
+            update(null);
+        });
+        gfx = this.canvas.getGraphicsContext2D();
+
+        // Set up a clipping mask so JavaFX doesn't draw out of bounds
         Rectangle clip = new Rectangle(this.getWidth(), this.getHeight());
         clip.widthProperty().bind(this.widthProperty());
         clip.heightProperty().bind(this.heightProperty());
@@ -26,52 +47,59 @@ public class RiverRenderer extends Region {
         initUIEvents();
     }
 
-    /**
-     * Initialize this RiverRenderer to a RiverNetwork and performs one-time drawing operations, such as drawing the
-     * network.
-     */
-    public void initialize(RiverSystem system) {
-        System.out.println("Initialized renderer");
+    public void update(RiverSystem system) {
+        System.out.println(gfx.getTransform().transform(0, 0));
 
-        root = new Group();
-        this.getChildren().clear();
-        this.getChildren().add(root);
+        gfx.save();
+        gfx.setTransform(new Affine());
+        gfx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gfx.restore();
+
+        if (system == null) {
+            System.out.println("WARN: RiverSystem is null on view update!");
+            return;
+        }
 
         drawNetwork(system.getNetwork());
-    }
-
-    public void update(RiverSystem system) {
-
     }
 
     // region UI
     // =========
 
-    private double originalX, originalY, rootX, rootY;
+    private double originalX, originalY;
+
     private void initUIEvents() {
         // Pan on drag
         this.setOnMousePressed(me -> {
             originalX = me.getX();
             originalY = me.getY();
-            rootX = root.getTranslateX();
-            rootY = root.getTranslateY();
         });
         this.setOnMouseDragged(me -> {
             double dx = me.getX() - originalX;
             double dy = me.getY() - originalY;
-            root.setTranslateX(rootX + dx);
-            root.setTranslateY(rootY + dy);
+            Affine transform = gfx.getTransform(); // Returns a copy
+            transform.prependTranslation(dx, dy);
+            gfx.setTransform(transform);
+            originalX = me.getX();
+            originalY = me.getY();
         });
 
         // Zoom on scroll
         this.setOnScroll(se -> {
+            Affine transform = gfx.getTransform(); // Returns a copy
+            Point2D original = transform.transform(se.getX(), se.getY());
+
+            // Scale the canvas
             if (se.getDeltaY() > 0) {
-                root.setScaleX(root.getScaleX() * UIConstants.ZOOM_FACTOR);
-                root.setScaleY(root.getScaleY() * UIConstants.ZOOM_FACTOR);
+                transform.appendScale(UIConstants.ZOOM_FACTOR, UIConstants.ZOOM_FACTOR);
             } else {
-                root.setScaleX(root.getScaleX() / UIConstants.ZOOM_FACTOR);
-                root.setScaleY(root.getScaleY() / UIConstants.ZOOM_FACTOR);
+                transform.appendScale(1 / UIConstants.ZOOM_FACTOR, 1 / UIConstants.ZOOM_FACTOR);
             }
+
+            Point2D picked = transform.transform(se.getX() * UIConstants.ZOOM_FACTOR, se.getY() * UIConstants.ZOOM_FACTOR);
+            transform.appendTranslation(se.getX() - picked.getX(), se.getY() - picked.getY());
+
+            gfx.setTransform(transform);
         });
     }
 
@@ -84,11 +112,10 @@ public class RiverRenderer extends Region {
         for (RiverArc arc : network.edgeSet()) {
             RiverNode origin = arc.getUpstreamNode();
             RiverNode dest = arc.getDownstreamNode();
-            Line l = new Line(origin.getPosition().getX(),
+            gfx.strokeLine(origin.getPosition().getX(),
                     origin.getPosition().getY(),
                     dest.getPosition().getX(),
                     dest.getPosition().getY());
-            this.root.getChildren().add(l);
         }
     }
 
@@ -105,4 +132,20 @@ public class RiverRenderer extends Region {
 //    }
 
     // endregion
+
+    // region Utility Methods
+    // ======================
+
+    private Point2D toScreenSpace(double x, double y) {
+        return this.gfx.getTransform().transform(x, y);
+    }
+
+    private Point2D toWorldSpace(double x, double y) {
+        try {
+            return this.gfx.getTransform().inverseTransform(x, y);
+        } catch (NonInvertibleTransformException e) {
+            System.out.println("Non invertible on " + x + ", " + y);
+            return new Point2D(0, 0);
+        }
+    }
 }

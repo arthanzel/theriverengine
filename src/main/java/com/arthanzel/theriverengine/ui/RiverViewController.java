@@ -1,6 +1,7 @@
 package com.arthanzel.theriverengine.ui;
 
 import com.arthanzel.theriverengine.sim.RiverSystem;
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 
 /**
@@ -15,7 +16,13 @@ public class RiverViewController {
 
     @SuppressWarnings("unused")
     public void initialize() {
-
+        AnimationTimer anim = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                riverRenderer.update(system);
+            }
+        };
+        anim.start();
     }
 
     // ====== Accessors ======
@@ -34,6 +41,6 @@ public class RiverViewController {
 
     public void setSystem(RiverSystem system) {
         this.system = system;
-        this.riverRenderer.initialize(this.system);
+
     }
 }

@@ -23,7 +23,7 @@ public class TestUI extends Stage {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));
         Scene scene = new Scene(loader.load(), 800, 600);
-        loader.<RiverViewController>getController().setSystem(system);
         this.setScene(scene);
+        loader.<RiverViewController>getController().setSystem(system);
     }
 }
