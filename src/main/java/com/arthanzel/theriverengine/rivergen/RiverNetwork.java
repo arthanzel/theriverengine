@@ -8,6 +8,7 @@ import org.jgrapht.graph.SimpleDirectedGraph;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents a river network.
@@ -65,5 +66,13 @@ public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> {
         }
 
         return network;
+    }
+
+    public Set<RiverArc> getDownstreamArcs(RiverArc arc) {
+        return this.outgoingEdgesOf(this.getEdgeTarget(arc));
+    }
+
+    public Set<RiverArc> getUpstreamArcs(RiverArc arc) {
+        return this.incomingEdgesOf(this.getEdgeSource(arc));
     }
 }

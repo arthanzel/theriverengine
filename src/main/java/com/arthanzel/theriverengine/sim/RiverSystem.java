@@ -15,7 +15,11 @@ import java.util.Random;
  */
 public class RiverSystem {
     private Agent[] agents;
-    private RiverNetwork network;
+    private final RiverNetwork network;
+
+    private RiverSystem(RiverNetwork network) {
+        this.network = network;
+    }
 
     public RiverSystem(RiverNetwork network, int numAgents) {
         this.agents = new Agent[numAgents];

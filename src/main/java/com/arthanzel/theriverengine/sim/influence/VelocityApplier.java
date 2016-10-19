@@ -1,10 +1,14 @@
 package com.arthanzel.theriverengine.sim.influence;
 
+import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
 import com.arthanzel.theriverengine.util.FishMath;
+import com.arthanzel.theriverengine.util.Graphs;
+
+import java.util.Set;
 
 /**
  * Influence that applies a random motion to the Agents present in a RiverSystem.
@@ -21,7 +25,7 @@ public class VelocityApplier extends BaseInfluence {
 
         for (Agent a : system.getAgents()) {
             double v = FishMath.clamp(a.getAttributes().getDouble("velocity"), -maxVelocity, maxVelocity);
-            displace(a, v * dt);
+            displace(system, a, -0.01 * dt);
 
             a.getAttributes().put("velocity", 0.0);
         }
@@ -31,7 +35,7 @@ public class VelocityApplier extends BaseInfluence {
      * Displaces the Agent's location upstream (negative delta) or downstream (positive delta). If the new position is outside
      * of the current river Arc, a random connecting Arc is chosen.
      */
-    public void displace(Agent agent, double delta) {
+    public void displace(RiverSystem system, Agent agent, double delta) {
         Location location = agent.getLocation();
         double max = location.getArc().length();
         double pos = location.getPosition();
@@ -43,7 +47,26 @@ public class VelocityApplier extends BaseInfluence {
         }
         else if (newPos < 0) {
             // The agent moves to an upstream Arc
-
+            Set<RiverArc> upstreamArcs = system.getNetwork().getUpstreamArcs(location.getArc());
+            if (upstreamArcs.size() > 0) {
+                RiverArc target = FishMath.sample(upstreamArcs);
+                location.setArc(target);
+                location.setPosition(target.length());
+            }
+            else {
+                location.setPosition(0);
+            }
+        }
+        else {
+            Set<RiverArc> downstreamArcs = system.getNetwork().getDownstreamArcs(location.getArc());
+            if (downstreamArcs.size() > 0) {
+                RiverArc target = FishMath.sample(downstreamArcs);
+                location.setArc(target);
+                location.setPosition(0);
+            }
+            else {
+                location.setPosition(location.getArc().length());
+            }
         }
     }
 
