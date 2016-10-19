@@ -1,6 +1,14 @@
 package com.arthanzel.theriverengine;
 
+import com.arthanzel.theriverengine.rivergen.RiverNetwork;
+import com.arthanzel.theriverengine.sim.RiverRunner;
+import com.arthanzel.theriverengine.sim.RiverSystem;
+import com.arthanzel.theriverengine.sim.influence.RandomMovement;
+import com.arthanzel.theriverengine.sim.influence.VelocityApplier;
+import com.arthanzel.theriverengine.ui.RiverViewController;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -13,13 +21,25 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage main) throws IOException {
-        TestUI tui = new TestUI();
-        tui.show();
+        main.setTitle("The River Engine - Test UI");
 
-//        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 50);
-//        system.initAgentsRandomly();
-//        RiverView view = new RiverView(system);
-//        view.show();
+        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 100);
+        RiverRunner runner = new RiverRunner(system);
+        runner.getInfluences().add(new RandomMovement());
+        runner.getInfluences().add(new VelocityApplier());
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));
+        Scene scene = new Scene(loader.load(), 800, 600);
+        main.setScene(scene);
+        loader.<RiverViewController>getController().initialize(system, runner);
+
+        main.setOnCloseRequest(event -> {
+            System.out.println("Exiting");
+            System.exit(0);
+        });
+
+        main.show();
+        runner.start();
     }
 
     public static void main(String[] args) {

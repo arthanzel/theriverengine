@@ -6,6 +6,8 @@ import javafx.geometry.Point2D;
 /**
  * Location specifies a deterministic location on a river network using a reference to an arc, and a downstream position
  * along that arc.
+ *
+ * @author Martin
  */
 public class Location {
     private RiverArc arc;
@@ -46,7 +48,7 @@ public class Location {
     }
 
     public void setPosition(double position) {
-        if (position > this.arc.length()) {
+        if (position > this.arc.length() || position < 0) {
             throw new IllegalArgumentException("Position must be less than the length of the river arc.");
         }
 

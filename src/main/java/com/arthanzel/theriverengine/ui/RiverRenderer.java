@@ -5,6 +5,7 @@ import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.rivergen.RiverNode;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
+import com.arthanzel.theriverengine.util.FrameCounter;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -25,6 +26,7 @@ import javafx.scene.transform.NonInvertibleTransformException;
 public class RiverRenderer extends Pane {
     private Canvas canvas;
     private GraphicsContext gfx;
+    private FrameCounter counter;
 
     public RiverRenderer() {
         // Set up the canvas.
@@ -48,22 +50,30 @@ public class RiverRenderer extends Pane {
         clip.heightProperty().bind(this.heightProperty());
         this.setClip(clip);
         initUIEvents();
+
+        counter = new FrameCounter("Renderer", 1000);
+        counter.start();
     }
 
     public void update(RiverSystem system) {
-        gfx.save();
-        gfx.setTransform(new Affine());
-        gfx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawScreenSpaceElements();
-        gfx.restore();
-
         if (system == null) {
             System.out.println("WARN: RiverSystem is null on view update!");
             return;
         }
 
-        drawNetwork(system.getNetwork());
-        drawAgents(system.getAgents());
+        synchronized (system) {
+            counter.increment();
+            gfx.save();
+            gfx.setTransform(new Affine());
+            gfx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawScreenSpaceElements();
+            gfx.restore();
+
+
+
+            drawNetwork(system.getNetwork());
+            drawAgents(system.getAgents());
+        }
     }
 
     // region UI
@@ -181,7 +191,7 @@ public class RiverRenderer extends Pane {
                 h - UIConstants.PADDING_Y - 20,
                 w - UIConstants.PADDING_X,
                 h - UIConstants.PADDING_Y - 20);
-        gfx.fillText(String.format("%.2f m", 100 * scale),
+        gfx.fillText(String.format("%.2f m", 100 / scale),
                 w - UIConstants.PADDING_X - lineSize,
                 h - UIConstants.PADDING_Y);
     }

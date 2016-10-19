@@ -1,8 +1,11 @@
 package com.arthanzel.theriverengine.ui;
 
+import com.arthanzel.theriverengine.sim.influence.Influence;
+import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
+import javafx.scene.control.Accordion;
 
 /**
  * TODO: Documentation
@@ -10,6 +13,7 @@ import javafx.fxml.FXML;
  * @author Martin
  */
 public class RiverViewController {
+    @FXML private Accordion optionsAccordion;
     @FXML private RiverRenderer riverRenderer;
 
     private RiverSystem system;
@@ -31,6 +35,14 @@ public class RiverViewController {
         anim.start();
     }
 
+    public void initialize(RiverSystem system, RiverRunner runner) {
+        this.system = system;
+
+        for (Influence i : runner.getInfluences()) {
+            optionsAccordion.getPanes().add(new InfluencePane(i));
+        }
+    }
+
     // ====== Accessors ======
 
     public RiverRenderer getRiverRenderer() {
@@ -47,6 +59,5 @@ public class RiverViewController {
 
     public void setSystem(RiverSystem system) {
         this.system = system;
-
     }
 }

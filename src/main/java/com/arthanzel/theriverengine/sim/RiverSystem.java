@@ -5,6 +5,8 @@ import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
