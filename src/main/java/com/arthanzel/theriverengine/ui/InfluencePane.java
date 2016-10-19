@@ -68,6 +68,7 @@ public class InfluencePane extends TitledPane {
     private void initBoolean(Pane container, PropertyDescriptor pd) throws InvocationTargetException, IllegalAccessException {
         boolean val = (boolean) pd.getReadMethod().invoke(influence);
         CheckBox checkbox = new CheckBox(TextUtils.toWords(pd.getName()));
+        checkbox.setSelected(val);
         container.getChildren().add(checkbox);
 
         checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {

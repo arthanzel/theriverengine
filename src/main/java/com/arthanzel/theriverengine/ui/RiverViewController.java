@@ -6,6 +6,7 @@ import com.arthanzel.theriverengine.sim.RiverSystem;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
+import javafx.scene.control.Label;
 
 /**
  * TODO: Documentation
@@ -15,6 +16,7 @@ import javafx.scene.control.Accordion;
 public class RiverViewController {
     @FXML private Accordion optionsAccordion;
     @FXML private RiverRenderer riverRenderer;
+    @FXML private Label fpsLabel;
 
     private RiverSystem system;
 
@@ -25,14 +27,20 @@ public class RiverViewController {
 
             @Override
             public void handle(long now) {
-                skip++;
-                if (skip == 3) {
-                    skip = 0;
-                    riverRenderer.update(system);
-                }
+                riverRenderer.update(system);
+//                skip++;
+//                if (skip == 1) {
+//                    skip = 0;
+//                    riverRenderer.update(system);
+//                }
             }
         };
         anim.start();
+
+        riverRenderer.fpsProperty().addListener((observable, oldValue, newValue) -> {
+            // FIXME: This event is coming from a different thread, which JavFX does not like.
+            //fpsLabel.setText(newValue + " FPS");
+        });
     }
 
     public void initialize(RiverSystem system, RiverRunner runner) {

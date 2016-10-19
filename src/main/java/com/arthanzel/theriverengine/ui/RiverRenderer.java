@@ -6,6 +6,10 @@ import com.arthanzel.theriverengine.rivergen.RiverNode;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.util.FrameCounter;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -26,7 +30,10 @@ import javafx.scene.transform.NonInvertibleTransformException;
 public class RiverRenderer extends Pane {
     private Canvas canvas;
     private GraphicsContext gfx;
-    private FrameCounter counter;
+    private FrameCounter counter = new FrameCounter("RiverRenderer", 1000);
+
+    // Properties
+    private DoubleProperty fps = new SimpleDoubleProperty(0);
 
     public RiverRenderer() {
         // Set up the canvas.
@@ -36,7 +43,7 @@ public class RiverRenderer extends Pane {
         canvas.widthProperty().bind(this.widthProperty());
         canvas.heightProperty().bind(this.heightProperty());
         this.widthProperty().addListener(ev -> {
-            // TODO: Don't redraw the canvas, but show a message until the next update.
+            // TODO: clone the model
             update(null);
         });
         this.heightProperty().addListener(ev -> {
@@ -49,9 +56,13 @@ public class RiverRenderer extends Pane {
         clip.widthProperty().bind(this.widthProperty());
         clip.heightProperty().bind(this.heightProperty());
         this.setClip(clip);
+
         initUIEvents();
 
-        counter = new FrameCounter("Renderer", 1000);
+        // Set up the frame counter
+        counter.setOnReport(fps -> {
+            this.fps.set(fps);
+        });
         counter.start();
     }
 
@@ -61,15 +72,15 @@ public class RiverRenderer extends Pane {
             return;
         }
 
+        // TODO: Don't synchronize here, but clone
         synchronized (system) {
             counter.increment();
+
             gfx.save();
             gfx.setTransform(new Affine());
             gfx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
             drawScreenSpaceElements();
             gfx.restore();
-
-
 
             drawNetwork(system.getNetwork());
             drawAgents(system.getAgents());
@@ -213,4 +224,19 @@ public class RiverRenderer extends Pane {
             return new Point2D(0, 0);
         }
     }
+
+    // endregion
+
+    // region Accessors
+    // ================
+
+    public double getFps() {
+        return fps.get();
+    }
+
+    public DoubleProperty fpsProperty() {
+        return fps;
+    }
+
+    // endregioin
 }

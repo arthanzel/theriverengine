@@ -9,6 +9,7 @@ import java.util.List;
 public class RiverRunner {
     private List<Influence> influences = new LinkedList<>();
     private final RiverSystem system;
+    private boolean flagForStop = false;
 
     public RiverRunner(RiverSystem system) {
         this.system = system;
@@ -17,13 +18,22 @@ public class RiverRunner {
     public void start() {
         Thread t = new Thread(() -> {
             FrameCounter counter = new FrameCounter("Simulation", 1000);
+            counter.setPrintToOut(true);
             counter.start();
             while (true) {
                 counter.increment();
                 tick(1/500.0);
+
+                if (flagForStop) {
+                    break;
+                }
             }
         });
         t.start();
+    }
+
+    public void stop() {
+        this.flagForStop = true;
     }
 
     /**
