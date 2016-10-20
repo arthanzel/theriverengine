@@ -25,7 +25,7 @@ public class VelocityApplier extends BaseInfluence {
 
         for (Agent a : system.getAgents()) {
             double v = FishMath.clamp(a.getAttributes().getDouble("velocity"), -maxVelocity, maxVelocity);
-            displace(system, a, -0.01 * dt);
+            displace(system, a, v * dt);
 
             a.getAttributes().put("velocity", 0.0);
         }
