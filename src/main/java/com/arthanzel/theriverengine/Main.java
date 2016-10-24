@@ -3,6 +3,7 @@ package com.arthanzel.theriverengine;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
+import com.arthanzel.theriverengine.sim.influence.FlowMovement;
 import com.arthanzel.theriverengine.sim.influence.RandomMovement;
 import com.arthanzel.theriverengine.sim.influence.VelocityApplier;
 import com.arthanzel.theriverengine.ui.RiverViewController;
@@ -26,6 +27,7 @@ public class Main extends Application {
         RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 100);
         RiverRunner runner = new RiverRunner(system);
         runner.getInfluences().add(new RandomMovement());
+        runner.getInfluences().add(new FlowMovement());
         runner.getInfluences().add(new VelocityApplier());
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));

@@ -21,3 +21,7 @@ Todo:
     - Random movement
     - Generation and representation of overlays
     - Dynamics of overlays
+
+Drift paradox
+    
+Competition based on a robust nutrient model. Fitness is proportional to the availability of nutrients to each fish in a given space.

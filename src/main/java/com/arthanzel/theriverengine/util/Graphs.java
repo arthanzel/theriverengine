@@ -98,6 +98,7 @@ public class Graphs {
      * @return Set of upstream edges.
      */
     public static <E> Set<E> upstreamEdges(DirectedGraph<Object, E> graph, E edge) {
+        // FIXME: This is wrong. It should be the edge set of the vertex minus the given edge.
         return graph.incomingEdgesOf(graph.getEdgeSource(edge));
     }
 }
