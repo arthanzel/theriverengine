@@ -43,7 +43,7 @@ public class ReflectionUtils {
      */
     public static String getBeanName(Object obj) {
         if (obj.getClass().isAnnotationPresent(BindingName.class)) {
-            return obj.getClass().getAnnotation(BindingName.class).name();
+            return obj.getClass().getAnnotation(BindingName.class).value();
         }
         else if (obj instanceof Field) {
             Field f = (Field) obj;

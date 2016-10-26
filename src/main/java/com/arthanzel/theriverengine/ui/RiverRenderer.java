@@ -6,6 +6,7 @@ import com.arthanzel.theriverengine.rivergen.RiverNode;
 import com.arthanzel.theriverengine.sim.Environment;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
+import com.arthanzel.theriverengine.util.FishMath;
 import com.arthanzel.theriverengine.util.FrameCounter;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -83,8 +84,8 @@ public class RiverRenderer extends Pane {
             gfx.restore();
 
             if (options.isRenderingNetwork()) drawNetwork(system.getNetwork());
-            if (options.isRenderingAgents()) drawAgents(system.getAgents());
             if (options.isRenderingEnvironments()) drawEnvironment(system);
+            if (options.isRenderingAgents()) drawAgents(system.getAgents());
         }
     }
 
@@ -211,15 +212,22 @@ public class RiverRenderer extends Pane {
     }
 
     private void drawEnvironment(RiverSystem system) {
+        double INTERVAL_PX = 10;
+
         //TODO: Uniform intervals
         Environment env = system.getEnvironment("nutrients");
         gfx.setLineWidth(2 / scale);
         gfx.setLineCap(StrokeLineCap.SQUARE);
+
         for (RiverArc arc : system.getNetwork().edgeSet()) {
-            for (double i = 0; i < 1; i += 1.0 / 100) {
-                gfx.setStroke(new Color(0, env.get(arc, i * arc.length()), 0, 1));
+            // Determine the number of drawing primitives per line
+            //int n = (int) Math.ceil(arc.length() * this.scale / INTERVAL_PX);
+            int n = (int) (arc.length() / Environment.RESOLUTION);
+
+            for (double i = 0; i < 1; i += 1.0 / n) {
+                gfx.setStroke(new Color(0, FishMath.clamp(env.get(arc, i * arc.length()), 0, 1), 0, 1));
                 Point2D point = arc.getPointLerp(i);
-                Point2D point2 = arc.getPointLerp(Math.min(1, i + 0.01));
+                Point2D point2 = arc.getPointLerp(Math.min(1, i + 1.0 / n));
                 gfx.strokeLine(point.getX(), point.getY(), point2.getX(), point2.getY());
             }
         }

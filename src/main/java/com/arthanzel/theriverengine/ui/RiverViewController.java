@@ -4,6 +4,7 @@ import com.arthanzel.theriverengine.sim.influence.Influence;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.ui.controls.BeanEditPane;
+import com.arthanzel.theriverengine.ui.controls.TimeLabel;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
@@ -18,6 +19,7 @@ public class RiverViewController {
     @FXML private Accordion optionsAccordion;
     @FXML private RiverRenderer riverRenderer;
     @FXML private Label fpsLabel;
+    @FXML private TimeLabel timeLabel;
 
     private RiverSystem system;
 
@@ -28,6 +30,7 @@ public class RiverViewController {
 
             @Override
             public void handle(long now) {
+                timeLabel.setTime(system.getTime());
                 riverRenderer.update(system);
 //                skip++;
 //                if (skip == 1) {

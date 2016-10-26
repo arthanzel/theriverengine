@@ -24,6 +24,8 @@ public class RiverRunner {
                 counter.increment();
                 tick(1/500.0);
 
+                system.setTime(system.getTime() + 500);
+
                 if (flagForStop) {
                     break;
                 }

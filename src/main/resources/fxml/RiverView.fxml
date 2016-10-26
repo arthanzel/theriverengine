@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.arthanzel.theriverengine.ui.RiverRenderer?>
+<?import com.arthanzel.theriverengine.ui.controls.TimeLabel?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
@@ -21,7 +22,7 @@
             <children>
                 <ToggleButton mnemonicParsing="false" text="Play" />
                 <Button mnemonicParsing="false" text="Open Data Folder" />
-                <Label text="Time: +1 day, 4 hours, 36 minutes" />
+                <TimeLabel fx:id="timeLabel" />
                 <Label fx:id="fpsLabel" />
             </children>
             <BorderPane.margin>

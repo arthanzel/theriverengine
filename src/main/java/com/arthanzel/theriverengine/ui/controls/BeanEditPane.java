@@ -3,7 +3,6 @@ package com.arthanzel.theriverengine.ui.controls;
 import com.arthanzel.theriverengine.ui.BooleanBinding;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
 import com.arthanzel.theriverengine.util.ReflectionUtils;
-import com.arthanzel.theriverengine.util.TextUtils;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Pane;
@@ -12,7 +11,6 @@ import javafx.scene.layout.VBox;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -57,6 +55,7 @@ public class BeanEditPane extends TitledPane {
         this.setContent(container);
 
         List<Field> fields = ReflectionUtils.getAllDeclaredFields(this.bean.getClass());
+        //fields.
         fields.sort((o1, o2) ->
             o1.getName().compareTo(o2.getName())
         );

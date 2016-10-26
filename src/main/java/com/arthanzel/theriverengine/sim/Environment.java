@@ -2,6 +2,7 @@ package com.arthanzel.theriverengine.sim;
 
 import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
+import com.arthanzel.theriverengine.util.FishMath;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.Map;
  * @author Martin
  */
 public class Environment {
-    public static final double RESOLUTION = 0.5;
+    public static final double RESOLUTION = 2;
 
     private Map<RiverArc, double[]> values = new HashMap<>();
 
@@ -20,7 +21,8 @@ public class Environment {
         for (RiverArc arc : network.edgeSet()) {
             double len = arc.length();
 
-            double[] arcValues = new double[(int) (len / RESOLUTION)];
+            // Creates a field of doubles, spaces RESOLUTION units apart, that fit the whole arc.
+            double[] arcValues = new double[(int) (len / RESOLUTION) + 1];
             for (int i = 0; i < arcValues.length; i++) {
                 arcValues[i] = Math.random();
             }
@@ -35,14 +37,32 @@ public class Environment {
         }
 
         double[] vals = values.get(arc);
-        double idx = pos / RESOLUTION;
-        int minIdx = (int) Math.floor(idx);
-        int maxIdx = minIdx + 1;
-        return lerp(vals[minIdx], vals[maxIdx], idx % 1);
+
+        // If the arc is too short to have a gradient.
+        if (vals.length == 1) {
+            return vals[0];
+        }
+
+        // The arc may not have a value for its far end, for instance, if its length is 10.5 m and its resolution is 1 m.
+        // That leaves 0.5 m unaccounted for. In this case, extrapolate from the previous values).
+        double remainder = arc.length() - pos;
+        if (remainder < RESOLUTION) {
+            return FishMath.lerp(vals[vals.length - 2], vals[vals.length - 1], 1 + remainder);
+        }
+
+        // Interpolate between the nearest value points.
+        int idx = (int) (pos / RESOLUTION); // Virtual "index" in the values array
+        int wholePart = (int) idx;
+        double fracPart = (double) idx % 1;
+
+        // Math.min prevents overflows in the case that pos == arc.length()
+        return FishMath.lerp(vals[wholePart], vals[Math.min(wholePart + 1, vals.length)], fracPart);
     }
 
-    private double lerp(double min, double max, double f) {
-        return (max - min) * f + min;
+     // ====== Accessors ======
+
+    public Map<RiverArc, double[]> getValues() {
+        return values;
     }
 
     //TODO: Pluggable interpolation functions
