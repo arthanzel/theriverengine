@@ -1,5 +1,7 @@
 package com.arthanzel.theriverengine.util;
 
+import com.arthanzel.theriverengine.ui.BindingName;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,5 +31,26 @@ public class ReflectionUtils {
             cls = cls.getSuperclass();
         }
         return fields;
+    }
+
+    /**
+     * Gets the name of the bound bean.
+     * If the bean has a BindingName annotation, this is the annotation's value.
+     * If the 'bean' is a field, this method take its name split up into multiple words.
+     * Else, this method takes the simple class name split up into multiple words.
+     * @param obj The bean.
+     * @return The bean's bound name, or computed name.
+     */
+    public static String getBeanName(Object obj) {
+        if (obj.getClass().isAnnotationPresent(BindingName.class)) {
+            return obj.getClass().getAnnotation(BindingName.class).name();
+        }
+        else if (obj instanceof Field) {
+            Field f = (Field) obj;
+            return TextUtils.toWords(f.getName());
+        }
+        else {
+            return TextUtils.toWords(obj.getClass().getSimpleName());
+        }
     }
 }

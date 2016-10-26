@@ -10,6 +10,6 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DoubleBinding {
-    double min() default 0;
-    double max() default 10;
+    double min();
+    double max();
 }

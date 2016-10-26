@@ -1,4 +1,4 @@
-package com.arthanzel.theriverengine.ui;
+package com.arthanzel.theriverengine.ui.controls;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

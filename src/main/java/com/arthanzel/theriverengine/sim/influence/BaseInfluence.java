@@ -19,8 +19,4 @@ public abstract class BaseInfluence implements Influence {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
-    public String getName() {
-        return TextUtils.toWords(getClass().getSimpleName());
-    }
 }

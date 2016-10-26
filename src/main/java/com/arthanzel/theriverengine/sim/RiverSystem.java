@@ -5,9 +5,7 @@ import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * RiverSystem contains the entire model of a river system, including its population of agents, its topology, and its
@@ -15,15 +13,18 @@ import java.util.Random;
  */
 public class RiverSystem {
     private Agent[] agents;
+    private Map<String, Environment> environments = new HashMap<>();
     private final RiverNetwork network;
 
     private RiverSystem(RiverNetwork network) {
         this.network = network;
+
+        environments.put("nutrients", new Environment(network));
     }
 
     public RiverSystem(RiverNetwork network, int numAgents) {
+        this(network);
         this.agents = new Agent[numAgents];
-        this.network = network;
 
         initAgentsRandomly();
     }
@@ -68,4 +69,8 @@ public class RiverSystem {
     public RiverNetwork getNetwork() {
         return network;
     }
+
+    public Environment getEnvironment(String env) { return environments.get(env); }
+
+    public void putEnvironment(String envName, Environment env) { environments.put(envName, env); }
 }

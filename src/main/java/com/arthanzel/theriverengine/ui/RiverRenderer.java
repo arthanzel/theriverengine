@@ -3,13 +3,12 @@ package com.arthanzel.theriverengine.ui;
 import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.rivergen.RiverNode;
+import com.arthanzel.theriverengine.sim.Environment;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.util.FrameCounter;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -31,6 +30,7 @@ public class RiverRenderer extends Pane {
     private Canvas canvas;
     private GraphicsContext gfx;
     private FrameCounter counter = new FrameCounter("RiverRenderer", 1000);
+    private RenderOptions options = new RenderOptions();
 
     // Properties
     private DoubleProperty fps = new SimpleDoubleProperty(0);
@@ -82,8 +82,9 @@ public class RiverRenderer extends Pane {
             drawScreenSpaceElements();
             gfx.restore();
 
-            drawNetwork(system.getNetwork());
-            drawAgents(system.getAgents());
+            if (options.isRenderingNetwork()) drawNetwork(system.getNetwork());
+            if (options.isRenderingAgents()) drawAgents(system.getAgents());
+            if (options.isRenderingEnvironments()) drawEnvironment(system);
         }
     }
 
@@ -148,6 +149,7 @@ public class RiverRenderer extends Pane {
 
     /**
      * Draws markers that represent agents.
+     *
      * @param agents Array of agents.
      */
     private void drawAgents(Agent[] agents) {
@@ -161,6 +163,7 @@ public class RiverRenderer extends Pane {
 
     /**
      * Draws a visualization of a river network.
+     *
      * @param network A river network.
      */
     private void drawNetwork(RiverNetwork network) {
@@ -207,6 +210,21 @@ public class RiverRenderer extends Pane {
                 h - UIConstants.PADDING_Y);
     }
 
+    private void drawEnvironment(RiverSystem system) {
+        //TODO: Uniform intervals
+        Environment env = system.getEnvironment("nutrients");
+        gfx.setLineWidth(2 / scale);
+        gfx.setLineCap(StrokeLineCap.SQUARE);
+        for (RiverArc arc : system.getNetwork().edgeSet()) {
+            for (double i = 0; i < 1; i += 1.0 / 100) {
+                gfx.setStroke(new Color(0, env.get(arc, i * arc.length()), 0, 1));
+                Point2D point = arc.getPointLerp(i);
+                Point2D point2 = arc.getPointLerp(Math.min(1, i + 0.01));
+                gfx.strokeLine(point.getX(), point.getY(), point2.getX(), point2.getY());
+            }
+        }
+    }
+
     // endregion
 
     // region Utility Methods
@@ -238,5 +256,9 @@ public class RiverRenderer extends Pane {
         return fps;
     }
 
-    // endregioin
+    public RenderOptions getOptions() {
+        return options;
+    }
+
+    // endregion
 }

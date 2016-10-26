@@ -18,15 +18,20 @@ public class Location {
         this.setPosition(position);
     }
 
+    public static Location fromLerp(RiverArc arc, double f) {
+        if (f > 1 || f < 0) {
+            throw new IllegalArgumentException("Position must be between 0 and 1.");
+        }
+
+        return new Location(arc, f * arc.length());
+    }
+
     /**
      * Returns a point on the 2D plane represented by this Location.
      * @return Point on the 2D plane.
      */
     public Point2D getPoint() {
-        Point2D origin = arc.getUpstreamNode().getPosition();
-        Point2D dest = arc.getDownstreamNode().getPosition();
-        Point2D delta = dest.subtract(origin).normalize().multiply(position);
-        return origin.add(delta);
+        return arc.getPoint(position);
     }
 
     public String toString() {

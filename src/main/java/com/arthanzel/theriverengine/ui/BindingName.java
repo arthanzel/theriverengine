@@ -9,5 +9,6 @@ import java.lang.annotation.RetentionPolicy;
  * @author Martin
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BooleanBinding {
+public @interface BindingName {
+    String name();
 }

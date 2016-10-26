@@ -12,7 +12,5 @@ public interface Influence {
     boolean isEnabled();
     void setEnabled(boolean enabled);
 
-    String getName();
-
     void influence(RiverSystem system, double dt);
 }

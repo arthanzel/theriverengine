@@ -3,6 +3,7 @@ package com.arthanzel.theriverengine.ui;
 import com.arthanzel.theriverengine.sim.influence.Influence;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
+import com.arthanzel.theriverengine.ui.controls.BeanEditPane;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
@@ -38,7 +39,7 @@ public class RiverViewController {
         anim.start();
 
         riverRenderer.fpsProperty().addListener((observable, oldValue, newValue) -> {
-            // FIXME: This event is coming from a different thread, which JavFX does not like.
+            // FIXME: This event is coming from a different thread, which JavaFX does not like.
             //fpsLabel.setText(newValue + " FPS");
         });
     }
@@ -46,8 +47,9 @@ public class RiverViewController {
     public void initialize(RiverSystem system, RiverRunner runner) {
         this.system = system;
 
+        optionsAccordion.getPanes().add(new BeanEditPane("Render Options", riverRenderer.getOptions()));
         for (Influence i : runner.getInfluences()) {
-            optionsAccordion.getPanes().add(new InfluencePane(i));
+            optionsAccordion.getPanes().add(new BeanEditPane(i));
         }
     }
 
