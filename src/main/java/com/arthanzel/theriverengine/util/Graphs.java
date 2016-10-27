@@ -26,7 +26,7 @@ public class Graphs {
      */
     public static <T, E> Set<E> downstreamEdges(DirectedGraph<T, E> graph, E edge) {
         Set<E> downstreams = graph.edgesOf(graph.getEdgeTarget(edge));
-        HashSet<E> set = new HashSet<>(downstreams);
+        HashSet<E> set = new HashSet<>(downstreams); // Copy because downstreams is an immutable view
         set.remove(edge);
         return set;
     }
@@ -38,10 +38,9 @@ public class Graphs {
      *
      * @param graph A directed graph.
      * @param <V>   The graph vertex type.
-     * @param <E>   The graph edge type.
      * @return A root vertex.
      */
-    public static <V, E> V getRootVertex(DirectedGraph<V, E> graph) {
+    public static <V> V getRootVertex(DirectedGraph<V, ?> graph) {
         if (graph == null || graph.vertexSet().isEmpty()) {
             return null;
         }
