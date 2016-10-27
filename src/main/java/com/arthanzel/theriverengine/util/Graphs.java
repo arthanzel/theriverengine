@@ -61,15 +61,12 @@ public class Graphs {
      * @param <E>   The graph edge type.
      * @return A random edge.
      */
-    @SuppressWarnings("unchecked")
     public static <E> E randomEdge(Graph<?, E> graph) {
-        if (graph == null || graph.vertexSet().isEmpty()) {
+        if (graph == null || graph.edgeSet().isEmpty()) {
             return null;
         }
 
-        Set<E> vertices = graph.edgeSet();
-        int i = new Random().nextInt(vertices.size());
-        return (E) vertices.toArray()[i];
+        return FishMath.sample(graph.edgeSet());
     }
 
     /**
@@ -79,15 +76,12 @@ public class Graphs {
      * @param <V>   The graph vertex type.
      * @return A random vertex.
      */
-    @SuppressWarnings("unchecked")
     public static <V> V randomVertex(Graph<V, ?> graph) {
         if (graph == null || graph.vertexSet().isEmpty()) {
             return null;
         }
 
-        Set<V> vertices = graph.vertexSet();
-        int i = new Random().nextInt(vertices.size());
-        return (V) vertices.toArray()[i];
+        return FishMath.sample(graph.vertexSet());
     }
 
     /**

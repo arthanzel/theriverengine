@@ -12,7 +12,13 @@ public class FishMath {
     private FishMath() {}
 
     public static double clamp(double val, double min, double max) {
-        return Math.min(max, Math.max(min, val));
+        if (val < min) {
+            return min;
+        }
+        else if (val > max) {
+            return max;
+        }
+        return val;
     }
 
     public static double lerp(double min, double max, double f) {
