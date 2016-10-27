@@ -54,7 +54,7 @@ public class GraphsTest {
     }
 
     @Test
-    public void testUpstreamDownstreamEdges() throws IOException {
+    public void upstreamDownstreamEdges() throws IOException {
         RiverNetwork network = TestNetworks.get("binarytree-3");
 
         for (RiverArc arc : network.edgeSet()) {

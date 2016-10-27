@@ -12,7 +12,7 @@ public class TextUtils {
     }
 
     /**
-     * Splits a string into individually-capitalized words. Example: someCamelCase -> Some Camel Case.
+     * Splits a camel-cased string into individually-capitalized words. Example: someCamelCase -> Some Camel Case.
      * @param str A String.
      * @return String with individually-capitalized words.
      */
