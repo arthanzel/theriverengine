@@ -9,8 +9,6 @@ import java.util.Set;
  * @author Martin
  */
 public class FishMath {
-    private FishMath() {}
-
     public static double clamp(double val, double min, double max) {
         if (val < min) {
             return min;

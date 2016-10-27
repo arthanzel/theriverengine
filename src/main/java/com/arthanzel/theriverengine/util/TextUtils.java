@@ -8,9 +8,6 @@ import org.apache.commons.lang3.StringUtils;
  * @author Martin
  */
 public class TextUtils {
-    private TextUtils() {
-    }
-
     /**
      * Splits a camel-cased string into individually-capitalized words. Example: someCamelCase -> Some Camel Case.
      * @param str A String.

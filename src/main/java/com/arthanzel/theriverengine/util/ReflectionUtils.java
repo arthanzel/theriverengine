@@ -13,9 +13,6 @@ import java.util.List;
  * @author Martin
  */
 public class ReflectionUtils {
-    private ReflectionUtils() {
-    }
-
     /**
      * Returns a list of all Fields, public or otherwise, that are declared in a class or its superclasses.
      * Fields are sorted by their declaring class. Fields that are declared by the given class come first, while those
@@ -42,14 +39,17 @@ public class ReflectionUtils {
      * @return The bean's bound name, or computed name.
      */
     public static String getBeanName(Object obj) {
-        if (obj.getClass().isAnnotationPresent(BindingName.class)) {
-            return obj.getClass().getAnnotation(BindingName.class).value();
-        }
-        else if (obj instanceof Field) {
+        if (obj instanceof Field) {
             Field f = (Field) obj;
+            if (f.isAnnotationPresent(BindingName.class)) {
+                return f.getDeclaredAnnotation(BindingName.class).value();
+            }
             return TextUtils.toWords(f.getName());
         }
         else {
+            if (obj.getClass().isAnnotationPresent(BindingName.class)) {
+                return obj.getClass().getAnnotation(BindingName.class).value();
+            }
             return TextUtils.toWords(obj.getClass().getSimpleName());
         }
     }
