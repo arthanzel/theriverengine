@@ -51,7 +51,7 @@ public class Environment {
         }
 
         // Interpolate between the nearest value points.
-        int idx = (int) (pos / RESOLUTION); // Virtual "index" in the values array
+        double idx = pos / RESOLUTION; // Virtual "index" in the values array
         int wholePart = (int) idx;
         double fracPart = (double) idx % 1;
 

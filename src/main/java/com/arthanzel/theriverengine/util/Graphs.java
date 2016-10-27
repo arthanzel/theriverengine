@@ -1,5 +1,6 @@
 package com.arthanzel.theriverengine.util;
 
+import com.arthanzel.theriverengine.rivergen.RiverNode;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 
@@ -17,15 +18,17 @@ public class Graphs {
 
     /**
      * Returns a list of outgoing edges immediately downstream to a given edge.
-     * These edges "flow out of" the given edge.
      *
      * @param graph A directed graph.
      * @param edge  An edge.
      * @param <E>   The graph edge type.
      * @return Set of downstream edges.
      */
-    public static <E> Set<E> downstreamEdges(DirectedGraph<Object, E> graph, E edge) {
-        return graph.outgoingEdgesOf(graph.getEdgeTarget(edge));
+    public static <T, E> Set<E> downstreamEdges(DirectedGraph<T, E> graph, E edge) {
+        T node = graph.getEdgeSource(edge);
+        Set<E> downstreams = graph.edgesOf(node);
+        downstreams.remove(edge);
+        return downstreams;
     }
 
     /**
@@ -90,15 +93,16 @@ public class Graphs {
 
     /**
      * Returns a list of incoming edges immediately upstream to a given edge.
-     * These edges "flow into" the given edge.
      *
      * @param graph A directed graph.
      * @param edge  An edge.
      * @param <E>   The graph edge type.
      * @return Set of upstream edges.
      */
-    public static <E> Set<E> upstreamEdges(DirectedGraph<Object, E> graph, E edge) {
-        // FIXME: This is wrong. It should be the edge set of the vertex minus the given edge.
-        return graph.incomingEdgesOf(graph.getEdgeSource(edge));
+    public static <T, E> Set<E> upstreamEdges(DirectedGraph<T, E> graph, E edge) {
+        T node = graph.getEdgeSource(edge);
+        Set<E> upstreams = graph.edgesOf(node);
+        upstreams.remove(edge);
+        return upstreams;
     }
 }
