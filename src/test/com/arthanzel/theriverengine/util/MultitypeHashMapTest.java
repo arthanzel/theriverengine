@@ -16,6 +16,6 @@ public class MultitypeHashMapTest {
         map.put("long", Long.MAX_VALUE);
         map.put("string", "123");
 
-        
+
     }
 }

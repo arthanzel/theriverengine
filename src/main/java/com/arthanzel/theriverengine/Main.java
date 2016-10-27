@@ -3,10 +3,7 @@ package com.arthanzel.theriverengine;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
-import com.arthanzel.theriverengine.sim.influence.FlowMovement;
-import com.arthanzel.theriverengine.sim.influence.NutrientDynamics;
-import com.arthanzel.theriverengine.sim.influence.RandomMovement;
-import com.arthanzel.theriverengine.sim.influence.VelocityApplier;
+import com.arthanzel.theriverengine.sim.influence.*;
 import com.arthanzel.theriverengine.ui.RiverViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -31,6 +28,7 @@ public class Main extends Application {
         runner.getInfluences().add(new FlowMovement());
         runner.getInfluences().add(new VelocityApplier());
         runner.getInfluences().add(new NutrientDynamics());
+        runner.getInfluences().add(new NutrientDynamicLog());
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));
         Scene scene = new Scene(loader.load(), 800, 600);
