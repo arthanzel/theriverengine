@@ -1,9 +1,9 @@
 package com.arthanzel.theriverengine.util;
 
-import com.arthanzel.theriverengine.rivergen.RiverNode;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -25,10 +25,10 @@ public class Graphs {
      * @return Set of downstream edges.
      */
     public static <T, E> Set<E> downstreamEdges(DirectedGraph<T, E> graph, E edge) {
-        T node = graph.getEdgeSource(edge);
-        Set<E> downstreams = graph.edgesOf(node);
-        downstreams.remove(edge);
-        return downstreams;
+        Set<E> downstreams = graph.edgesOf(graph.getEdgeTarget(edge));
+        HashSet<E> set = new HashSet<>(downstreams);
+        set.remove(edge);
+        return set;
     }
 
     /**
@@ -100,9 +100,9 @@ public class Graphs {
      * @return Set of upstream edges.
      */
     public static <T, E> Set<E> upstreamEdges(DirectedGraph<T, E> graph, E edge) {
-        T node = graph.getEdgeSource(edge);
-        Set<E> upstreams = graph.edgesOf(node);
-        upstreams.remove(edge);
-        return upstreams;
+        Set<E> upstreams = graph.edgesOf(graph.getEdgeSource(edge));
+        HashSet<E> set = new HashSet<>(upstreams);
+        set.remove(edge);
+        return set;
     }
 }
