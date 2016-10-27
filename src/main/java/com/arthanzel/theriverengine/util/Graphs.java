@@ -13,9 +13,6 @@ import java.util.Set;
  * @author Martin
  */
 public class Graphs {
-    private Graphs() {
-    }
-
     /**
      * Returns a list of outgoing edges immediately downstream to a given edge.
      *

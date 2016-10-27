@@ -19,10 +19,6 @@ public class MultitypeHashMap extends HashMap<String, Object> {
         return (Double) this.get(key);
     }
 
-    public double getFloat(String key) {
-        return (Float) this.get(key);
-    }
-
     public int getInt(String key) {
         return (Integer) this.get(key);
     }

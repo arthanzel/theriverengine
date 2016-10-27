@@ -64,9 +64,9 @@ public class GraphsTest {
             assertTrue(network.edgesOf(network.getEdgeSource(arc)).containsAll(upstreams));
 
             // Downstreams
-            Set<RiverArc> downstreams = Graphs.upstreamEdges(network, arc);
-            assertEquals(network.edgesOf(network.getEdgeSource(arc)).size() - 1, downstreams.size());
-            assertTrue(network.edgesOf(network.getEdgeSource(arc)).containsAll(downstreams));
+            Set<RiverArc> downstreams = Graphs.downstreamEdges(network, arc);
+            assertEquals(network.edgesOf(network.getEdgeTarget(arc)).size() - 1, downstreams.size());
+            assertTrue(network.edgesOf(network.getEdgeTarget(arc)).containsAll(downstreams));
         }
     }
 }
