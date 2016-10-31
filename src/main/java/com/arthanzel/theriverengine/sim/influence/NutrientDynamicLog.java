@@ -1,9 +1,8 @@
 package com.arthanzel.theriverengine.sim.influence;
 
 import com.arthanzel.theriverengine.rivergen.RiverArc;
-import com.arthanzel.theriverengine.sim.Environment;
+import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.RiverSystem;
-import com.arthanzel.theriverengine.ui.BindingName;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
 
 /**
@@ -23,7 +22,7 @@ public class NutrientDynamicLog extends BaseInfluence {
     public void influence(RiverSystem system, double dt) {
         if (!this.isEnabled()) return;
 
-        Environment env = system.getEnvironment("nutrients");
+        DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");
         for (RiverArc key : env.getValues().keySet()) {
             double[] values = env.getValues().get(key);
             for (int i = 0; i < values.length; i++) {

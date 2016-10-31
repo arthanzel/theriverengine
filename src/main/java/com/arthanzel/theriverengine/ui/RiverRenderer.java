@@ -3,7 +3,7 @@ package com.arthanzel.theriverengine.ui;
 import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.rivergen.RiverNode;
-import com.arthanzel.theriverengine.sim.Environment;
+import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.util.FishMath;
@@ -215,14 +215,14 @@ public class RiverRenderer extends Pane {
         double INTERVAL_PX = 10;
 
         //TODO: Uniform intervals
-        Environment env = system.getEnvironment("nutrients");
+        DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");
         gfx.setLineWidth(2 / scale);
         gfx.setLineCap(StrokeLineCap.SQUARE);
 
         for (RiverArc arc : system.getNetwork().edgeSet()) {
             // Determine the number of drawing primitives per line
             //int n = (int) Math.ceil(arc.length() * this.scale / INTERVAL_PX);
-            int n = (int) (arc.length() / Environment.RESOLUTION);
+            int n = (int) (arc.length() / DiscreteEnvironment.RESOLUTION);
 
             for (double i = 0; i < 1; i += 1.0 / n) {
                 gfx.setStroke(new Color(0, FishMath.clamp(env.get(arc, i * arc.length()), 0, 1), 0, 1));

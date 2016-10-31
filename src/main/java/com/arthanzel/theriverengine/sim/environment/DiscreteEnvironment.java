@@ -1,4 +1,4 @@
-package com.arthanzel.theriverengine.sim;
+package com.arthanzel.theriverengine.sim.environment;
 
 import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
@@ -12,12 +12,12 @@ import java.util.Map;
  *
  * @author Martin
  */
-public class Environment {
-    public static final double RESOLUTION = 2;
+public class DiscreteEnvironment implements Environment {
+    public static final double RESOLUTION = 8;
 
     private Map<RiverArc, double[]> values = new HashMap<>();
 
-    public Environment(RiverNetwork network) {
+    public DiscreteEnvironment(RiverNetwork network) {
         for (RiverArc arc : network.edgeSet()) {
             double len = arc.length();
 

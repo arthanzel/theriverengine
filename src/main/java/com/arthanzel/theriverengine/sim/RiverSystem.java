@@ -4,6 +4,8 @@ import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
+import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
+import com.arthanzel.theriverengine.sim.environment.Environment;
 
 import java.util.*;
 
@@ -20,7 +22,7 @@ public class RiverSystem {
     private RiverSystem(RiverNetwork network) {
         this.network = network;
 
-        environments.put("nutrients", new Environment(network));
+        environments.put("nutrients", new DiscreteEnvironment(network));
     }
 
     public RiverSystem(RiverNetwork network, int numAgents) {
@@ -71,9 +73,11 @@ public class RiverSystem {
         return network;
     }
 
-    public Environment getEnvironment(String env) { return environments.get(env); }
+    public Map<String, Environment> getEnvironments() {
+        return environments;
+    }
 
-    public void putEnvironment(String envName, Environment env) { environments.put(envName, env); }
+    public void putEnvironment(String envName, DiscreteEnvironment env) { environments.put(envName, env); }
 
     public long getTime() {
         return time;

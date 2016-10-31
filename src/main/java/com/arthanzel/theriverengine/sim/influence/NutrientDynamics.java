@@ -1,11 +1,10 @@
 package com.arthanzel.theriverengine.sim.influence;
 
 import com.arthanzel.theriverengine.rivergen.RiverArc;
-import com.arthanzel.theriverengine.sim.Environment;
+import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.ui.BindingName;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
-import com.arthanzel.theriverengine.util.FishMath;
 
 /**
  * Base implementation of an Influence. BaseInfluence does very little except provide getters and setters for the
@@ -28,7 +27,7 @@ public class NutrientDynamics extends BaseInfluence {
 
         boolean first = true;
 
-        Environment env = system.getEnvironment("nutrients");
+        DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");
         for (RiverArc key : env.getValues().keySet()) {
             double[] values = env.getValues().get(key);
             for (int i = 0; i < values.length; i++) {
