@@ -6,10 +6,13 @@ import com.arthanzel.theriverengine.rivergen.RiverNode;
 import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
+import com.arthanzel.theriverengine.sim.environment.Environment;
 import com.arthanzel.theriverengine.util.FishMath;
 import com.arthanzel.theriverengine.util.FrameCounter;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -28,6 +31,9 @@ import javafx.scene.transform.NonInvertibleTransformException;
  * @author Martin
  */
 public class RiverRenderer extends Pane {
+    // Constants
+    private static final double MAX_HUE = 360 * 0.85;
+
     private Canvas canvas;
     private GraphicsContext gfx;
     private FrameCounter counter = new FrameCounter("RiverRenderer", 1000);
@@ -35,6 +41,7 @@ public class RiverRenderer extends Pane {
 
     // Properties
     private DoubleProperty fps = new SimpleDoubleProperty(0);
+    private ObjectProperty<Environment> renderableEnvironment = new SimpleObjectProperty<>();
 
     public RiverRenderer() {
         // Set up the canvas.
@@ -84,7 +91,7 @@ public class RiverRenderer extends Pane {
             gfx.restore();
 
             if (options.isRenderingNetwork()) drawNetwork(system.getNetwork());
-            if (options.isRenderingEnvironments()) drawEnvironment(system);
+            if (this.renderableEnvironment.get() != null) drawEnvironment(system);
             if (options.isRenderingAgents()) drawAgents(system.getAgents());
         }
     }
@@ -209,23 +216,30 @@ public class RiverRenderer extends Pane {
         gfx.fillText(String.format("%.2f m", 100 / scale),
                 w - UIConstants.PADDING_X - lineSize,
                 h - UIConstants.PADDING_Y);
+
+
+        // Draw the legend bar
+        
     }
 
     private void drawEnvironment(RiverSystem system) {
         double INTERVAL_PX = 10;
 
         //TODO: Uniform intervals
-        DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");
+//        Environment env = system.getEnvironments().get("nutrients");
+        Environment env = this.renderableEnvironment.get();
         gfx.setLineWidth(2 / scale);
         gfx.setLineCap(StrokeLineCap.SQUARE);
 
         for (RiverArc arc : system.getNetwork().edgeSet()) {
             // Determine the number of drawing primitives per line
             //int n = (int) Math.ceil(arc.length() * this.scale / INTERVAL_PX);
-            int n = (int) (arc.length() / DiscreteEnvironment.RESOLUTION);
+            int n = (int) (arc.length() / 1);
 
             for (double i = 0; i < 1; i += 1.0 / n) {
-                gfx.setStroke(new Color(0, FishMath.clamp(env.get(arc, i * arc.length()), 0, 1), 0, 1));
+                double envValue = env.get(arc, i * arc.length());
+                double fraction = env.toFraction(envValue);
+                gfx.setStroke(Color.hsb(fraction * MAX_HUE, 1, 1));
                 Point2D point = arc.getPointLerp(i);
                 Point2D point2 = arc.getPointLerp(Math.min(1, i + 1.0 / n));
                 gfx.strokeLine(point.getX(), point.getY(), point2.getX(), point2.getY());
@@ -266,6 +280,18 @@ public class RiverRenderer extends Pane {
 
     public RenderOptions getOptions() {
         return options;
+    }
+
+    public Environment getRenderableEnvironment() {
+        return renderableEnvironment.get();
+    }
+
+    public ObjectProperty<Environment> renderableEnvironmentProperty() {
+        return renderableEnvironment;
+    }
+
+    public void setRenderableEnvironment(Environment renderableEnvironment) {
+        this.renderableEnvironment.set(renderableEnvironment);
     }
 
     // endregion

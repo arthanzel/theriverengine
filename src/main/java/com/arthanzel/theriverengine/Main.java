@@ -3,6 +3,8 @@ package com.arthanzel.theriverengine;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
+import com.arthanzel.theriverengine.sim.environment.Environment;
+import com.arthanzel.theriverengine.sim.environment.TemperatureEnvironment;
 import com.arthanzel.theriverengine.sim.influence.*;
 import com.arthanzel.theriverengine.ui.RiverViewController;
 import javafx.application.Application;
@@ -23,6 +25,8 @@ public class Main extends Application {
         main.setTitle("The River Engine - Test UI");
 
         RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 100);
+        system.getEnvironments().put("temperature", new TemperatureEnvironment());
+
         RiverRunner runner = new RiverRunner(system);
         runner.getInfluences().add(new RandomMovement());
         runner.getInfluences().add(new FlowMovement());

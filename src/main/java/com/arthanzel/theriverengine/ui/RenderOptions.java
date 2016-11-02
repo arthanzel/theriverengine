@@ -7,7 +7,6 @@ package com.arthanzel.theriverengine.ui;
  */
 public class RenderOptions {
     @BooleanBinding private boolean renderingAgents = true;
-    @BooleanBinding private boolean renderingEnvironments = false;
     @BooleanBinding private boolean renderingNetwork = true;
 
     // ====== Accessors ======
@@ -18,14 +17,6 @@ public class RenderOptions {
 
     public void setRenderingAgents(boolean renderingAgents) {
         this.renderingAgents = renderingAgents;
-    }
-
-    public boolean isRenderingEnvironments() {
-        return renderingEnvironments;
-    }
-
-    public void setRenderingEnvironments(boolean renderingEnvironments) {
-        this.renderingEnvironments = renderingEnvironments;
     }
 
     public boolean isRenderingNetwork() {

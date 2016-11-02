@@ -4,11 +4,13 @@ import com.arthanzel.theriverengine.sim.influence.Influence;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.ui.controls.BeanEditPane;
+import com.arthanzel.theriverengine.ui.controls.EnvironmentSelector;
 import com.arthanzel.theriverengine.ui.controls.TimeLabel;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
 
 /**
  * TODO: Documentation
@@ -50,7 +52,18 @@ public class RiverViewController {
     public void initialize(RiverSystem system, RiverRunner runner) {
         this.system = system;
 
+        // Render options
         optionsAccordion.getPanes().add(new BeanEditPane("Render Options", riverRenderer.getOptions()));
+
+        // Environment selector
+        TitledPane envSelPane = new TitledPane();
+        envSelPane.setText("Render Environments");
+        EnvironmentSelector selector = new EnvironmentSelector(system.getEnvironments());
+        envSelPane.setContent(selector);
+        optionsAccordion.getPanes().add(envSelPane);
+        riverRenderer.renderableEnvironmentProperty().bind(selector.selectedEnvironmentProperty());
+
+        // Influences
         for (Influence i : runner.getInfluences()) {
             optionsAccordion.getPanes().add(new BeanEditPane(i));
         }

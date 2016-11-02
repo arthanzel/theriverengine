@@ -53,10 +53,14 @@ public class DiscreteEnvironment implements Environment {
         // Interpolate between the nearest value points.
         double idx = pos / RESOLUTION; // Virtual "index" in the values array
         int wholePart = (int) idx;
-        double fracPart = (double) idx % 1;
+        double fracPart = idx % 1;
 
         // Math.min prevents overflows in the case that pos == arc.length()
         return FishMath.lerp(vals[wholePart], vals[Math.min(wholePart + 1, vals.length)], fracPart);
+    }
+
+    public double toFraction(double f) {
+        return FishMath.clamp(f, 0, 1);
     }
 
      // ====== Accessors ======
