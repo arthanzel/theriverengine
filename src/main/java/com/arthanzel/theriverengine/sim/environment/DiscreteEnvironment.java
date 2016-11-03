@@ -60,12 +60,6 @@ public class DiscreteEnvironment implements Environment {
         return FishMath.lerp(vals[wholePart], vals[Math.min(wholePart + 1, vals.length)], fracPart);
     }
 
-    public double toFraction(double f) {
-        return FishMath.clamp(f, 0, 1);
-    }
-
-    public double toValue(double f) { return 1; }
-
      // ====== Accessors ======
 
     public Map<RiverArc, double[]> getValues() {
