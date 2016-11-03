@@ -3,6 +3,7 @@ package com.arthanzel.theriverengine;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
+import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.environment.TemperatureEnvironment;
 import com.arthanzel.theriverengine.sim.influence.*;
 import com.arthanzel.theriverengine.ui.RiverViewController;
@@ -25,6 +26,7 @@ public class Main extends Application {
 
         RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/comb-4-i.ini"), 100);
         system.getEnvironments().put("temperature", new TemperatureEnvironment());
+        system.getEnvironments().put("nutrients", new DiscreteEnvironment(system.getNetwork()));
 
         RiverRunner runner = new RiverRunner(system);
         runner.getInfluences().add(new RandomMovement());

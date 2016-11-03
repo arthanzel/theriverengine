@@ -30,4 +30,14 @@ public class MultitypeHashMap extends HashMap<String, Object> {
     public String getString(String key) {
         return (String) this.get(key);
     }
+
+    public MultitypeHashMap clone() {
+        MultitypeHashMap map = new MultitypeHashMap();
+
+        for (String s : this.keySet()) {
+            map.put(s, this.get(s));
+        }
+
+        return map;
+    }
 }

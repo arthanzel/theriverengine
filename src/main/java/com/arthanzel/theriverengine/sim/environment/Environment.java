@@ -31,4 +31,32 @@ public interface Environment {
     }
 
     double get(RiverArc arc, double position);
+
+    // ====== Clone ======
+
+    /**
+     * Creates a copy of an Environment. This method is static because not every Environment has to implement a clone()
+     * method (in fact, requiring a public clone() method would break the functional syntax of Environments). Further,
+     * some Environments are stateless, so all references to such Environments are guaranteed to behave the same.
+     *
+     * This method delegates to a clone() method defined in implementing classes via reflection, if such a method is
+     * defined. Otherwise, a reference to the passed Environment is returned.
+     *
+     * @param env Environment to clone.
+     * @return Clone of the environment, or a reference to an immutable environment.
+     */
+    static Environment clone(Environment env) {
+        if (env.getClass() == Environment.class) {
+            return env;
+        }
+
+        // Delegate to subclass
+        try {
+            return (Environment) env.getClass().getMethod("clone").invoke(env);
+        }
+        catch (Exception ex) {
+            // Subclass does not implement the proper clone() method
+            return env;
+        }
+    }
 }
