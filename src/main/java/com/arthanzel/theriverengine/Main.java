@@ -23,7 +23,7 @@ public class Main extends Application {
     public void start(Stage main) throws IOException {
         main.setTitle("The River Engine - Test UI");
 
-        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/comb-4-i.ini"), 100);
+        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 100);
         system.getEnvironments().put("temperature", new TemperatureEnvironment());
 
         RiverRunner runner = new RiverRunner(system);

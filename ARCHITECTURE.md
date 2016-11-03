@@ -31,6 +31,4 @@ Competition based on a robust nutrient model. Fitness is proportional to the ava
 - Make an Env so that params in simple, log growth are dependent on space
 - Forks: cut the effect on each fork, or cut the sphere of influence in each fork
 - Next steps:
-    - Spatial component of nutrient dynamics
-    - Environments for temperature, coverage, etc.
     - 
