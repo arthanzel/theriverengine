@@ -3,6 +3,7 @@ package com.arthanzel.theriverengine.sim.influence;
 import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.RiverSystem;
+import com.arthanzel.theriverengine.sim.environment.Environment;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
 
 /**
@@ -19,6 +20,9 @@ public class NutrientDynamicsLog extends BaseInfluence {
     private volatile double carryingCapacity = 0.05;
 
     @DoubleBinding(min = 0, max = 1)
+    private volatile double capacityPerDegree = 0.1;
+
+    @DoubleBinding(min = 0, max = 1)
     private volatile double spawnRate = 0.01;
 
     @Override
@@ -28,12 +32,15 @@ public class NutrientDynamicsLog extends BaseInfluence {
         final double seconds = dt / 1000;
 
         DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");
+        Environment temp = system.getEnvironments().get("temperature");
         for (RiverArc key : env.getValues().keySet()) {
             double[] values = env.getValues().get(key);
             for (int i = 0; i < values.length; i++) {
-                double n = values[i];
-                double delta = growthRate * n * (1 - n / carryingCapacity) * seconds;
-                double spawnDelta = spawnRate * seconds;
+                final double n = values[i];
+                final double position = 1.0 * i / values.length * key.length();
+                final double cc = carryingCapacity + capacityPerDegree * temp.get(key, position);
+                final double delta = growthRate * n * (1 - n / cc) * seconds;
+                final double spawnDelta = spawnRate * seconds;
                 values[i] = values[i] + delta + spawnDelta;
             }
             env.getValues().put(key, values);
@@ -62,5 +69,13 @@ public class NutrientDynamicsLog extends BaseInfluence {
 
     public void setSpawnRate(double spawnRate) {
         this.spawnRate = spawnRate;
+    }
+
+    public double getCapacityPerDegree() {
+        return capacityPerDegree;
+    }
+
+    public void setCapacityPerDegree(double capacityPerDegree) {
+        this.capacityPerDegree = capacityPerDegree;
     }
 }
