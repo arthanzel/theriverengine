@@ -10,7 +10,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.arthanzel.theriverengine.ui.RiverViewController">
+<?import com.arthanzel.theriverengine.ui.controls.IntegerTextField?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.arthanzel.theriverengine.ui.RiverViewController">
     <right>
         <Accordion fx:id="optionsAccordion" prefWidth="200.0" BorderPane.alignment="CENTER" />
     </right>
@@ -22,6 +23,10 @@
             <children>
                 <ToggleButton mnemonicParsing="false" text="Play" />
                 <Button mnemonicParsing="false" text="Open Data Folder" />
+                <Label text="Speed: " />
+                <IntegerTextField fx:id="speedField" prefWidth="50" text="500" />
+                <Label text="ms" />
+                <Label text="Time: " />
                 <TimeLabel fx:id="timeLabel" />
                 <Label fx:id="fpsLabel" />
             </children>

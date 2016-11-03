@@ -1,5 +1,7 @@
 package com.arthanzel.theriverengine.ui.controls;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.VBox;
 
 import java.beans.IntrospectionException;

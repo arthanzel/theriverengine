@@ -9,6 +9,7 @@ import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.environment.Environment;
 import com.arthanzel.theriverengine.util.FishMath;
 import com.arthanzel.theriverengine.util.FrameCounter;
+import com.arthanzel.theriverengine.util.PaintUtils;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -18,10 +19,12 @@ import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
@@ -193,21 +196,22 @@ public class RiverRenderer extends Pane {
      * translate and scale transforms, such as the coordinate display and the scale bar.
      */
     private void drawScreenSpaceElements() {
-        double w = this.getWidth();
-        double h = this.getHeight();
+        final double w = this.getWidth();
+        final double h = this.getHeight();
 
         // Draw the world coordinates under the mouse
         gfx.setFont(new Font(12));
         gfx.setFill(Color.BLACK);
-        gfx.setTextBaseline(VPos.BOTTOM);
+        gfx.setTextBaseline(VPos.TOP);
         gfx.fillText(String.format("(%.2f, %.2f)", this.worldMouseX, this.worldMouseY),
                 UIConstants.PADDING_X,
-                h - UIConstants.PADDING_Y);
+                UIConstants.PADDING_Y);
 
         // Draw the scale bar
         double lineSize = 100;
         gfx.setLineCap(StrokeLineCap.SQUARE);
         gfx.setStroke(Color.BLACK);
+        gfx.setTextBaseline(VPos.BOTTOM);
         gfx.setLineWidth(4);
         gfx.strokeLine(w - UIConstants.PADDING_X - lineSize,
                 h - UIConstants.PADDING_Y - 20,
@@ -219,14 +223,46 @@ public class RiverRenderer extends Pane {
 
 
         // Draw the legend bar
-        
+        if (renderableEnvironment.get() != null) {
+            // Stop labels
+            final double barWidth = w / 2 - UIConstants.PADDING_X;
+            gfx.setLineWidth(1);
+            gfx.setStroke(Color.BLACK);
+            for (int i = 0; i < 5; i++) {
+                final double f = i / 4.0;
+                final double x = UIConstants.PADDING_X + f * barWidth;
+                final double min = options.getLegendMin();
+                final double max = options.getLegendMax();
+                gfx.strokeLine(x, h - UIConstants.PADDING_Y - 20, x, h - UIConstants.PADDING_Y - 14);
+                String ltgtIndicator = "";
+                if (i == 0) {
+                    ltgtIndicator = "<";
+                }
+                else if (i == 4) {
+                    ltgtIndicator = ">";
+                }
+                gfx.fillText(
+                        String.format("%s%.2f", ltgtIndicator, FishMath.lerp(min, max, f)),
+                        UIConstants.PADDING_X + f * barWidth,
+                        h - UIConstants.PADDING_Y);
+                gfx.setTextAlign(TextAlignment.CENTER);
+            }
+
+            // Color bar
+            final Paint GRADIENT = new LinearGradient(0, 0, 1 / MAX_HUE * 360, 0, true, CycleMethod.NO_CYCLE, PaintUtils.HSB_STOPS);
+            gfx.setStroke(GRADIENT);
+            gfx.setLineWidth(3);
+            gfx.strokeLine(UIConstants.PADDING_X,
+                    h - UIConstants.PADDING_Y - 20,
+                    w / 2,
+                    h - UIConstants.PADDING_Y - 20);
+        }
     }
 
     private void drawEnvironment(RiverSystem system) {
         double INTERVAL_PX = 10;
 
         //TODO: Uniform intervals
-//        Environment env = system.getEnvironments().get("nutrients");
         Environment env = this.renderableEnvironment.get();
         gfx.setLineWidth(2 / scale);
         gfx.setLineCap(StrokeLineCap.SQUARE);
@@ -238,8 +274,8 @@ public class RiverRenderer extends Pane {
 
             for (double i = 0; i < 1; i += 1.0 / n) {
                 double envValue = env.get(arc, i * arc.length());
-                double fraction = env.toFraction(envValue);
-                gfx.setStroke(Color.hsb(fraction * MAX_HUE, 1, 1));
+                double fraction = (envValue - options.getLegendMin()) / (options.getLegendMax() - options.getLegendMin());
+                gfx.setStroke(Color.hsb(FishMath.clamp(fraction, 0, 1) * MAX_HUE, 1, 1));
                 Point2D point = arc.getPointLerp(i);
                 Point2D point2 = arc.getPointLerp(Math.min(1, i + 1.0 / n));
                 gfx.strokeLine(point.getX(), point.getY(), point2.getX(), point2.getY());

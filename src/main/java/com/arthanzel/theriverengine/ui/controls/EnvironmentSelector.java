@@ -6,6 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.apache.commons.math3.stat.inference.TestUtils;
 
@@ -23,6 +24,7 @@ public class EnvironmentSelector extends VBox {
         ToggleGroup group = new ToggleGroup();
 
         RadioButton noneRB = new RadioButton("None");
+        noneRB.setSelected(true);
         noneRB.setToggleGroup(group);
         this.getChildren().add(noneRB);
         noneRB.selectedProperty().addListener((observable, oldValue, newValue) -> {

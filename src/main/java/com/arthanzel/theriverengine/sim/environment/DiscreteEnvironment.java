@@ -2,6 +2,7 @@ package com.arthanzel.theriverengine.sim.environment;
 
 import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
+import com.arthanzel.theriverengine.ui.DoubleBinding;
 import com.arthanzel.theriverengine.util.FishMath;
 
 import java.util.HashMap;
@@ -62,6 +63,8 @@ public class DiscreteEnvironment implements Environment {
     public double toFraction(double f) {
         return FishMath.clamp(f, 0, 1);
     }
+
+    public double toValue(double f) { return 1; }
 
      // ====== Accessors ======
 

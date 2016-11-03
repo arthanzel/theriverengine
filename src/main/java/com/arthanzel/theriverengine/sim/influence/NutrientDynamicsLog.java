@@ -11,25 +11,30 @@ import com.arthanzel.theriverengine.ui.DoubleBinding;
  *
  * @author Martin
  */
-public class NutrientDynamicLog extends BaseInfluence {
+public class NutrientDynamicsLog extends BaseInfluence {
     @DoubleBinding(min = 0, max = 1)
     private volatile double growthRate = 0.02;
 
     @DoubleBinding(min = 0, max = 1)
     private volatile double carryingCapacity = 0.05;
 
+    @DoubleBinding(min = 0, max = 1)
+    private volatile double spawnRate = 0.01;
+
     @Override
     public void influence(RiverSystem system, double dt) {
         if (!this.isEnabled()) return;
+
+        final double seconds = dt / 1000;
 
         DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");
         for (RiverArc key : env.getValues().keySet()) {
             double[] values = env.getValues().get(key);
             for (int i = 0; i < values.length; i++) {
                 double n = values[i];
-                double iota = Math.random() * 0.0000001;
-                double n1 = n + growthRate * n * (1 - n / carryingCapacity) + iota;
-                values[i] = n1;
+                double delta = growthRate * n * (1 - n / carryingCapacity) * seconds;
+                double spawnDelta = spawnRate * seconds;
+                values[i] = values[i] + delta + spawnDelta;
             }
             env.getValues().put(key, values);
         }
@@ -49,5 +54,13 @@ public class NutrientDynamicLog extends BaseInfluence {
 
     public void setCarryingCapacity(double carryingCapacity) {
         this.carryingCapacity = carryingCapacity;
+    }
+
+    public double getSpawnRate() {
+        return spawnRate;
+    }
+
+    public void setSpawnRate(double spawnRate) {
+        this.spawnRate = spawnRate;
     }
 }

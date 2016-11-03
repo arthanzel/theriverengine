@@ -15,4 +15,8 @@ public class TemperatureEnvironment implements Environment {
     public double toFraction(double temp) {
         return (temp - 14) / 10;
     }
+
+    public double toValue(double f) {
+        return 1;
+    }
 }

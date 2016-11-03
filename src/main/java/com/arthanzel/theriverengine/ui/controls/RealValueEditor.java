@@ -31,11 +31,11 @@ public class RealValueEditor extends BeanValueEditor<Double> {
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 this.setValue(newValue.doubleValue());
+                label.setValue(newValue.doubleValue());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-        label.valueProperty().bind(slider.valueProperty());
 
         // Show a dialog on double click
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
@@ -49,6 +49,7 @@ public class RealValueEditor extends BeanValueEditor<Double> {
                 try {
                     this.setValue((double) ev.getSource());
                     slider.setValue((double) ev.getSource());
+                    label.setValue((double) ev.getSource());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

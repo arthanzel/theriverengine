@@ -8,6 +8,8 @@ package com.arthanzel.theriverengine.ui;
 public class RenderOptions {
     @BooleanBinding private boolean renderingAgents = true;
     @BooleanBinding private boolean renderingNetwork = true;
+    @DoubleBinding(min = -10, max = 10) private double legendMin = 0.0;
+    @DoubleBinding(min = -10, max = 10) private double legendMax = 1.0;
 
     // ====== Accessors ======
 
@@ -25,5 +27,21 @@ public class RenderOptions {
 
     public void setRenderingNetwork(boolean renderingNetwork) {
         this.renderingNetwork = renderingNetwork;
+    }
+
+    public double getLegendMin() {
+        return legendMin;
+    }
+
+    public void setLegendMin(double legendMin) {
+        this.legendMin = legendMin;
+    }
+
+    public double getLegendMax() {
+        return legendMax;
+    }
+
+    public void setLegendMax(double legendMax) {
+        this.legendMax = legendMax;
     }
 }

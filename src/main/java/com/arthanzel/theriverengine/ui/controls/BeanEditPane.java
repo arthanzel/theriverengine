@@ -39,7 +39,7 @@ public class BeanEditPane extends TitledPane {
         this.bean = bean;
 
         try {
-            initUI(null);
+            initUI(title);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error initializing options!");
