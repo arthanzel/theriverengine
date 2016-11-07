@@ -3,9 +3,6 @@ package com.arthanzel.theriverengine.sim;
 import com.arthanzel.theriverengine.concurrent.ParallelService;
 import com.arthanzel.theriverengine.sim.influence.Influence;
 import com.arthanzel.theriverengine.util.FrameCounter;
-import javafx.event.EventHandler;
-
-import java.util.EventListener;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
@@ -24,9 +21,9 @@ public class RiverRunner {
     private Consumer<RiverSystem> refreshHandler;
 
     // Fair lock that ensures that the RiverRunner does not perform more than one operation on its RiverSystem at once.
-    ReentrantLock systemLock = new ReentrantLock(true);
+    private ReentrantLock systemLock = new ReentrantLock(true);
 
-    Thread cloner = new Thread(() -> {
+    private Thread cloner = new Thread(() -> {
         while (true) {
             try {
                 Thread.sleep(CLONE_INTERVAL_MILLIS);

@@ -3,17 +3,13 @@ package com.arthanzel.theriverengine.ui;
 import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.rivergen.RiverNode;
-import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.environment.Environment;
 import com.arthanzel.theriverengine.util.FishMath;
 import com.arthanzel.theriverengine.util.FrameCounter;
 import com.arthanzel.theriverengine.util.PaintUtils;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -23,7 +19,6 @@ import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
@@ -44,7 +39,7 @@ public class RiverRenderer extends Pane {
 
     // Properties
     private DoubleProperty fps = new SimpleDoubleProperty(0);
-    private ObjectProperty<Environment> renderableEnvironment = new SimpleObjectProperty<>();
+    private StringProperty renderableEnvironment = new SimpleStringProperty();
 
     public RiverRenderer() {
         // Set up the canvas.
@@ -263,7 +258,7 @@ public class RiverRenderer extends Pane {
         double INTERVAL_PX = 10;
 
         //TODO: Uniform intervals
-        Environment env = this.renderableEnvironment.get();
+        Environment env = system.getEnvironments().get(renderableEnvironment.get());
         gfx.setLineWidth(2 / scale);
         gfx.setLineCap(StrokeLineCap.SQUARE);
 
@@ -318,15 +313,15 @@ public class RiverRenderer extends Pane {
         return options;
     }
 
-    public Environment getRenderableEnvironment() {
+    public String getRenderableEnvironment() {
         return renderableEnvironment.get();
     }
 
-    public ObjectProperty<Environment> renderableEnvironmentProperty() {
+    public StringProperty renderableEnvironmentProperty() {
         return renderableEnvironment;
     }
 
-    public void setRenderableEnvironment(Environment renderableEnvironment) {
+    public void setRenderableEnvironment(String renderableEnvironment) {
         this.renderableEnvironment.set(renderableEnvironment);
     }
 

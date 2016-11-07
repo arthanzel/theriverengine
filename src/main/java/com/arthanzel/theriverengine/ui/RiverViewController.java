@@ -5,7 +5,7 @@ import com.arthanzel.theriverengine.sim.influence.Influence;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.ui.controls.BeanEditPane;
-import com.arthanzel.theriverengine.ui.controls.EnvironmentSelector;
+import com.arthanzel.theriverengine.ui.controls.RadioField;
 import com.arthanzel.theriverengine.ui.controls.TimeLabel;
 import com.arthanzel.theriverengine.util.TextUtils;
 import javafx.animation.AnimationTimer;
@@ -32,6 +32,7 @@ public class RiverViewController {
     private DoubleProperty speed = new SimpleDoubleProperty(500);
 
     private RiverSystem system;
+    private final Object systemLock = new Object();
 
     @SuppressWarnings("unused")
     public void initialize() {
@@ -40,13 +41,10 @@ public class RiverViewController {
 
             @Override
             public void handle(long now) {
-                timeLabel.setTime(system.getTime());
-                riverRenderer.update(system);
-//                skip++;
-//                if (skip == 1) {
-//                    skip = 0;
-//                    riverRenderer.update(system);
-//                }
+                synchronized (systemLock) {
+                    timeLabel.setTime(system.getTime());
+                    riverRenderer.update(system);
+                }
             }
         };
         anim.start();
@@ -72,10 +70,10 @@ public class RiverViewController {
         // Environment selector
         TitledPane envSelPane = new TitledPane();
         envSelPane.setText("Render Environments");
-        EnvironmentSelector selector = new EnvironmentSelector(system.getEnvironments());
+        RadioField selector = new RadioField(system.getEnvironments().keySet().toArray(new String[0]));
         envSelPane.setContent(selector);
         optionsAccordion.getPanes().add(envSelPane);
-        riverRenderer.renderableEnvironmentProperty().bind(selector.selectedEnvironmentProperty());
+        riverRenderer.renderableEnvironmentProperty().bind(selector.selectedProperty());
 
         // Environments
         for (String k : system.getEnvironments().keySet()) {
@@ -104,7 +102,9 @@ public class RiverViewController {
     }
 
     public void setSystem(RiverSystem system) {
-        this.system = system;
+        synchronized (systemLock) {
+            this.system = system;
+        }
     }
 
     public double getSpeed() {

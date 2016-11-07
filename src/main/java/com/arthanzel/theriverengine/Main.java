@@ -50,9 +50,7 @@ public class Main extends Application {
             System.exit(0);
         });
 
-        runner.setRefreshHandler(riverSystem -> {
-            controller.setSystem(riverSystem);
-        });
+        runner.setRefreshHandler(controller::setSystem);
 
         main.show();
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
