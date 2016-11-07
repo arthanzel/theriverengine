@@ -21,8 +21,6 @@ public class RiverSystem {
 
     private RiverSystem(RiverNetwork network) {
         this.network = network;
-
-        environments.put("nutrients", new DiscreteEnvironment(network));
     }
 
     public RiverSystem(RiverNetwork network, int numAgents) {
@@ -61,6 +59,22 @@ public class RiverSystem {
             agents[i] = new Agent();
             agents[i].setLocation(new Location(arc, pos));
         }
+    }
+
+    public RiverSystem clone() {
+        RiverSystem rs = new RiverSystem(network); // The network is immutable, so the clone can contain a reference.
+        rs.time = time;
+
+        rs.agents = new Agent[agents.length];
+        for (int i = 0; i < agents.length; i++) {
+            rs.agents[i] = agents[i].clone();
+        }
+
+        for (String s : environments.keySet()) {
+            rs.environments.put(s, Environment.clone(environments.get(s)));
+        }
+
+        return rs;
     }
 
     // ====== Accessors ======

@@ -16,10 +16,6 @@ public class FlowMovement extends BaseInfluence {
     Random r = new Random();
 
     public void influence(RiverSystem system, double dt) {
-        if (!isEnabled()) {
-            return;
-        }
-
         for (Agent a : system.getAgents()) {
             double v = a.getAttributes().getDouble("velocity");
             a.getAttributes().put("velocity", v + flow);

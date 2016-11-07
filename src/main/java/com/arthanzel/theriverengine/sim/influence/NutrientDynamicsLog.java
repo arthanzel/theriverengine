@@ -27,8 +27,6 @@ public class NutrientDynamicsLog extends BaseInfluence {
 
     @Override
     public void influence(RiverSystem system, double dt) {
-        if (!this.isEnabled()) return;
-
         final double seconds = dt / 1000;
 
         DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");

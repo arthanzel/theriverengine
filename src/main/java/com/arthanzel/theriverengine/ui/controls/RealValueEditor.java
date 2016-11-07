@@ -47,8 +47,8 @@ public class RealValueEditor extends BeanValueEditor<Double> {
             np.initOwner(this.getScene().getWindow());
             np.setSubmitHandler(ev -> {
                 try {
-                    this.setValue((double) ev.getSource());
                     slider.setValue((double) ev.getSource());
+                    this.setValue((double) ev.getSource());
                     label.setValue((double) ev.getSource());
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -2,9 +2,13 @@ package com.arthanzel.theriverengine.sim.influence;
 
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
+import com.arthanzel.theriverengine.ui.BooleanBinding;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
 
 /**
  * Influence that applies a random motion to the Agents present in a RiverSystem.
@@ -12,18 +16,33 @@ import java.util.Random;
  * @author Martin
  */
 public class RandomMovement extends BaseInfluence {
-    @DoubleBinding(min = 0, max = 10) private volatile double spread = 2.0;
+    @DoubleBinding(min = 0, max = 10)
+    private volatile double spread = 2.0;
+
+    @BooleanBinding
+    private volatile boolean parallel = false;
+
     Random r = new Random();
 
     public void influence(RiverSystem system, double dt) {
-        if (!isEnabled()) {
-            return;
+        if (parallel) {
+            for (final Agent a : system.getAgents()) {
+                getPool().submit(() -> {
+                    run(a);
+                });
+            }
         }
+        else {
+            for (final Agent a : system.getAgents()) {
+                run(a);
+            }
+        }
+    }
 
-        for (Agent a : system.getAgents()) {
-            double v = a.getAttributes().getDouble("velocity");
-            a.getAttributes().put("velocity", v + r.nextDouble() * 2 * spread - spread);
-        }
+    private void run(Agent a) {
+        // TODO: Put Random in a ThreadLocal
+        final double v = a.getAttributes().getDouble("velocity");
+        a.getAttributes().put("velocity", v + r.nextDouble() * 2 * spread - spread);
     }
 
     public double getSpread() {
@@ -32,5 +51,13 @@ public class RandomMovement extends BaseInfluence {
 
     public void setSpread(double spread) {
         this.spread = spread;
+    }
+
+    public boolean isParallel() {
+        return parallel;
+    }
+
+    public void setParallel(boolean parallel) {
+        this.parallel = parallel;
     }
 }

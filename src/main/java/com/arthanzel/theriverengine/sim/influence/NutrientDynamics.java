@@ -23,8 +23,6 @@ public class NutrientDynamics extends BaseInfluence {
 
     @Override
     public void influence(RiverSystem system, double dt) {
-        if (!this.isEnabled()) return;
-
         boolean first = true;
 
         DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");

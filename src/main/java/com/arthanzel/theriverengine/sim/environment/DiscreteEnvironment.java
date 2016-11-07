@@ -2,9 +2,9 @@ package com.arthanzel.theriverengine.sim.environment;
 
 import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
-import com.arthanzel.theriverengine.ui.DoubleBinding;
 import com.arthanzel.theriverengine.util.FishMath;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +17,8 @@ public class DiscreteEnvironment implements Environment {
     public static final double RESOLUTION = 8;
 
     private Map<RiverArc, double[]> values = new HashMap<>();
+
+    private DiscreteEnvironment() {}
 
     public DiscreteEnvironment(RiverNetwork network) {
         for (RiverArc arc : network.edgeSet()) {
@@ -67,4 +69,13 @@ public class DiscreteEnvironment implements Environment {
     }
 
     //TODO: Pluggable interpolation functions
+
+    public Environment clone() {
+        DiscreteEnvironment env = new DiscreteEnvironment();
+        for (RiverArc arc : this.values.keySet()) {
+            double[] doubles = this.values.get(arc);
+            env.values.put(arc, Arrays.copyOf(doubles, doubles.length));
+        }
+        return env;
+    }
 }
