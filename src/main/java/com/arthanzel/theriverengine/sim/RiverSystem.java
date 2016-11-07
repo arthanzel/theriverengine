@@ -71,8 +71,7 @@ public class RiverSystem {
         }
 
         for (String s : environments.keySet()) {
-            // TODO: Clone environments with reflection? Requiring a public clone() method in the interface
-            // would break functional programming syntax.
+            rs.environments.put(s, Environment.clone(environments.get(s)));
         }
 
         return rs;

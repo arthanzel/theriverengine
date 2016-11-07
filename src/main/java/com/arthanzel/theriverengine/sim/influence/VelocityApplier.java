@@ -19,10 +19,6 @@ public class VelocityApplier extends BaseInfluence {
     @DoubleBinding(min = 0, max = 10) private volatile double maxVelocity = 2.0;
 
     public void influence(RiverSystem system, double dt) {
-        if (!isEnabled()) {
-            return;
-        }
-
         for (Agent a : system.getAgents()) {
             double v = FishMath.clamp(a.getAttributes().getDouble("velocity"), -maxVelocity, maxVelocity);
             displace(system, a, v * dt);

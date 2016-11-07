@@ -24,7 +24,7 @@ public class Main extends Application {
     public void start(Stage main) throws IOException {
         main.setTitle("The River Engine - Test UI");
 
-        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/comb-4-i.ini"), 100);
+        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 100);
         system.getEnvironments().put("temperature", new TemperatureEnvironment());
         system.getEnvironments().put("nutrients", new DiscreteEnvironment(system.getNetwork()));
 
@@ -41,15 +41,22 @@ public class Main extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));
         Scene scene = new Scene(loader.load(), 800, 600);
+        RiverViewController controller = (RiverViewController) loader.getController();
         main.setScene(scene);
-        loader.<RiverViewController>getController().initialize(system, runner);
+        controller.initialize(system.clone(), runner);
 
         main.setOnCloseRequest(event -> {
             System.out.println("Exiting");
             System.exit(0);
         });
 
+        runner.setRefreshHandler(riverSystem -> {
+            controller.setSystem(riverSystem);
+        });
+
         main.show();
+        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+
         runner.start();
     }
 

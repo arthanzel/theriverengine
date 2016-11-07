@@ -6,10 +6,10 @@ package com.arthanzel.theriverengine.ui;
  * @author Martin
  */
 public class RenderOptions {
-    @BooleanBinding private boolean renderingAgents = true;
-    @BooleanBinding private boolean renderingNetwork = true;
-    @DoubleBinding(min = -10, max = 10) private double legendMin = 0.0;
-    @DoubleBinding(min = -10, max = 10) private double legendMax = 1.0;
+    @BooleanBinding private volatile boolean renderingAgents = true;
+    @BooleanBinding private volatile boolean renderingNetwork = true;
+    @DoubleBinding(min = -10, max = 10) private volatile double legendMin = 0.0;
+    @DoubleBinding(min = -10, max = 10) private volatile double legendMax = 1.0;
 
     // ====== Accessors ======
 
