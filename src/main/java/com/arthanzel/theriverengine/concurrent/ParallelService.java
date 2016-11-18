@@ -21,8 +21,10 @@ public class ParallelService {
             try {
                 Runnable r = tasks.take();
                 r.run();
-                synchronized (waitMonitor) {
-                    waitMonitor.notify();
+                if (tasks.size() == 0) {
+                    synchronized (waitMonitor) {
+                        waitMonitor.notify();
+                    }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -60,5 +62,9 @@ public class ParallelService {
 
     public void shutdown() {
         doShutdown = true;
+    }
+
+    public BlockingQueue<Runnable> getTasks() {
+        return tasks;
     }
 }

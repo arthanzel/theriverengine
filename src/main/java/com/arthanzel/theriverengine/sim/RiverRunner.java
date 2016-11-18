@@ -9,13 +9,13 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 public class RiverRunner {
-    public static final int NUM_THREADS = 4;
-    public static final int CLONE_INTERVAL_MILLIS = 1000/15; // 15 fps
+//    public static final int NUM_THREADS = 1;
+    public static final int CLONE_INTERVAL_MILLIS = 1000 / 15; // 15 fps
 
     private List<Influence> influences = new LinkedList<>();
     private RiverSystem system;
-    private boolean flagForStop = false;
-    private ParallelService pool;
+    private volatile boolean flagForStop = false;
+//    private ParallelService pool;
 
     // Event handler: called when the RiverSystem is cloned and the UI may be refreshed.
     private Consumer<RiverSystem> refreshHandler;
@@ -23,6 +23,7 @@ public class RiverRunner {
     // Fair lock that ensures that the RiverRunner does not perform more than one operation on its RiverSystem at once.
     private ReentrantLock systemLock = new ReentrantLock(true);
 
+    // Thread that tries to clone the RiverSystem at a certain interval and calls an event handler.
     private Thread cloner = new Thread(() -> {
         while (true) {
             try {
@@ -50,12 +51,12 @@ public class RiverRunner {
     }
 
     public void start() {
-        pool = new ParallelService(NUM_THREADS);
+//        pool = new ParallelService(NUM_THREADS);
 
         // Make sure every Influence has a reference to the thread pool for this runner
-        for (Influence i : influences) {
-            i.setPool(pool);
-        }
+//        for (Influence i : influences) {
+//            i.setPool(pool);
+//        }
 
         Thread t = new Thread(() -> {
             FrameCounter counter = new FrameCounter("Simulation", 1000);
@@ -95,6 +96,7 @@ public class RiverRunner {
                 }
 
                 i.influence(system, dt);
+                //pool.waitForCompletion();
             }
         }
         finally {
