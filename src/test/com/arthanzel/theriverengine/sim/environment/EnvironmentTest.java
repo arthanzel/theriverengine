@@ -29,13 +29,13 @@ public class EnvironmentTest {
         assertEquals(refCloneEnvironment, Environment.clone(refCloneEnvironment));
 
         // Assert that mutable environments are deep-cloned
-        RiverNetwork network = TestNetworks.get("binarytree-3");
-        RiverArc arc = Graphs.randomEdge(network);
-        DiscreteEnvironment de = new DiscreteEnvironment(network);
-        DiscreteEnvironment clone = (DiscreteEnvironment) Environment.clone(de);
-        assertEquals(de.get(arc, 0.1), clone.get(arc, 0.1), 0.0001);
-        assertArrayEquals(de.getValues().get(arc), clone.getValues().get(arc), 0.0001);
-        de.getValues().clear();
-        assertTrue(clone.getValues().containsKey(arc));
+//        RiverNetwork network = TestNetworks.get("binarytree-3");
+//        RiverArc arc = Graphs.randomEdge(network);
+//        DiscreteEnvironment de = new DiscreteEnvironment(network);
+//        DiscreteEnvironment clone = (DiscreteEnvironment) Environment.clone(de);
+//        assertEquals(de.get(arc, 0.1), clone.get(arc, 0.1), 0.0001);
+//        assertArrayEquals(de.getValues().get(arc), clone.getValues().get(arc), 0.0001);
+//        de.getValues().clear();
+//        assertTrue(clone.getValues().containsKey(arc));
     }
 }

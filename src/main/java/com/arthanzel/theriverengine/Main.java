@@ -13,6 +13,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Entry point for The River Engine.
@@ -22,12 +27,15 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage main) throws IOException {
-        main.setTitle("The River Engine - Test UI");
+        String windowTitle = "The River Engine - Test UI";
+        main.setTitle(windowTitle);
 
+        // Create the system and add Environments to the data model
         RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 100);
         system.getEnvironments().put("temperature", new TemperatureEnvironment());
         system.getEnvironments().put("nutrients", new DiscreteEnvironment(system.getNetwork()));
 
+        // Create the runner and add Influences to change behaviour.
         RiverRunner runner = new RiverRunner(system);
         runner.getInfluences().add(new RandomMovement());
         runner.getInfluences().add(new FlowMovement());
@@ -39,6 +47,7 @@ public class Main extends Application {
         nutrientDynamicsLog.setEnabled(false);
         runner.getInfluences().add(nutrientDynamicsLog);
 
+        // Load UI
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));
         Scene scene = new Scene(loader.load(), 800, 600);
         RiverViewController controller = (RiverViewController) loader.getController();
@@ -53,7 +62,7 @@ public class Main extends Application {
         runner.setRefreshHandler(controller::setSystem);
 
         main.show();
-        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+        Thread.currentThread().setPriority(Thread.MIN_PRIORITY); // UI thread
 
         runner.start();
     }

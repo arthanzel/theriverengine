@@ -31,18 +31,13 @@ public class NutrientDynamicsLog extends BaseInfluence {
 
         DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");
         Environment temp = system.getEnvironments().get("temperature");
-        for (RiverArc key : env.getValues().keySet()) {
-            double[] values = env.getValues().get(key);
-            for (int i = 0; i < values.length; i++) {
-                final double n = values[i];
-                final double position = 1.0 * i / values.length * key.length();
-                final double cc = carryingCapacity + capacityPerDegree * temp.get(key, position);
-                final double delta = growthRate * n * (1 - n / cc) * seconds;
-                final double spawnDelta = spawnRate * seconds;
-                values[i] = values[i] + delta + spawnDelta;
-            }
-            env.getValues().put(key, values);
-        }
+        env.transform((value) -> {
+            final double n = value.getValue();
+            final double cc = carryingCapacity + capacityPerDegree * temp.get(value.getArc(), value.getPosition());
+            final double delta = growthRate * n * (1 - n / cc) * seconds;
+            final double spawnDelta = spawnRate * seconds;
+            value.setValue(n + delta + spawnDelta);
+        });
     }
 
     public double getGrowthRate() {

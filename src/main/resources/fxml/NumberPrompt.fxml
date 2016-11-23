@@ -10,7 +10,7 @@
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" spacing="5.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="label" text="Label" />
-      <TextField fx:id="textInput" promptText="3.1415" style="-fx-border-width: 1; -fx-border-radius: 4; -fx-border-color: white;" />
+      <TextField fx:id="textInput" promptText="3.1415" style="-fx-border-width: 1; -fx-border-radius: 4; -fx-border-color: white;" onKeyPressed="#onKeyPressed"/>
       <ButtonBar prefHeight="40.0" prefWidth="200.0">
         <buttons>
           <Button fx:id="okButton" mnemonicParsing="false" onAction="#onOKPressed" text="OK" />

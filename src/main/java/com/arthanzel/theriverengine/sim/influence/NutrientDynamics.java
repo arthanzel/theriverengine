@@ -26,19 +26,19 @@ public class NutrientDynamics extends BaseInfluence {
         boolean first = true;
 
         DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");
-        for (RiverArc key : env.getValues().keySet()) {
-            double[] values = env.getValues().get(key);
-            for (int i = 0; i < values.length; i++) {
-                double n = values[i];
-                double n1 = n + growthRate - deathRate * n;
-                values[i] = n1;
-
-                if (first) {
-                    first = false;
-                }
-            }
-            env.getValues().put(key, values);
-        }
+//        for (RiverArc key : env.getValues().keySet()) {
+//            double[] values = env.getValues().get(key);
+//            for (int i = 0; i < values.length; i++) {
+//                double n = values[i];
+//                double n1 = n + growthRate - deathRate * n;
+//                values[i] = n1;
+//
+//                if (first) {
+//                    first = false;
+//                }
+//            }
+//            env.getValues().put(key, values);
+//        }
 
         first = false;
     }
