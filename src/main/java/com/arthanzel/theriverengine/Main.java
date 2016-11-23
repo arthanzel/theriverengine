@@ -50,7 +50,7 @@ public class Main extends Application {
         // Load UI
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));
         Scene scene = new Scene(loader.load(), 800, 600);
-        RiverViewController controller = (RiverViewController) loader.getController();
+        RiverViewController controller = loader.getController();
         main.setScene(scene);
         controller.initialize(system.clone(), runner);
 
