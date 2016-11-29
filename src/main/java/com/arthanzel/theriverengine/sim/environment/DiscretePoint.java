@@ -12,15 +12,21 @@ public class DiscretePoint {
     private double value;
     final RiverArc arc;
     final double position;
+    final boolean isNode;
 
     DiscretePoint(double value, RiverArc arc, double position) {
+        this(value, arc, position, false);
+    }
+
+    DiscretePoint(double value, RiverArc arc, double position, boolean isNode) {
         this.value = value;
         this.arc = arc;
         this.position = position;
+        this.isNode = isNode;
     }
 
     public DiscretePoint clone() {
-        return new DiscretePoint(value, arc, position);
+        return new DiscretePoint(value, arc, position, isNode);
     }
 
     public double getValue() {
@@ -37,5 +43,9 @@ public class DiscretePoint {
 
     public double getPosition() {
         return position;
+    }
+
+    public boolean isNode() {
+        return isNode;
     }
 }

@@ -1,5 +1,9 @@
 package com.arthanzel.theriverengine.util;
 
+import com.arthanzel.theriverengine.rivergen.RiverNetwork;
+import com.arthanzel.theriverengine.rivergen.RiverNode;
+import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 
@@ -13,6 +17,27 @@ import java.util.Set;
  * @author Martin
  */
 public class Graphs {
+    public static Rectangle2D dimensions(RiverNetwork network) {
+        if (network.edgeSet().isEmpty()) {
+            throw new IllegalArgumentException("Network is empty");
+        }
+
+        double minX = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE;
+        double minY = Double.MAX_VALUE;
+        double maxY = Double.MIN_VALUE;
+
+        for (RiverNode node : network.vertexSet()) {
+            Point2D pos = node.getPosition();
+            if (pos.getX() < minX) minX = pos.getX();
+            if (pos.getX() > maxX) maxX = pos.getX();
+            if (pos.getY() < minY) minY = pos.getY();
+            if (pos.getY() > maxY) maxY = pos.getY();
+        }
+
+        return new Rectangle2D(minX, minY, maxX - minX, maxY - minY);
+    }
+
     /**
      * Returns a list of outgoing edges immediately downstream to a given edge.
      *

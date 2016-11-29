@@ -31,64 +31,72 @@ public class DiscreteEnvironment implements Environment {
         // Generate values for each node
         for (RiverNode node : network.vertexSet()) {
             if (network.outgoingEdgesOf(node).size() > 1) {
-                nodeValues.put(node, new DiscretePoint(Math.random(), FishMath.sample(network.outgoingEdgesOf(node)), 0));
+                RiverArc arc = network.outgoingEdgesOf(node).iterator().next();
+                nodeValues.put(node, new DiscretePoint(Math.random(), arc, 0, true));
             }
             else {
-                RiverArc arc = FishMath.sample(network.incomingEdgesOf(node));
-                nodeValues.put(node, new DiscretePoint(Math.random(), arc, arc.length()));
+                RiverArc arc = network.incomingEdgesOf(node).iterator().next();
+                nodeValues.put(node, new DiscretePoint(Math.random(), arc, arc.length(), true));
             }
         }
 
         // Generate values for every arc, spaced at most MAX_SEPARATION apart.
         for (RiverArc arc : network.edgeSet()) {
             final double len = arc.length();
-            final int nPoints = (int) Math.ceil(arc.length() / MAX_SEPARATION) - 1; // Number of data points in this arc, minus the upstream node
-            final double separation = len / nPoints;
+            final int nPoints = (int) Math.ceil(arc.length() / MAX_SEPARATION) + 1; // Include node termini
+            final double separation = len / (nPoints - 1);
             separations.put(arc, separation);
 
             DiscretePoint[] vals = new DiscretePoint[nPoints];
-            for (int i = 0; i < vals.length; i++) {
+            vals[0] = nodeValues.get(arc.getUpstreamNode());
+            vals[vals.length - 1] = nodeValues.get(arc.getDownstreamNode());
+            for (int i = 1; i < vals.length - 1; i++) {
                 vals[i] = new DiscretePoint(Math.random(), arc, (i + 1) * separation);
+
             }
             arcValues.put(arc, vals);
         }
     }
 
-    public double get(RiverArc arc, double pos) {
+    /**
+     * Checks whether pos is a valid position in the given arc and raises an exception if it is not.
+     */
+    private void checkPos(RiverArc arc, double pos) {
         if (pos < 0 || pos > arc.length()) {
             throw new IllegalArgumentException("Position must be greater or equal to 0 and less than or equal to the arc's length (" + arc.length() + ")");
         }
+    }
 
+    public double get(RiverArc arc, double pos) {
+        checkPos(arc, pos);
+
+        // Interpolate between two neighbouring data points
         DiscretePoint[] vals = arcValues.get(arc);
+        int v1 = (int) getVirtualIndex(arc, pos);
 
-        // If the arc is too short to have a gradient, interpolate between the upstream and downstream nodes
-        if (vals.length == 0) {
-            double startVal = nodeValues.get(arc.getUpstreamNode()).getValue();
-            double endVal = nodeValues.get(arc.getDownstreamNode()).getValue();
-            return FishMath.lerp(startVal, endVal, pos / arc.length());
+        // Optimize if virtual index is exact, and prevent out-of-bounds
+        // if it is exactly at the end of the array.
+        if (v1 % 1 == 0) {
+            return vals[v1].getValue();
         }
 
-        double separation = separations.get(arc);
+        int v2 = v1 + 1;
+        return FishMath.lerp(vals[v1].getValue(), vals[v2].getValue(), pos % 1);
+    }
 
-        // "Virtual index" of given position in the array.
-        // E.x. separation is every 5 m. A position of 7.5 would give virtual index 1.5.
-        // Virtual index of zero represents the upstream node.
-        double vi = pos / separation;
+    public DiscretePoint getPoint(RiverArc arc, int vi) {
+        return arcValues.get(arc)[vi];
+    }
 
-        if (vi > 1 && vi < vals.length - 1) {
-            // Interpolate between the neighbouring indices
-            int start = (int) vi - 1;
-            int end = start + 1;
-            return FishMath.lerp(vals[start].getValue(), vals[end].getValue(), vi % 1);
-        }
-        else if (vi < 1) {
-            // Interpolate between the upstream node's value and the first arc value
-            return FishMath.lerp(nodeValues.get(arc.getUpstreamNode()).getValue(), vals[0].getValue(), vi % 1);
-        }
-        else {
-            // Interpolate between the downstream node's value and the last arc value
-            return FishMath.lerp(vals[vals.length - 1].getValue(), nodeValues.get(arc.getDownstreamNode()).getValue(), vi % 1);
-        }
+    /**
+     *
+     * @param arc
+     * @param pos
+     * @return
+     */
+    public double getVirtualIndex(RiverArc arc, double pos) {
+        checkPos(arc, pos);
+        return pos / separations.get(arc);
     }
 
     /**
@@ -103,8 +111,9 @@ public class DiscreteEnvironment implements Environment {
             func.accept(dp);
         }
         for (DiscretePoint[] dps : arcValues.values()) {
-            for (DiscretePoint dp : dps) {
-                func.accept(dp);
+            // Omit the first and last, since they are actually nodes
+            for (int i = 1; i < dps.length - 1; i++) {
+                func.accept(dps[i]);
             }
         }
     }

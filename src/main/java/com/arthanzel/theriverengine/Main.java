@@ -4,6 +4,7 @@ import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
+import com.arthanzel.theriverengine.sim.environment.MatrixEnvironment;
 import com.arthanzel.theriverengine.sim.environment.TemperatureEnvironment;
 import com.arthanzel.theriverengine.sim.influence.*;
 import com.arthanzel.theriverengine.ui.RiverViewController;
@@ -34,18 +35,25 @@ public class Main extends Application {
         RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 100);
         system.getEnvironments().put("temperature", new TemperatureEnvironment());
         system.getEnvironments().put("nutrients", new DiscreteEnvironment(system.getNetwork()));
+        //system.getEnvironments().put("nutrients", new MatrixEnvironment(system.getNetwork()));
 
         // Create the runner and add Influences to change behaviour.
         RiverRunner runner = new RiverRunner(system);
         runner.getInfluences().add(new RandomMovement());
         runner.getInfluences().add(new FlowMovement());
         runner.getInfluences().add(new VelocityApplier());
+
         Influence nutrientDynamics = new NutrientDynamics();
         nutrientDynamics.setEnabled(false);
         runner.getInfluences().add(nutrientDynamics);
+
         Influence nutrientDynamicsLog = new NutrientDynamicsLog();
         nutrientDynamicsLog.setEnabled(false);
         runner.getInfluences().add(nutrientDynamicsLog);
+
+        Influence feedingInfluence = new FeedingInfluence();
+        feedingInfluence.setEnabled(false);
+        runner.getInfluences().add(feedingInfluence);
 
         // Load UI
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));
