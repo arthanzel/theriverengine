@@ -10,6 +10,7 @@ public class RenderOptions {
     @BooleanBinding private volatile boolean renderingNetwork = true;
     @DoubleBinding(min = -10, max = 10) private volatile double legendMin = 0.0;
     @DoubleBinding(min = -10, max = 10) private volatile double legendMax = 1.0;
+    @DoubleBinding(min = 0.1, max = 20) private volatile double envTickInterval = 5;
 
     // ====== Accessors ======
 
@@ -43,5 +44,13 @@ public class RenderOptions {
 
     public void setLegendMax(double legendMax) {
         this.legendMax = legendMax;
+    }
+
+    public double getEnvTickInterval() {
+        return envTickInterval;
+    }
+
+    public void setEnvTickInterval(double envTickInterval) {
+        this.envTickInterval = envTickInterval;
     }
 }

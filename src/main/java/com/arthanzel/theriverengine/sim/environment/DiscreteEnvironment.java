@@ -77,7 +77,7 @@ public class DiscreteEnvironment implements Environment {
 
         // Optimize if virtual index is exact, and prevent out-of-bounds
         // if it is exactly at the end of the array.
-        if (v % 1 == 0) {
+        if (v % 1 == 0 || pos == arc.length()) {
             return vals[v1].getValue();
         }
 

@@ -43,6 +43,7 @@ public class VelocityApplier extends BaseInfluence {
         }
         else if (newPos < 0) {
             // The agent moves to an upstream Arc
+            // TODO: This is so wrong - it biases upstream arcs. Re-write recursively with real movement.
             Set<RiverArc> upstreamArcs = system.getNetwork().getUpstreamArcs(location.getArc());
             if (upstreamArcs.size() > 0) {
                 RiverArc target = FishMath.sample(upstreamArcs);

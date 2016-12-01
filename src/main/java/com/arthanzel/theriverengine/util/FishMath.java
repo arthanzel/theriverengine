@@ -23,6 +23,10 @@ public class FishMath {
         return min + (max - min) * f;
     }
 
+    public static double inverseLerp(double min, double max, double val) {
+        return (val - min) / (max - min);
+    }
+
     /**
      * Rounds the closest multiple to a value.
      * @param val Value to round.
@@ -30,6 +34,24 @@ public class FishMath {
      */
     public static double round(double val, double multiple) {
         return Math.round(val / multiple) * multiple;
+    }
+
+    /**
+     * Returns the nearest multiple of a number that is greater than a value.
+     * @param val Value to ceil.
+     * @param multiple Multiple to which to ceil.
+     */
+    public static double ceil(double val, double multiple) {
+        return Math.ceil(val / multiple) * multiple;
+    }
+
+    /**
+     * Returns the nearest multiple of a number that is less than a value.
+     * @param val Value to floor.
+     * @param multiple Multiple to which to floor.
+     */
+    public static double floor(double val, double multiple) {
+        return Math.floor(val / multiple) * multiple;
     }
 
     @SuppressWarnings("unchecked")

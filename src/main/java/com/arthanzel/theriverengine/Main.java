@@ -32,7 +32,7 @@ public class Main extends Application {
         main.setTitle(windowTitle);
 
         // Create the system and add Environments to the data model
-        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 0);
+        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 100);
         system.getEnvironments().put("temperature", new TemperatureEnvironment());
         system.getEnvironments().put("nutrients", new DiscreteEnvironment(system.getNetwork()));
         //system.getEnvironments().put("nutrients", new MatrixEnvironment(system.getNetwork()));

@@ -9,7 +9,6 @@ import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.environment.DiscretePoint;
 import com.arthanzel.theriverengine.sim.environment.Environment;
 import com.arthanzel.theriverengine.util.FishMath;
-import com.arthanzel.theriverengine.util.FrameCounter;
 import com.arthanzel.theriverengine.util.PaintUtils;
 import javafx.beans.property.*;
 import javafx.geometry.Point2D;
@@ -253,35 +252,45 @@ public class RiverRenderer extends Pane {
 
         for (RiverArc arc : system.getNetwork().edgeSet()) {
             // Draw ticks on every data point if it is a discrete environment
-            if (scale > 4 && env instanceof DiscreteEnvironment) {
-                DiscreteEnvironment denv = (DiscreteEnvironment) env;
-                gfx.save();
-                gfx.setFill(Color.GRAY);
-                gfx.setLineWidth(1 / scale);
-                double tickDimension = 5 / scale;
-                DiscretePoint[] points = denv.getPoints(arc);
-                for (int i = 1; i < points.length - 1; i++) {
-                    Point2D p = arc.getPoint(points[i].getPosition());
-                    gfx.fillOval(p.getX() - tickDimension / 2, p.getY() - tickDimension / 2, tickDimension, tickDimension);
-                }
-                gfx.restore();
-            }
+//            if (scale > 4 && env instanceof DiscreteEnvironment) {
+//                DiscreteEnvironment denv = (DiscreteEnvironment) env;
+//                gfx.save();
+//                gfx.setFill(Color.GRAY);
+//                gfx.setLineWidth(1 / scale);
+//                double tickDimension = 5 / scale;
+//                DiscretePoint[] points = denv.getPoints(arc);
+//                for (int i = 1; i < points.length - 1; i++) {
+//                    Point2D p = arc.getPoint(points[i].getPosition());
+//                    gfx.fillOval(p.getX() - tickDimension / 2, p.getY() - tickDimension / 2, tickDimension, tickDimension);
+//                }
+//                gfx.restore();
+//            }
 
             gfx.setLineWidth(2 / scale);
 
             // Determine the number of drawing primitives per line
             //int n = (int) Math.ceil(arc.length() * this.scale / INTERVAL_PX);
-            int n = (int) (arc.length() / 1);
+            int n = (int) (arc.length() / options.getEnvTickInterval());
 
-            Color lastColor = null;
+            double lastHue = 0;
             Point2D lastPoint = null;
-            for (double i = 0; i <= 1; i += 1.0 / n) {
-                double envValue = env.get(arc, i * arc.length());
-                double fraction = (envValue - options.getLegendMin()) / (options.getLegendMax() - options.getLegendMin());
-                Color pointColor = Color.hsb(FishMath.clamp(fraction, 0, 1) * MAX_HUE, 1, 1);
-                Point2D point = arc.getPointLerp(i);
+            for (int i = 0; i <= n; i++) {
+                // Position along the arc from 0 to 1
+                double f = 1.0 * i / n;
 
-                if (lastColor != null && lastPoint != null) {
+                // Value of the environment at that point
+                double envValue = env.get(arc, f * arc.length());
+
+                // Fraction of the environment value along the current scale.
+                // 0 is the minimum value, 1 is the maximum.
+                double envF = (envValue - options.getLegendMin()) / (options.getLegendMax() - options.getLegendMin());
+
+                double pointHue = FishMath.clamp(envF, 0, 1) * MAX_HUE;
+                Point2D point = arc.getPointLerp(f);
+
+                // Construct a gradient line from the current point to the previous one
+                // TODO: Not a perfect HSB gradient. Write a method to return HSB stops from one color to another.
+                if (lastPoint != null) {
                     double angle = point.angle(lastPoint);
                     Paint gradient = new LinearGradient(
                             point.getX(),
@@ -289,14 +298,16 @@ public class RiverRenderer extends Pane {
                             lastPoint.getX(),
                             lastPoint.getY(),
                             false,
-                            CycleMethod.REFLECT,
-                            new Stop(0, pointColor),
-                            new Stop(1, lastColor));
+                            CycleMethod.NO_CYCLE, // For some reason, lines produce small overhangs where line ends
+                                                  // round to the closest pixel, so REFLECT produces random
+                                                  // discolourations at the end of lines. NO_CYCLE preserves colour.
+                            PaintUtils.hueGradient(pointHue, lastHue)
+                    );
                     gfx.setStroke(gradient);
                     gfx.strokeLine(point.getX(), point.getY(), lastPoint.getX(), lastPoint.getY());
                 }
 
-                lastColor = pointColor;
+                lastHue = pointHue;
                 lastPoint = point;
             }
         }
