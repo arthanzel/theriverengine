@@ -13,8 +13,8 @@
       <TextField fx:id="textInput" promptText="3.1415" style="-fx-border-width: 1; -fx-border-radius: 4; -fx-border-color: white;" onKeyPressed="#onKeyPressed"/>
       <ButtonBar prefHeight="40.0" prefWidth="200.0">
         <buttons>
-          <Button fx:id="okButton" mnemonicParsing="false" onAction="#onOKPressed" text="OK" />
-            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onCancelPressed" text="Cancel" />
+          <Button mnemonicParsing="false" onAction="#onOKPressed" text="OK" />
+            <Button mnemonicParsing="false" onAction="#onCancelPressed" text="Cancel" />
         </buttons>
       </ButtonBar>
    </children>

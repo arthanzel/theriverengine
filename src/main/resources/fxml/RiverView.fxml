@@ -24,8 +24,8 @@
                 <ToggleButton mnemonicParsing="false" text="Play" />
                 <Button mnemonicParsing="false" text="Open Data Folder" />
                 <Label text="Speed: " />
-                <IntegerTextField fx:id="speedField" prefWidth="50" text="500" />
-                <Label text="ms" />
+                <IntegerTextField fx:id="speedField" prefWidth="50" text="0.5" />
+                <Label text="s" />
                 <Label text="Time: " />
                 <TimeLabel fx:id="timeLabel" />
                 <Label fx:id="fpsLabel" />

@@ -11,6 +11,7 @@ import com.arthanzel.theriverengine.util.TextUtils;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
@@ -48,11 +49,6 @@ public class RiverViewController {
             }
         };
         anim.start();
-
-        riverRenderer.fpsProperty().addListener((observable, oldValue, newValue) -> {
-            // FIXME: This event is coming from a different thread, which JavaFX does not like.
-            //fpsLabel.setText(newValue + " FPS");
-        });
 
         speedField.textProperty().addListener((observable, oldValue, newValue) -> {
             speed.setValue(Double.parseDouble(newValue));

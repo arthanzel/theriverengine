@@ -9,8 +9,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 public class RiverRunner {
-    private static final long INTERVAL = 500; // Milliseconds, move this to UI asap.
-
 //    public static final int NUM_THREADS = 1;
     public static final int CLONE_INTERVAL_MILLIS = 1000 / 15; // 15 fps
 
@@ -18,6 +16,8 @@ public class RiverRunner {
     private RiverSystem system;
     private volatile boolean flagForStop = false;
 //    private ParallelService pool;
+
+    private volatile double interval = 0.5;
 
     // Event handler: called when the RiverSystem is cloned and the UI may be refreshed.
     private Consumer<RiverSystem> refreshHandler;
@@ -66,9 +66,9 @@ public class RiverRunner {
             counter.start();
             while (true) {
                 counter.increment();
-                tick(INTERVAL / 1000.0); // tick takes an interval in seconds
+                tick(interval); // tick takes an interval in seconds
 
-                system.setTime(system.getTime() + INTERVAL);
+                system.setTime(system.getTime() + (long) (interval * 1000));
 
                 if (flagForStop) {
                     break;
@@ -122,5 +122,13 @@ public class RiverRunner {
 
     public void setRefreshHandler(Consumer<RiverSystem> refreshHandler) {
         this.refreshHandler = refreshHandler;
+    }
+
+    public double getInterval() {
+        return interval;
+    }
+
+    public void setInterval(double interval) {
+        this.interval = interval;
     }
 }

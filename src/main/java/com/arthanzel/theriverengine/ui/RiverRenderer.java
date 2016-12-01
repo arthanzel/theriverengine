@@ -34,11 +34,9 @@ public class RiverRenderer extends Pane {
 
     private Canvas canvas;
     private GraphicsContext gfx;
-    private FrameCounter counter = new FrameCounter("RiverRenderer", 1000);
     private RenderOptions options = new RenderOptions();
 
     // Properties
-    private DoubleProperty fps = new SimpleDoubleProperty(0);
     private StringProperty renderableEnvironment = new SimpleStringProperty();
 
     public RiverRenderer() {
@@ -64,12 +62,6 @@ public class RiverRenderer extends Pane {
         this.setClip(clip);
 
         initUIEvents();
-
-        // Set up the frame counter
-        counter.setOnReport(fps -> {
-            this.fps.set(fps);
-        });
-        counter.start();
     }
 
     public void update(RiverSystem system) {
@@ -78,20 +70,15 @@ public class RiverRenderer extends Pane {
             return;
         }
 
-        // TODO: Don't synchronize here, but clone
-        synchronized (system) {
-            counter.increment();
+        gfx.save();
+        gfx.setTransform(new Affine());
+        gfx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawScreenSpaceElements();
+        gfx.restore();
 
-            gfx.save();
-            gfx.setTransform(new Affine());
-            gfx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawScreenSpaceElements();
-            gfx.restore();
-
-            if (options.isRenderingNetwork()) drawNetwork(system.getNetwork());
-            if (this.renderableEnvironment.get() != null) drawEnvironment(system);
-            if (options.isRenderingAgents()) drawAgents(system.getAgents());
-        }
+        if (options.isRenderingNetwork()) drawNetwork(system.getNetwork());
+        if (this.renderableEnvironment.get() != null) drawEnvironment(system);
+        if (options.isRenderingAgents()) drawAgents(system.getAgents());
     }
 
     // region UI
@@ -300,14 +287,6 @@ public class RiverRenderer extends Pane {
 
     // region Accessors
     // ================
-
-    public double getFps() {
-        return fps.get();
-    }
-
-    public DoubleProperty fpsProperty() {
-        return fps;
-    }
 
     public RenderOptions getOptions() {
         return options;
