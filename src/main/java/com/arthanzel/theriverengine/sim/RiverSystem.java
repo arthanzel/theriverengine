@@ -17,7 +17,7 @@ public class RiverSystem {
     private Agent[] agents;
     private Map<String, Environment> environments = new HashMap<>();
     private final RiverNetwork network;
-    private long time = 0;
+    private long time = 0; // Milliseconds
 
     private RiverSystem(RiverNetwork network) {
         this.network = network;

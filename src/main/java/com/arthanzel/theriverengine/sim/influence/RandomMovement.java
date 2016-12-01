@@ -42,8 +42,7 @@ public class RandomMovement extends BaseInfluence {
 
     private void run(Agent a) {
         // TODO: Put Random in a ThreadLocal
-        //final double v = a.getAttributes().getDouble("velocity");
-        final double v = 0;
+        final double v = a.getAttributes().getDouble("velocity");
         a.getAttributes().put("velocity", v + r.nextDouble() * 2 * 2 - 2);
     }
 

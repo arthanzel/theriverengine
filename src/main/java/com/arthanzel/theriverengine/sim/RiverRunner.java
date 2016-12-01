@@ -9,6 +9,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 public class RiverRunner {
+    private static final long INTERVAL = 500; // Milliseconds, move this to UI asap.
+
 //    public static final int NUM_THREADS = 1;
     public static final int CLONE_INTERVAL_MILLIS = 1000 / 15; // 15 fps
 
@@ -64,9 +66,9 @@ public class RiverRunner {
             counter.start();
             while (true) {
                 counter.increment();
-                tick(1/500.0);
+                tick(INTERVAL / 1000.0); // tick takes an interval in seconds
 
-                system.setTime(system.getTime() + 500);
+                system.setTime(system.getTime() + INTERVAL);
 
                 if (flagForStop) {
                     break;

@@ -2,6 +2,7 @@ package com.arthanzel.theriverengine.sim.influence;
 
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
+import com.arthanzel.theriverengine.ui.BindingName;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
 
 import java.util.Random;
@@ -12,13 +13,15 @@ import java.util.Random;
  * @author Martin
  */
 public class FlowMovement extends BaseInfluence {
-    @DoubleBinding(min = -0.1, max = 0.1) private volatile double flow = 0.01;
+    @DoubleBinding(min = -5, max = 5)
+    @BindingName("Flow speed (m/s)")
+    private volatile double flow = 0.0;
     Random r = new Random();
 
     public void influence(RiverSystem system, double dt) {
         for (Agent a : system.getAgents()) {
             double v = a.getAttributes().getDouble("velocity");
-            a.getAttributes().put("velocity", v + flow);
+            a.getAttributes().put("velocity", v + flow * dt);
         }
     }
 

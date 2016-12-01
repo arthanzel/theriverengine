@@ -27,15 +27,13 @@ public class NutrientDynamicsLog extends BaseInfluence {
 
     @Override
     public void influence(RiverSystem system, double dt) {
-        final double seconds = dt / 1000;
-
         DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");
         Environment temp = system.getEnvironments().get("temperature");
         env.transform((value) -> {
             final double n = value.getValue();
             final double cc = carryingCapacity + capacityPerDegree * temp.get(value.getArc(), value.getPosition());
-            final double delta = growthRate * n * (1 - n / cc) * seconds;
-            final double spawnDelta = spawnRate * seconds;
+            final double delta = growthRate * n * (1 - n / cc) * dt;
+            final double spawnDelta = spawnRate * dt;
             value.setValue(n + delta + spawnDelta);
         });
     }

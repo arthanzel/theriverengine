@@ -8,7 +8,9 @@ import com.arthanzel.theriverengine.sim.agent.Location;
 import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.environment.DiscretePoint;
 import com.arthanzel.theriverengine.sim.environment.Environment;
+import com.arthanzel.theriverengine.ui.BindingName;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
+import com.arthanzel.theriverengine.util.TimeUtils;
 
 import java.util.Set;
 
@@ -16,34 +18,50 @@ import java.util.Set;
  * @author Martin
  */
 public class FeedingInfluence extends BaseInfluence {
-    RiverNetwork network;
-    DiscreteEnvironment env;
+    private RiverNetwork network;
+    private DiscreteEnvironment env;
+    private double dt;
+
+    @DoubleBinding(min = 0, max = 2)
+    @BindingName("Feed Rate (/day)")
+    private double feedRate = 0.1;
 
     @Override
     public void influence(RiverSystem system, double dt) {
         network = system.getNetwork();
         env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");
+        this.dt = dt;
 
         for (Agent a : system.getAgents()) {
             Location loc = a.getLocation();
             double vi = env.getVirtualIndex(loc.getArc(), loc.getPosition());
 
             try {
-                feedPoint(vi % 1, loc.getArc(), (int) vi, false);
-                //feedPoint(1 - vi % 1, loc.getArc(), (int) vi + 1, true);
+                feedPoint(vi % 1, loc.getArc(), (int) vi, false, false);
+                feedPoint(1 - vi % 1, loc.getArc(), (int) vi, true, true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void feedPoint(double distance, RiverArc arc, int vi, boolean downstream) {
+    private void feedPoint(double distance, RiverArc arc, int vi, boolean downstream, boolean skip) {
         if (distance > 20) {
             return;
         }
 
         DiscretePoint dp = env.getPoint(arc, vi);
-        dp.setValue(Math.max(0, dp.getValue() - 0.1));
+
+        if (!skip) {
+            final double rate = feedRate / TimeUtils.S_IN_DAY * dt;
+            final double old = dp.getValue();
+
+            if (dp.getArc().toString().contains("a") && dp.getPosition() < 0.1) {
+                //System.out.println();
+            }
+
+            dp.setValue(Math.max(0, dp.getValue() - rate));
+        }
 
         // Find the next discrete point
         if (dp.isNode()) {
@@ -52,11 +70,19 @@ public class FeedingInfluence extends BaseInfluence {
         else {
             double separation = env.getSeparation(arc);
             if (downstream) {
-                feedPoint(distance + separation, arc, vi + 1, true);
+                feedPoint(distance + separation, arc, vi + 1, true, false);
             }
             else {
-                feedPoint(distance + separation, arc, vi - 1, false);
+                feedPoint(distance + separation, arc, vi - 1, false, false);
             }
         }
+    }
+
+    public double getFeedRate() {
+        return feedRate;
+    }
+
+    public void setFeedRate(double feedRate) {
+        this.feedRate = feedRate;
     }
 }
