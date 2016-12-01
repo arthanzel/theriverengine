@@ -5,6 +5,8 @@ import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.rivergen.RiverNode;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
+import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
+import com.arthanzel.theriverengine.sim.environment.DiscretePoint;
 import com.arthanzel.theriverengine.sim.environment.Environment;
 import com.arthanzel.theriverengine.util.FishMath;
 import com.arthanzel.theriverengine.util.FrameCounter;
@@ -246,21 +248,56 @@ public class RiverRenderer extends Pane {
 
         //TODO: Uniform intervals
         Environment env = system.getEnvironments().get(renderableEnvironment.get());
-        gfx.setLineWidth(2 / scale);
+
         gfx.setLineCap(StrokeLineCap.SQUARE);
 
         for (RiverArc arc : system.getNetwork().edgeSet()) {
+            // Draw ticks on every data point if it is a discrete environment
+            if (scale > 4 && env instanceof DiscreteEnvironment) {
+                DiscreteEnvironment denv = (DiscreteEnvironment) env;
+                gfx.save();
+                gfx.setFill(Color.GRAY);
+                gfx.setLineWidth(1 / scale);
+                double tickDimension = 5 / scale;
+                DiscretePoint[] points = denv.getPoints(arc);
+                for (int i = 1; i < points.length - 1; i++) {
+                    Point2D p = arc.getPoint(points[i].getPosition());
+                    gfx.fillOval(p.getX() - tickDimension / 2, p.getY() - tickDimension / 2, tickDimension, tickDimension);
+                }
+                gfx.restore();
+            }
+
+            gfx.setLineWidth(2 / scale);
+
             // Determine the number of drawing primitives per line
             //int n = (int) Math.ceil(arc.length() * this.scale / INTERVAL_PX);
             int n = (int) (arc.length() / 1);
 
-            for (double i = 0; i < 1; i += 1.0 / n) {
+            Color lastColor = null;
+            Point2D lastPoint = null;
+            for (double i = 0; i <= 1; i += 1.0 / n) {
                 double envValue = env.get(arc, i * arc.length());
                 double fraction = (envValue - options.getLegendMin()) / (options.getLegendMax() - options.getLegendMin());
-                gfx.setStroke(Color.hsb(FishMath.clamp(fraction, 0, 1) * MAX_HUE, 1, 1));
+                Color pointColor = Color.hsb(FishMath.clamp(fraction, 0, 1) * MAX_HUE, 1, 1);
                 Point2D point = arc.getPointLerp(i);
-                Point2D point2 = arc.getPointLerp(Math.min(1, i + 1.0 / n));
-                gfx.strokeLine(point.getX(), point.getY(), point2.getX(), point2.getY());
+
+                if (lastColor != null && lastPoint != null) {
+                    double angle = point.angle(lastPoint);
+                    Paint gradient = new LinearGradient(
+                            point.getX(),
+                            point.getY(),
+                            lastPoint.getX(),
+                            lastPoint.getY(),
+                            false,
+                            CycleMethod.REFLECT,
+                            new Stop(0, pointColor),
+                            new Stop(1, lastColor));
+                    gfx.setStroke(gradient);
+                    gfx.strokeLine(point.getX(), point.getY(), lastPoint.getX(), lastPoint.getY());
+                }
+
+                lastColor = pointColor;
+                lastPoint = point;
             }
         }
     }

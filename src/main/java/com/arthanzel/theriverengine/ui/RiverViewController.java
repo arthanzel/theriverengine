@@ -36,7 +36,7 @@ public class RiverViewController {
     private final Object systemLock = new Object();
 
     @SuppressWarnings("unused")
-    public void initialize() {
+    public void initialize() { 
         AnimationTimer anim = new AnimationTimer() {
             double skip = 0;
 

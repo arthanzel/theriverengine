@@ -50,7 +50,7 @@ public class FeedingInfluence extends BaseInfluence {
             return;
         }
 
-        DiscretePoint dp = env.getPoint(arc, vi);
+        DiscretePoint dp = env.getPoints(arc)[vi];
 
         if (!skip) {
             final double rate = feedRate / TimeUtils.S_IN_DAY * dt;

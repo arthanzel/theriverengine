@@ -29,6 +29,10 @@ public class DiscretePoint {
         return new DiscretePoint(value, arc, position, isNode);
     }
 
+    public String toString() {
+        return String.format("%f @ %s (%f)", value, arc.toString(), position);
+    }
+
     public double getValue() {
         return value;
     }

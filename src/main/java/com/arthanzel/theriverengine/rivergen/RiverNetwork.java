@@ -38,11 +38,11 @@ public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> {
         // Get the scale
         Double scaleX = ini.get("graph", "scalex", Double.class);
         if (scaleX == null) {
-            scaleX = 0.0;
+            scaleX = 1.0;
         }
         Double scaleY = ini.get("graph", "scaley", Double.class);
         if (scaleY == null) {
-            scaleY = 0.0;
+            scaleY = 1.0;
         }
 
         // Collect nodes

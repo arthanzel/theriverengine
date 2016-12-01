@@ -30,7 +30,7 @@ public class DiscreteEnvironment implements Environment {
     public DiscreteEnvironment(RiverNetwork network) {
         // Generate values for each node
         for (RiverNode node : network.vertexSet()) {
-            if (network.outgoingEdgesOf(node).size() > 1) {
+            if (network.outgoingEdgesOf(node).size() > 0) {
                 RiverArc arc = network.outgoingEdgesOf(node).iterator().next();
                 nodeValues.put(node, new DiscretePoint(Math.random(), arc, 0, true));
             }
@@ -51,7 +51,7 @@ public class DiscreteEnvironment implements Environment {
             vals[0] = nodeValues.get(arc.getUpstreamNode());
             vals[vals.length - 1] = nodeValues.get(arc.getDownstreamNode());
             for (int i = 1; i < vals.length - 1; i++) {
-                vals[i] = new DiscretePoint(Math.random(), arc, (i + 1) * separation);
+                vals[i] = new DiscretePoint(Math.random(), arc, (i) * separation);
 
             }
             arcValues.put(arc, vals);
@@ -72,20 +72,21 @@ public class DiscreteEnvironment implements Environment {
 
         // Interpolate between two neighbouring data points
         DiscretePoint[] vals = arcValues.get(arc);
-        int v1 = (int) getVirtualIndex(arc, pos);
+        double v = getVirtualIndex(arc, pos);
+        int v1 = (int) v;
 
         // Optimize if virtual index is exact, and prevent out-of-bounds
         // if it is exactly at the end of the array.
-        if (v1 % 1 == 0) {
+        if (v % 1 == 0) {
             return vals[v1].getValue();
         }
 
         int v2 = v1 + 1;
-        return FishMath.lerp(vals[v1].getValue(), vals[v2].getValue(), pos % 1);
+        return FishMath.lerp(vals[v1].getValue(), vals[v2].getValue(), v % 1);
     }
 
-    public DiscretePoint getPoint(RiverArc arc, int vi) {
-        return arcValues.get(arc)[vi];
+    public DiscretePoint[] getPoints(RiverArc arc) {
+        return arcValues.get(arc);
     }
 
     /**
