@@ -1,6 +1,5 @@
 package com.arthanzel.theriverengine.sim;
 
-import com.arthanzel.theriverengine.concurrent.ParallelService;
 import com.arthanzel.theriverengine.sim.influence.Influence;
 import com.arthanzel.theriverengine.util.FrameCounter;
 import java.util.LinkedList;
