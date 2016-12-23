@@ -59,12 +59,12 @@ public class GraphsTest {
 
         for (RiverArc arc : network.edgeSet()) {
             // Upstreams
-            Set<RiverArc> upstreams = Graphs.upstreamEdges(network, arc);
+            Set<RiverArc> upstreams = Graphs.upstreamEdgesOf(network, arc);
             assertEquals(network.edgesOf(network.getEdgeSource(arc)).size() - 1, upstreams.size());
             assertTrue(network.edgesOf(network.getEdgeSource(arc)).containsAll(upstreams));
 
             // Downstreams
-            Set<RiverArc> downstreams = Graphs.downstreamEdges(network, arc);
+            Set<RiverArc> downstreams = Graphs.downstreamEdgesOf(network, arc);
             assertEquals(network.edgesOf(network.getEdgeTarget(arc)).size() - 1, downstreams.size());
             assertTrue(network.edgesOf(network.getEdgeTarget(arc)).containsAll(downstreams));
         }

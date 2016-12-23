@@ -10,6 +10,7 @@ import com.arthanzel.theriverengine.sim.environment.DiscretePoint;
 import com.arthanzel.theriverengine.sim.environment.Environment;
 import com.arthanzel.theriverengine.ui.BindingName;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
+import com.arthanzel.theriverengine.util.Graphs;
 import com.arthanzel.theriverengine.util.TimeUtils;
 
 import java.util.Set;
@@ -54,18 +55,22 @@ public class FeedingInfluence extends BaseInfluence {
 
         if (!skip) {
             final double rate = feedRate / TimeUtils.S_IN_DAY * dt;
-            final double old = dp.getValue();
-
-            if (dp.getArc().toString().contains("a") && dp.getPosition() < 0.1) {
-                //System.out.println();
-            }
 
             dp.setValue(Math.max(0, dp.getValue() - rate));
         }
 
         // Find the next discrete point
         if (dp.isNode()) {
-
+            if (downstream) {
+                for (RiverArc nextArc : Graphs.downstreamEdgesOf(network, arc)) {
+                    feedPoint(distance + env.getSeparation(arc), nextArc, 1, true, false);
+                }
+            }
+            else {
+                for (RiverArc nextArc : Graphs.upstreamEdgesOf(network, arc)) {
+                    feedPoint(distance + env.getSeparation(arc), nextArc, env.getPoints(arc).length - 2, false, false);
+                }
+            }
         }
         else {
             double separation = env.getSeparation(arc);

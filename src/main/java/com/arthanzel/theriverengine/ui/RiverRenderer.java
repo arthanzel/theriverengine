@@ -48,7 +48,6 @@ public class RiverRenderer extends Pane {
         canvas.widthProperty().bind(this.widthProperty());
         canvas.heightProperty().bind(this.heightProperty());
         this.widthProperty().addListener(ev -> {
-            // TODO: clone the model
             update(null);
         });
         this.heightProperty().addListener(ev -> {
@@ -243,9 +242,6 @@ public class RiverRenderer extends Pane {
     }
 
     private void drawEnvironment(RiverSystem system) {
-        double INTERVAL_PX = 10;
-
-        //TODO: Uniform intervals
         Environment env = system.getEnvironments().get(renderableEnvironment.get());
 
         gfx.setLineCap(StrokeLineCap.SQUARE);
@@ -289,7 +285,6 @@ public class RiverRenderer extends Pane {
                 Point2D point = arc.getPointLerp(f);
 
                 // Construct a gradient line from the current point to the previous one
-                // TODO: Not a perfect HSB gradient. Write a method to return HSB stops from one color to another.
                 if (lastPoint != null) {
                     double angle = point.angle(lastPoint);
                     Paint gradient = new LinearGradient(

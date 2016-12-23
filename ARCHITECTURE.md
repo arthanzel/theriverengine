@@ -1,34 +1,26 @@
-RiverSystem: Represents the model of a river system. Contains a RiverNetwork, the array of fish, and environmental constants.
+Winter break 
+============
 
-RiverNetwork: Extension of a directed graph that holds the physical configuration of a river network. Contains methods for serializing into a GraphFile.
+## Movement
+- Sharks
+- Random
+- Tie swim speed to nutrient density env - emergent behaviour to high-density areas
+- Immigration / emigration
+    - Discourage fish from moving to termini
+    - Monitor emigration and compensate?
 
-RiverRunner: Class responsible for taking a RiverSystem and simulating it. Parallellism will be done on this level.
+## GMO
+- Will hungry GMO fish die at the same rate or have higher fitness?
 
-RiverViewer: Swing or JFX frame that renders a RiverSystem.
+# Food
+- Tie death rate to nutrient uptake - game of life? Neat experiment to do.
 
-Movement:
+# Reproduction and lifecycle
+- Age property - no juveniles nor age in null model
+- Tie energy to reproductive success, but in what way?
 
-- Random - position or velocity jumps?
-    - Bias for river flow? Water speed?
-- Density-dependent
-- Nutrient-dependent
-    - Resources appearing/disappearing independent of state (constant alpha) vs dependent on state (game of life)
-    - Nutrient overlays: apply to a new graph structure to get rid of superfluous pixels, and to enable flow of nutrients?
-- -> Weighted result?
+## Documentation
 
-Todo:
+Null model MUST contain movement, food, reproduction
 
-    - Random movement
-    - Generation and representation of overlays
-    - Dynamics of overlays
-
-Drift paradox
-    
-Competition based on a robust nutrient model. Fitness is proportional to the availability of nutrients to each fish in a given space.
-
-2016-10-27
-==========
-- Make an Env so that params in simple, log growth are dependent on space
-- Forks: cut the effect on each fork, or cut the sphere of influence in each fork
-- Next steps:
-    - 
+1st priority: close the cycle and get a null model

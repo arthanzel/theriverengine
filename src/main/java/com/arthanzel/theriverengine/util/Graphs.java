@@ -1,5 +1,6 @@
 package com.arthanzel.theriverengine.util;
 
+import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.rivergen.RiverNode;
 import javafx.geometry.Point2D;
@@ -39,16 +40,15 @@ public class Graphs {
     }
 
     /**
-     * Returns a list of outgoing edges immediately downstream to a given edge.
+     * Returns a list of all edges immediately downstream to a given edge.
      *
      * @param graph A directed graph.
      * @param edge  An edge.
-     * @param <E>   The graph edge type.
      * @return Set of downstream edges.
      */
-    public static <T, E> Set<E> downstreamEdges(DirectedGraph<T, E> graph, E edge) {
-        Set<E> downstreams = graph.edgesOf(graph.getEdgeTarget(edge));
-        HashSet<E> set = new HashSet<>(downstreams); // Copy because downstreams is an immutable view
+    public static Set<RiverArc> downstreamEdgesOf(RiverNetwork graph, RiverArc edge) {
+        Set<RiverArc> downstreams = graph.edgesOf(graph.getEdgeTarget(edge));
+        HashSet<RiverArc> set = new HashSet<>(downstreams); // Copy because downstreams is an immutable view
         set.remove(edge);
         return set;
     }
@@ -107,16 +107,15 @@ public class Graphs {
     }
 
     /**
-     * Returns a list of incoming edges immediately upstream to a given edge.
+     * Returns a list of all edges immediately upstream to a given edge.
      *
      * @param graph A directed graph.
      * @param edge  An edge.
-     * @param <E>   The graph edge type.
      * @return Set of upstream edges.
      */
-    public static <T, E> Set<E> upstreamEdges(DirectedGraph<T, E> graph, E edge) {
-        Set<E> upstreams = graph.edgesOf(graph.getEdgeSource(edge));
-        HashSet<E> set = new HashSet<>(upstreams);
+    public static Set<RiverArc> upstreamEdgesOf(RiverNetwork graph, RiverArc edge) {
+        Set<RiverArc> upstreams = graph.edgesOf(graph.getEdgeSource(edge));
+        HashSet<RiverArc> set = new HashSet<>(upstreams);
         set.remove(edge);
         return set;
     }
