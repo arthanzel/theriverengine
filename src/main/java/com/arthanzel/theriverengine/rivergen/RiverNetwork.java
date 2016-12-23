@@ -1,6 +1,7 @@
 package com.arthanzel.theriverengine.rivergen;
 
 import com.arthanzel.theriverengine.util.GraphFiles;
+import com.arthanzel.theriverengine.util.Graphs;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.jgrapht.graph.SimpleDirectedGraph;
@@ -65,14 +66,18 @@ public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> {
             }
         }
 
+        network.optimize();
         return network;
     }
 
-    public Set<RiverArc> getDownstreamArcs(RiverArc arc) {
-        return this.outgoingEdgesOf(this.getEdgeTarget(arc));
-    }
-
-    public Set<RiverArc> getUpstreamArcs(RiverArc arc) {
-        return this.incomingEdgesOf(this.getEdgeSource(arc));
+    /**
+     * Caches several elements within vertices and edges of this RiverNetwork for easier and faster access.
+     */
+    public void optimize() {
+        for (RiverArc arc : this.edgeSet()) {
+            arc.getUpstreamArcs().clear();
+            arc.getUpstreamArcs().addAll(Graphs.upstreamEdgesOf(this, arc));
+            arc.getDownstreamArcs().addAll(Graphs.downstreamEdgesOf(this, arc));
+        }
     }
 }

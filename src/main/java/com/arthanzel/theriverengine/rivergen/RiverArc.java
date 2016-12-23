@@ -2,6 +2,9 @@ package com.arthanzel.theriverengine.rivergen;
 
 import javafx.geometry.Point2D;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Represents a run of a river system between two RiverNodes.
  *
@@ -9,6 +12,7 @@ import javafx.geometry.Point2D;
  */
 public class RiverArc {
     private RiverNode upstreamNode, downstreamNode;
+    private Set<RiverArc> upstreamArcs = new HashSet<>(), downstreamArcs = new HashSet<>();
     private double len;
 
     public RiverArc() {}
@@ -75,5 +79,13 @@ public class RiverArc {
 
     public void setDownstreamNode(RiverNode downstreamNode) {
         this.downstreamNode = downstreamNode;
+    }
+
+    public Set<RiverArc> getUpstreamArcs() {
+        return upstreamArcs;
+    }
+
+    public Set<RiverArc> getDownstreamArcs() {
+        return downstreamArcs;
     }
 }
