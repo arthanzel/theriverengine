@@ -35,7 +35,6 @@ public class Main extends Application {
         RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 100);
         system.getEnvironments().put("temperature", new TemperatureEnvironment());
         system.getEnvironments().put("nutrients", new DiscreteEnvironment(system.getNetwork()));
-        //system.getEnvironments().put("nutrients", new MatrixEnvironment(system.getNetwork()));
 
         // Create the runner and add Influences to change behaviour.
         RiverRunner runner = new RiverRunner(system);
