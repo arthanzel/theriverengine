@@ -1,6 +1,7 @@
 package com.arthanzel.theriverengine.sim.agent;
 
 import com.arthanzel.theriverengine.sim.RiverSystem;
+import com.arthanzel.theriverengine.util.FishMath;
 import com.arthanzel.theriverengine.util.MultitypeHashMap;
 import javafx.scene.paint.Color;
 
@@ -14,7 +15,7 @@ public class Agent {
     private Location location;
 
     public Agent() {
-        attributes.put("color", Color.hsb(Math.random() * 360, 1, Math.random() * 0.5 + 0.5));
+        attributes.put("color", Color.hsb(Math.random() * 360, 1, FishMath.random(0.75, 1)));
         attributes.put("velocity", 0.0);
     }
 
