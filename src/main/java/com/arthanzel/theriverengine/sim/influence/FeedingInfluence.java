@@ -29,6 +29,9 @@ public class FeedingInfluence extends BaseInfluence {
     @BindingName("Feed Rate (/day)")
     private double feedRate = 0.1;
 
+    @DoubleBinding(min = 1, max = 25)
+    private double feedRadius = 10;
+
     @Override
     public void influence(RiverSystem system, double dt) {
         network = system.getNetwork();
@@ -38,10 +41,12 @@ public class FeedingInfluence extends BaseInfluence {
         for (Agent a : system.getAgents()) {
             Location loc = a.getLocation();
             double vi = env.getVirtualIndex(loc.getArc(), loc.getPosition());
+            double dist = loc.getPosition() - env.getPosition(loc.getArc(), (int) vi);
+            assert dist < env.getSeparation(loc.getArc());
 
             try {
-                feedPoint(vi % 1, loc.getArc(), (int) vi, false, false);
-                feedPoint(1 - vi % 1, loc.getArc(), (int) vi, true, true);
+                feedPoint(dist, loc.getArc(), (int) vi, false, false);
+                feedPoint(-dist, loc.getArc(), (int) vi, true, true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -57,14 +62,15 @@ public class FeedingInfluence extends BaseInfluence {
      * @param skip Whether to skip the actual feeding and propagate only.
      */
     private void feedPoint(double distance, RiverArc arc, int vi, boolean downstream, boolean skip) {
-        if (distance > MAX_DISTANCE) {
+        if (distance > feedRadius) {
             return;
         }
 
         DiscretePoint dp = env.getPoints(arc)[vi];
 
         if (!skip) {
-            final double rate = feedRate * TimeUtils.days(dt);
+            final double factor = Math.max(0, 1 - distance / feedRadius);
+            final double rate = feedRate * factor * TimeUtils.days(dt);
             dp.setValue(Math.max(0, dp.getValue() - rate));
         }
 
@@ -102,5 +108,13 @@ public class FeedingInfluence extends BaseInfluence {
 
     public void setFeedRate(double feedRate) {
         this.feedRate = feedRate;
+    }
+
+    public double getFeedRadius() {
+        return feedRadius;
+    }
+
+    public void setFeedRadius(double feedRadius) {
+        this.feedRadius = feedRadius;
     }
 }

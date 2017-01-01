@@ -100,6 +100,10 @@ public class DiscreteEnvironment implements Environment {
         return pos / separations.get(arc);
     }
 
+    public double getPosition(RiverArc arc, double vi) {
+        return getSeparation(arc) * vi;
+    }
+
     /**
      * Returns the distance by which two data points are separated on a given RiverArc.
      */
