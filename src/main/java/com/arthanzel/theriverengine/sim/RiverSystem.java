@@ -17,7 +17,7 @@ public class RiverSystem {
     private Agent[] agents;
     private Map<String, Environment> environments = new HashMap<>();
     private final RiverNetwork network;
-    private long time = 0; // Milliseconds
+    private double time = 0; // Seconds
 
     private RiverSystem(RiverNetwork network) {
         this.network = network;
@@ -93,11 +93,11 @@ public class RiverSystem {
 
     public void putEnvironment(String envName, DiscreteEnvironment env) { environments.put(envName, env); }
 
-    public long getTime() {
+    public double getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(double time) {
         this.time = time;
     }
 }

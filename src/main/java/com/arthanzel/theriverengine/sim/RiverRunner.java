@@ -103,7 +103,7 @@ public class RiverRunner {
         }
         finally {
             systemLock.unlock();
-            system.setTime(system.getTime() + (long) (dt * 1000));
+            system.setTime(system.getTime() + dt);
         }
     }
 

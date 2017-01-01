@@ -44,18 +44,21 @@ public class VelocityApplier extends BaseInfluence {
         }
         else if (newPos < 0) {
             // The agent moves to an upstream Arc
-            // TODO: This is so wrong - it biases upstream arcs. Re-write recursively with real movement.
             Set<RiverArc> upstreamArcs = location.getArc().getUpstreamArcs();
             if (upstreamArcs.size() > 0) {
                 RiverArc target = FishMath.sample(upstreamArcs);
+                double remaining = Math.abs(newPos);
                 double targetPos = 0;
                 if (location.getArc().getUpstreamNode().getUpstreamArcs().contains(target)) {
                     targetPos = target.length();
+                    remaining = -remaining;
                 }
                 location.setArc(target);
                 location.setPosition(targetPos);
+                displace(system, agent, remaining);
             }
             else {
+                // Reached the end of the network
                 location.setPosition(0);
             }
         }
@@ -65,13 +68,17 @@ public class VelocityApplier extends BaseInfluence {
             if (downstreamArcs.size() > 0) {
                 RiverArc target = FishMath.sample(downstreamArcs);
                 double targetPos = 0;
+                double remaining = newPos - max;
                 if (location.getArc().getDownstreamNode().getUpstreamArcs().contains(target)) {
                     targetPos = target.length();
+                    remaining = -remaining;
                 }
                 location.setArc(target);
                 location.setPosition(targetPos);
+                displace(system, agent, remaining);
             }
             else {
+                // Reached the end of the network
                 location.setPosition(location.getArc().length());
             }
         }

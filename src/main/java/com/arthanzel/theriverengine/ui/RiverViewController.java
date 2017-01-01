@@ -47,7 +47,7 @@ public class RiverViewController {
             @Override
             public void handle(long now) {
                 synchronized (systemLock) {
-                    timeLabel.setTime(system.getTime());
+                    timeLabel.setTime((long) (system.getTime() * 1000));
                     riverRenderer.update(system);
                 }
             }
