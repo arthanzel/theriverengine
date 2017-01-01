@@ -19,6 +19,8 @@ import java.util.Set;
  * @author Martin
  */
 public class FeedingInfluence extends BaseInfluence {
+    private static final double MAX_DISTANCE = 20;
+
     private RiverNetwork network;
     private DiscreteEnvironment env;
     private double dt;
@@ -46,29 +48,40 @@ public class FeedingInfluence extends BaseInfluence {
         }
     }
 
+    /**
+     * Simulates feeding at a certain point on the nutrient environment.
+     * @param distance Distance from the fish.
+     * @param arc Arc on which to feed.
+     * @param vi Virtual index of the discrete point.
+     * @param downstream Whether to propagate feeding in the downstream or upstream direction.
+     * @param skip Whether to skip the actual feeding and propagate only.
+     */
     private void feedPoint(double distance, RiverArc arc, int vi, boolean downstream, boolean skip) {
-        if (distance > 20) {
+        if (distance > MAX_DISTANCE) {
             return;
         }
 
         DiscretePoint dp = env.getPoints(arc)[vi];
 
         if (!skip) {
-            final double rate = feedRate / TimeUtils.S_IN_DAY * dt;
-
+            final double rate = feedRate * TimeUtils.days(dt);
             dp.setValue(Math.max(0, dp.getValue() - rate));
         }
 
         // Find the next discrete point
         if (dp.isNode()) {
             if (downstream) {
-                for (RiverArc nextArc : Graphs.downstreamEdgesOf(network, arc)) {
-                    feedPoint(distance + env.getSeparation(arc), nextArc, 1, true, false);
+                for (RiverArc nextArc : arc.getDownstreamArcs()) {
+                    boolean ds = arc.getDownstreamNode().getDownstreamArcs().contains(nextArc);
+                    int nextVI = ds ? 1 : env.getPoints(nextArc).length - 2;
+                    feedPoint(distance + env.getSeparation(nextArc), nextArc, nextVI, ds, false);
                 }
             }
             else {
-                for (RiverArc nextArc : Graphs.upstreamEdgesOf(network, arc)) {
-                    feedPoint(distance + env.getSeparation(arc), nextArc, env.getPoints(arc).length - 2, false, false);
+                for (RiverArc nextArc : arc.getUpstreamArcs()) {
+                    boolean ds = arc.getUpstreamNode().getDownstreamArcs().contains(nextArc);
+                    int nextVI = ds ? 1 : env.getPoints(nextArc).length - 2;
+                    feedPoint(distance + env.getSeparation(nextArc), nextArc, nextVI, ds, false);
                 }
             }
         }

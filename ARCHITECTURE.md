@@ -1,3 +1,10 @@
+TODO
+====
+- Fish consumption radius
+- Energy
+- Reproduction
+- Swim speed
+
 Winter break 
 ============
 

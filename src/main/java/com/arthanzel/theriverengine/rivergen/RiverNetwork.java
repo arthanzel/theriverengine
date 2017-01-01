@@ -77,11 +77,14 @@ public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> {
         for (RiverArc arc : this.edgeSet()) {
             arc.getUpstreamArcs().clear();
             arc.getUpstreamArcs().addAll(Graphs.upstreamEdgesOf(this, arc));
+            arc.getDownstreamArcs().clear();
             arc.getDownstreamArcs().addAll(Graphs.downstreamEdgesOf(this, arc));
         }
 
         for (RiverNode node : this.vertexSet()) {
+            node.getDownstreamArcs().clear();
             node.getDownstreamArcs().addAll(this.outgoingEdgesOf(node));
+            node.getUpstreamArcs().clear();
             node.getUpstreamArcs().addAll(this.incomingEdgesOf(node));
         }
     }
