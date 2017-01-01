@@ -13,8 +13,8 @@ public class RiverRunner {
 
     private List<Influence> influences = new LinkedList<>();
     private RiverSystem system;
-    private volatile boolean flagForStop = false;
-//    private ParallelService pool;
+    private volatile boolean enabled = false;
+    private final Object runningMonitor = new Object();
 
     private volatile double interval = 0.5;
 
@@ -30,6 +30,9 @@ public class RiverRunner {
             try {
                 Thread.sleep(CLONE_INTERVAL_MILLIS);
             } catch (InterruptedException e) {
+                break;
+            }
+            if (Thread.interrupted()) {
                 break;
             }
 
@@ -51,36 +54,34 @@ public class RiverRunner {
         this.system = system;
     }
 
+    public void forward() {
+        System.out.println("Forwarding one frame");
+        tick(interval);
+    }
+
     public void start() {
-//        pool = new ParallelService(NUM_THREADS);
-
-        // Make sure every Influence has a reference to the thread pool for this runner
-//        for (Influence i : influences) {
-//            i.setPool(pool);
-//        }
-
         Thread t = new Thread(() -> {
             FrameCounter counter = new FrameCounter("Simulation", 1000);
             counter.setPrintToOut(true);
             counter.start();
             while (true) {
+                while (!enabled) {
+                    try {
+                        synchronized (runningMonitor) {
+                            runningMonitor.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        System.out.println("RiverRunner: interrupted while paused.");
+                    }
+                }
+
                 counter.increment();
                 tick(interval); // tick takes an interval in seconds
-
-                system.setTime(system.getTime() + (long) (interval * 1000));
-
-                if (flagForStop) {
-                    break;
-                }
             }
         });
         t.start();
 
         cloner.start();
-    }
-
-    public void stop() {
-        this.flagForStop = true;
     }
 
     /**
@@ -102,6 +103,7 @@ public class RiverRunner {
         }
         finally {
             systemLock.unlock();
+            system.setTime(system.getTime() + (long) (dt * 1000));
         }
     }
 
@@ -129,5 +131,16 @@ public class RiverRunner {
 
     public void setInterval(double interval) {
         this.interval = interval;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        synchronized (runningMonitor) {
+            runningMonitor.notifyAll();
+        }
     }
 }

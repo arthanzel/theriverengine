@@ -2,6 +2,7 @@ package com.arthanzel.theriverengine.sim.agent;
 
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.util.MultitypeHashMap;
+import javafx.scene.paint.Color;
 
 /**
  * Represents an autonomous Agent that acts in an agent-based model.
@@ -13,6 +14,7 @@ public class Agent {
     private Location location;
 
     public Agent() {
+        attributes.put("color", Color.hsb(Math.random() * 360, 1, Math.random() * 0.5 + 0.5));
         attributes.put("velocity", 0.0);
     }
 

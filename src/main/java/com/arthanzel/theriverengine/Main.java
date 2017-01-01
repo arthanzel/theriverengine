@@ -63,6 +63,10 @@ public class Main extends Application {
         controller.speedProperty().addListener((observable, oldValue, newValue) -> {
             runner.setInterval((double) newValue);
         });
+        controller.playingProperty().addListener((observable, oldValue, newValue) -> {
+            runner.setEnabled(newValue);
+        });
+        controller.setOnForward(event -> runner.forward());
 
         main.setOnCloseRequest(event -> {
             System.out.println("Exiting");

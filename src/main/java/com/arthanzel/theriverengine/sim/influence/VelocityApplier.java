@@ -1,6 +1,7 @@
 package com.arthanzel.theriverengine.sim.influence;
 
 import com.arthanzel.theriverengine.rivergen.RiverArc;
+import com.arthanzel.theriverengine.rivergen.RiverNode;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
@@ -44,22 +45,31 @@ public class VelocityApplier extends BaseInfluence {
         else if (newPos < 0) {
             // The agent moves to an upstream Arc
             // TODO: This is so wrong - it biases upstream arcs. Re-write recursively with real movement.
-            Set<RiverArc> upstreamArcs = system.getNetwork().getUpstreamArcs(location.getArc());
+            Set<RiverArc> upstreamArcs = location.getArc().getUpstreamArcs();
             if (upstreamArcs.size() > 0) {
                 RiverArc target = FishMath.sample(upstreamArcs);
+                double targetPos = 0;
+                if (location.getArc().getUpstreamNode().getUpstreamArcs().contains(target)) {
+                    targetPos = target.length();
+                }
                 location.setArc(target);
-                location.setPosition(target.length());
+                location.setPosition(targetPos);
             }
             else {
                 location.setPosition(0);
             }
         }
         else {
-            Set<RiverArc> downstreamArcs = system.getNetwork().getDownstreamArcs(location.getArc());
+            // The agent moves to a downstream Arc
+            Set<RiverArc> downstreamArcs = location.getArc().getDownstreamArcs();
             if (downstreamArcs.size() > 0) {
                 RiverArc target = FishMath.sample(downstreamArcs);
+                double targetPos = 0;
+                if (location.getArc().getDownstreamNode().getUpstreamArcs().contains(target)) {
+                    targetPos = target.length();
+                }
                 location.setArc(target);
-                location.setPosition(0);
+                location.setPosition(targetPos);
             }
             else {
                 location.setPosition(location.getArc().length());

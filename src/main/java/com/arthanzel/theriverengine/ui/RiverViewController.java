@@ -9,14 +9,15 @@ import com.arthanzel.theriverengine.ui.controls.RadioField;
 import com.arthanzel.theriverengine.ui.controls.TimeLabel;
 import com.arthanzel.theriverengine.util.TextUtils;
 import javafx.animation.AnimationTimer;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.concurrent.Worker;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 
 /**
  * TODO: Documentation
@@ -29,7 +30,10 @@ public class RiverViewController {
     @FXML private Label fpsLabel;
     @FXML private TimeLabel timeLabel;
     @FXML private TextField speedField;
+    @FXML private ToggleButton playButton;
+    @FXML private Button forwardButton;
 
+    private BooleanProperty playing = new SimpleBooleanProperty(false);
     private DoubleProperty speed = new SimpleDoubleProperty(500);
 
     private RiverSystem system;
@@ -53,6 +57,8 @@ public class RiverViewController {
         speedField.textProperty().addListener((observable, oldValue, newValue) -> {
             speed.setValue(Double.parseDouble(newValue));
         });
+
+        playButton.selectedProperty().bindBidirectional(playing);
     }
 
     public void initialize(RiverSystem system, RiverRunner runner) {
@@ -113,5 +119,21 @@ public class RiverViewController {
 
     public void setSpeed(double speed) {
         this.speed.set(speed);
+    }
+
+    public boolean isPlaying() {
+        return playing.get();
+    }
+
+    public BooleanProperty playingProperty() {
+        return playing;
+    }
+
+    public void setPlaying(boolean playing) {
+        this.playing.set(playing);
+    }
+
+    public void setOnForward(EventHandler<ActionEvent> evt) {
+        forwardButton.setOnAction(evt);
     }
 }

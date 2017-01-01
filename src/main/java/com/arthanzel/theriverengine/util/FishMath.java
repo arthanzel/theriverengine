@@ -54,6 +54,11 @@ public class FishMath {
         return Math.floor(val / multiple) * multiple;
     }
 
+    public static double random(double min, double max) {
+        final double d = max - min;
+        return Math.random() * d + min;
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> T sample(Set<T> set) {
         return (T) set.toArray()[new Random().nextInt(set.size())];

@@ -21,7 +21,8 @@
     <top>
         <HBox alignment="CENTER_LEFT" spacing="5.0" BorderPane.alignment="CENTER">
             <children>
-                <ToggleButton mnemonicParsing="false" text="Play" />
+                <ToggleButton fx:id="playButton" mnemonicParsing="false" text="Play" />
+                <Button fx:id="forwardButton" mnemonicParsing="false" text=">>" />
                 <Button mnemonicParsing="false" text="Open Data Folder" />
                 <Label text="Speed: " />
                 <IntegerTextField fx:id="speedField" prefWidth="50" text="0.5" />

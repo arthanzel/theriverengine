@@ -4,6 +4,7 @@ import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.ui.BooleanBinding;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
+import com.arthanzel.theriverengine.util.FishMath;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class RandomMovement extends BaseInfluence {
     private void run(Agent a) {
         // TODO: Put Random in a ThreadLocal
         final double v = a.getAttributes().getDouble("velocity");
-        a.getAttributes().put("velocity", v + r.nextDouble() * 2 * 2 - 2);
+        a.getAttributes().put("velocity", v + FishMath.random(-spread, spread));
     }
 
     public double getSpread() {

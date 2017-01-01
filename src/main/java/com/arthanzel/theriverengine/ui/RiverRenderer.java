@@ -150,6 +150,7 @@ public class RiverRenderer extends Pane {
         for (Agent a : agents) {
             Point2D point = a.getLocation().getPoint();
             double size = 5 / scale;
+            gfx.setFill((Color) a.getAttributes().get("color"));
             gfx.fillOval(point.getX() - size / 2, point.getY() - size / 2, size, size);
         }
     }
@@ -165,7 +166,7 @@ public class RiverRenderer extends Pane {
             RiverNode dest = arc.getDownstreamNode();
             gfx.setLineCap(StrokeLineCap.ROUND);
             gfx.setLineWidth(1.2 / this.scale);
-            gfx.setStroke(Color.MEDIUMBLUE);
+            gfx.setStroke(Color.DARKBLUE);
             gfx.strokeLine(origin.getPosition().getX(),
                     origin.getPosition().getY(),
                     dest.getPosition().getX(),

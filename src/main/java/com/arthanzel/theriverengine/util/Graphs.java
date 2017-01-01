@@ -40,6 +40,24 @@ public class Graphs {
     }
 
     /**
+     * Determines the direction of an arc relative to a node. -1 indicates that the arc flows
+     * into the node. +1 indicates that the arc flows away from the node. 0 indicates that the
+     * arc is not incident to the node.
+     * @param graph A river network.
+     * @param node A river node.
+     * @param arc A river arc.
+     */
+//    public static double direction(RiverNetwork graph, RiverNode node, RiverArc arc) {
+//        if (graph.incomingEdgesOf(node).contains(arc)) {
+//            return -1;
+//        }
+//        if (graph.outgoingEdgesOf(node).contains(arc)) {
+//            return 1;
+//        }
+//        return 0;
+//    }
+
+    /**
      * Returns a list of all edges immediately downstream to a given edge.
      *
      * @param graph A directed graph.

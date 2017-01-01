@@ -2,6 +2,8 @@ package com.arthanzel.theriverengine.rivergen;
 
 import javafx.geometry.Point2D;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -12,6 +14,8 @@ import java.util.UUID;
 public class RiverNode {
     private String name = "";
     private Point2D position = Point2D.ZERO;
+    private Set<RiverArc> downstreamArcs = new HashSet<>();
+    private Set<RiverArc> upstreamArcs = new HashSet<>();
 
     public RiverNode() {
         this.name = UUID.randomUUID().toString();
@@ -46,5 +50,13 @@ public class RiverNode {
 
     public void setPosition(Point2D position) {
         this.position = position;
+    }
+
+    public Set<RiverArc> getDownstreamArcs() {
+        return downstreamArcs;
+    }
+
+    public Set<RiverArc> getUpstreamArcs() {
+        return upstreamArcs;
     }
 }
