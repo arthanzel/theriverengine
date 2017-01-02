@@ -152,6 +152,8 @@ public class RiverRenderer extends Pane {
             double size = 5 / scale;
             gfx.setFill((Color) a.getAttributes().get("color"));
             gfx.fillOval(point.getX() - size / 2, point.getY() - size / 2, size, size);
+            gfx.setFill(Color.BLACK);
+            gfx.fillText("" + a.getAttributes().getDouble("energy"), point.getX() + 5, point.getY() + 5);
         }
     }
 

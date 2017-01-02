@@ -33,6 +33,10 @@ public class NutrientDynamicsLog extends BaseInfluence {
         env.transform((value) -> {
             final double n = value.getValue();
             final double cc = carryingCapacity + capacityPerDegree * temp.get(value.getArc(), value.getPosition());
+            if (cc == 0) {
+                value.setValue(0); // Avoid divide-by-zero
+                return;
+            }
             final double delta = growthRate * n * (1 - n / cc) * TimeUtils.days(dt);
             final double spawnDelta = spawnRate * TimeUtils.days(dt);
             value.setValue(n + delta + spawnDelta);

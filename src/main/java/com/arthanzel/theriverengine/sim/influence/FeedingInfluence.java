@@ -45,8 +45,13 @@ public class FeedingInfluence extends BaseInfluence {
             assert dist < env.getSeparation(loc.getArc());
 
             try {
-                feedPoint(dist, loc.getArc(), (int) vi, false, false);
-                feedPoint(-dist, loc.getArc(), (int) vi, true, true);
+                double uptake = 0;
+                uptake += feedPoint(dist, loc.getArc(), (int) vi, false, false);
+                uptake += feedPoint(-dist, loc.getArc(), (int) vi, true, true);
+                double energy = a.getAttributes().getDouble("energy");
+                System.out.println("e" + energy);
+                System.out.println("u" + uptake);
+                a.getAttributes().put("energy", energy + uptake);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -61,17 +66,19 @@ public class FeedingInfluence extends BaseInfluence {
      * @param downstream Whether to propagate feeding in the downstream or upstream direction.
      * @param skip Whether to skip the actual feeding and propagate only.
      */
-    private void feedPoint(double distance, RiverArc arc, int vi, boolean downstream, boolean skip) {
+    private double feedPoint(double distance, RiverArc arc, int vi, boolean downstream, boolean skip) {
         if (distance > feedRadius) {
-            return;
+            return 0;
         }
 
         DiscretePoint dp = env.getPoints(arc)[vi];
+        double amountFed = 0;
 
         if (!skip) {
             final double factor = Math.max(0, 1 - distance / feedRadius);
             final double rate = feedRate * factor * TimeUtils.days(dt);
-            dp.setValue(Math.max(0, dp.getValue() - rate));
+            amountFed = Math.max(0, dp.getValue() - rate);
+            dp.setValue(amountFed);
         }
 
         // Find the next discrete point
@@ -80,26 +87,28 @@ public class FeedingInfluence extends BaseInfluence {
                 for (RiverArc nextArc : arc.getDownstreamArcs()) {
                     boolean ds = arc.getDownstreamNode().getDownstreamArcs().contains(nextArc);
                     int nextVI = ds ? 1 : env.getPoints(nextArc).length - 2;
-                    feedPoint(distance + env.getSeparation(nextArc), nextArc, nextVI, ds, false);
+                    amountFed += feedPoint(distance + env.getSeparation(nextArc), nextArc, nextVI, ds, false);
                 }
             }
             else {
                 for (RiverArc nextArc : arc.getUpstreamArcs()) {
                     boolean ds = arc.getUpstreamNode().getDownstreamArcs().contains(nextArc);
                     int nextVI = ds ? 1 : env.getPoints(nextArc).length - 2;
-                    feedPoint(distance + env.getSeparation(nextArc), nextArc, nextVI, ds, false);
+                    amountFed += feedPoint(distance + env.getSeparation(nextArc), nextArc, nextVI, ds, false);
                 }
             }
         }
         else {
             double separation = env.getSeparation(arc);
             if (downstream) {
-                feedPoint(distance + separation, arc, vi + 1, true, false);
+                amountFed += feedPoint(distance + separation, arc, vi + 1, true, false);
             }
             else {
-                feedPoint(distance + separation, arc, vi - 1, false, false);
+                amountFed += feedPoint(distance + separation, arc, vi - 1, false, false);
             }
         }
+
+        return amountFed;
     }
 
     public double getFeedRate() {
