@@ -6,11 +6,26 @@ package com.arthanzel.theriverengine.ui;
  * @author Martin
  */
 public class RenderOptions {
-    @BooleanBinding private volatile boolean renderingAgents = true;
-    @BooleanBinding private volatile boolean renderingNetwork = true;
-    @DoubleBinding(min = -10, max = 10) private volatile double legendMin = 0.0;
-    @DoubleBinding(min = -10, max = 10) private volatile double legendMax = 1.0;
-    @DoubleBinding(min = 0.1, max = 20) private volatile double envTickInterval = 5;
+    @BooleanBinding
+    @BindingName("Show Agents")
+    private volatile boolean renderingAgents = true;
+
+    @BooleanBinding
+    @BindingName("Show Extras")
+    private volatile boolean renderingExtras = false;
+
+    @BooleanBinding
+    @BindingName("Show Network")
+    private volatile boolean renderingNetwork = true;
+
+    @DoubleBinding(min = -10, max = 10)
+    private volatile double legendMin = 0.0;
+
+    @DoubleBinding(min = -10, max = 10)
+    private volatile double legendMax = 1.0;
+
+    @DoubleBinding(min = 0.1, max = 20)
+    private volatile double envTickInterval = 5;
 
     // ====== Accessors ======
 
@@ -20,6 +35,14 @@ public class RenderOptions {
 
     public void setRenderingAgents(boolean renderingAgents) {
         this.renderingAgents = renderingAgents;
+    }
+
+    public boolean isRenderingExtras() {
+        return renderingExtras;
+    }
+
+    public void setRenderingExtras(boolean renderingExtras) {
+        this.renderingExtras = renderingExtras;
     }
 
     public boolean isRenderingNetwork() {

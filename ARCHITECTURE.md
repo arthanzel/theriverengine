@@ -1,6 +1,6 @@
 TODO
 ====
-- Fish consumption radius
+- (DONE) Fish consumption radius
 - Energy
 - Reproduction
 - Swim speed

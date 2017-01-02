@@ -79,6 +79,7 @@ public class RiverRenderer extends Pane {
         if (options.isRenderingNetwork()) drawNetwork(system.getNetwork());
         if (this.renderableEnvironment.get() != null) drawEnvironment(system);
         if (options.isRenderingAgents()) drawAgents(system.getAgents());
+        if (options.isRenderingExtras()) drawExtras(system);
     }
 
     // region UI
@@ -152,8 +153,26 @@ public class RiverRenderer extends Pane {
             double size = 5 / scale;
             gfx.setFill((Color) a.getAttributes().get("color"));
             gfx.fillOval(point.getX() - size / 2, point.getY() - size / 2, size, size);
-            gfx.setFill(Color.BLACK);
-            gfx.fillText("" + a.getAttributes().getDouble("energy"), point.getX() + 5, point.getY() + 5);
+        }
+    }
+
+    /**
+     * Draws extra information on the screen.
+     */
+    private void drawExtras(RiverSystem system) {
+        gfx.setFill(Color.BLACK);
+        gfx.setTextAlign(TextAlignment.CENTER);
+        gfx.setTextBaseline(VPos.BOTTOM);
+        for (RiverNode node : system.getNetwork().vertexSet()) {
+            Point2D p = node.getPosition();
+            gfx.fillText(node.getName(), p.getX(), p.getY() - 2);
+        }
+
+        gfx.setTextAlign(TextAlignment.LEFT);
+        gfx.setTextBaseline(VPos.CENTER);
+        for (Agent a : system.getAgents()) {
+            Point2D p = a.getLocation().getPoint();
+            gfx.fillText(String.format("%.2f", a.getAttributes().getDouble("energy")), p.getX() + 5, p.getY() + 5);
         }
     }
 

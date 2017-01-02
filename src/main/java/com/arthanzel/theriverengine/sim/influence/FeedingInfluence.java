@@ -49,8 +49,6 @@ public class FeedingInfluence extends BaseInfluence {
                 uptake += feedPoint(dist, loc.getArc(), (int) vi, false, false);
                 uptake += feedPoint(-dist, loc.getArc(), (int) vi, true, true);
                 double energy = a.getAttributes().getDouble("energy");
-                System.out.println("e" + energy);
-                System.out.println("u" + uptake);
                 a.getAttributes().put("energy", energy + uptake);
             } catch (Exception e) {
                 e.printStackTrace();
