@@ -54,6 +54,10 @@ public class Main extends Application {
         feedingInfluence.setEnabled(false);
         runner.getInfluences().add(feedingInfluence);
 
+        Influence deathDynamics = new DeathDynamics();
+        deathDynamics.setEnabled(false);
+        runner.getInfluences().add(deathDynamics);
+
         // Load UI
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));
         Scene scene = new Scene(loader.load(), 800, 600);

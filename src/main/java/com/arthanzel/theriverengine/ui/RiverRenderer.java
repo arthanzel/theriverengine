@@ -24,6 +24,8 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
+import java.util.List;
+
 /**
  * TODO: Documentation
  *
@@ -146,7 +148,7 @@ public class RiverRenderer extends Pane {
      *
      * @param agents Array of agents.
      */
-    private void drawAgents(Agent[] agents) {
+    private void drawAgents(List<Agent> agents) {
         gfx.setFill(Color.BLACK);
         for (Agent a : agents) {
             Point2D point = a.getLocation().getPoint();

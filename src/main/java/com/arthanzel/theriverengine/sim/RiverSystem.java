@@ -14,7 +14,7 @@ import java.util.*;
  * environmental characteristics.
  */
 public class RiverSystem {
-    private Agent[] agents;
+    private List<Agent> agents;
     private Map<String, Environment> environments = new HashMap<>();
     private final RiverNetwork network;
     private double time = 0; // Seconds
@@ -25,15 +25,15 @@ public class RiverSystem {
 
     public RiverSystem(RiverNetwork network, int numAgents) {
         this(network);
-        this.agents = new Agent[numAgents];
+        this.agents = new LinkedList<>();
 
-        initAgentsRandomly();
+        initAgentsRandomly(numAgents);
     }
 
     /**
      * Initializes this river system's array of agents with random locations and properties.
      */
-    public void initAgentsRandomly() {
+    public void initAgentsRandomly(int numAgents) {
         // Get the arcs into an array and find the longest length
         RiverArc[] arcs = network.edgeSet().toArray(new RiverArc[0]);
         double maxLength = 0;
@@ -45,19 +45,19 @@ public class RiverSystem {
         }
 
         // Re-initialize agents and place them randomly in the river system
-        for (int i = 0; i < agents.length; i++) {
+        for (int i = 0; i < numAgents; i++) {
             Random r = new Random();
 
             // Pick a random arc. Shorts arcs should be selected less than long arcs.
-            RiverArc arc = null;
-            double pos = -1;
+            RiverArc arc;
+            double pos;
             do {
                 arc = arcs[r.nextInt(arcs.length)];
                 pos = r.nextDouble() * maxLength;
             } while (pos > arc.length());
-
-            agents[i] = new Agent();
-            agents[i].setLocation(new Location(arc, pos));
+            Agent a = new Agent();
+            a.setLocation(new Location(arc, pos));
+            agents.add(a);
         }
     }
 
@@ -65,9 +65,9 @@ public class RiverSystem {
         RiverSystem rs = new RiverSystem(network); // The network is immutable, so the clone can contain a reference.
         rs.time = time;
 
-        rs.agents = new Agent[agents.length];
-        for (int i = 0; i < agents.length; i++) {
-            rs.agents[i] = agents[i].clone();
+        rs.agents = new LinkedList<>();
+        for (Agent a : agents) {
+            rs.agents.add(a.clone());
         }
 
         for (String s : environments.keySet()) {
@@ -79,7 +79,7 @@ public class RiverSystem {
 
     // ====== Accessors ======
 
-    public Agent[] getAgents() {
+    public List<Agent> getAgents() {
         return agents;
     }
 
