@@ -153,7 +153,12 @@ public class RiverRenderer extends Pane {
         for (Agent a : agents) {
             Point2D point = a.getLocation().getPoint();
             double size = 5 / scale;
-            gfx.setFill((Color) a.getAttributes().get("color"));
+
+            // Draw agents in black if an environment is selected.
+            if (getRenderableEnvironment() == null) {
+                gfx.setFill((Color) a.getAttributes().get("color"));
+            }
+
             gfx.fillOval(point.getX() - size / 2, point.getY() - size / 2, size, size);
         }
     }
