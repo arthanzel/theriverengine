@@ -3,6 +3,8 @@ package com.arthanzel.theriverengine.ui.controls;
 import com.arthanzel.theriverengine.ui.BooleanBinding;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
 import com.arthanzel.theriverengine.util.ReflectionUtils;
+import com.arthanzel.theriverengine.util.TextUtils;
+import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Pane;
@@ -11,6 +13,10 @@ import javafx.scene.layout.VBox;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -54,12 +60,9 @@ public class BeanEditPane extends TitledPane {
         VBox container = new VBox(7);
         this.setContent(container);
 
+        // Add field editors
         List<Field> fields = ReflectionUtils.getAllDeclaredFields(this.bean.getClass());
-        //fields.
-        fields.sort((o1, o2) ->
-            o1.getName().compareTo(o2.getName())
-        );
-
+        fields.sort(Comparator.comparing(Field::getName));
         for (Field f : fields) {
             try {
                 PropertyDescriptor pd = new PropertyDescriptor(f.getName(), bean.getClass());
@@ -72,6 +75,24 @@ public class BeanEditPane extends TitledPane {
                 }
             } catch (Exception e) {
                 // Do nothing. pd probably refers to a non-property that is missing getters/setters.
+            }
+        }
+
+        // Add method buttons
+        List<Method> methods = Arrays.asList(this.bean.getClass().getMethods());
+        methods.sort(Comparator.comparing(Method::getName));
+        for (Method m : methods) {
+            if (m.getName().startsWith("fire")) {
+                Button b = new Button();
+                b.setText(TextUtils.toWords(m.getName()));
+                b.setOnAction((actionEvent) -> {
+                    try {
+                        m.invoke(this.bean);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                container.getChildren().add(b);
             }
         }
     }
