@@ -1,5 +1,6 @@
 package com.arthanzel.theriverengine.sim.environment;
 
+import com.arthanzel.theriverengine.data.JsonSerializable;
 import com.arthanzel.theriverengine.rivergen.RiverArc;
 import javafx.geometry.Point2D;
 

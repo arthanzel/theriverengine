@@ -1,8 +1,10 @@
 package com.arthanzel.theriverengine.sim.agent;
 
+import com.arthanzel.theriverengine.data.JsonSerializable;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.util.FishMath;
 import com.arthanzel.theriverengine.util.MultitypeHashMap;
+import com.google.gson.JsonObject;
 import javafx.scene.paint.Color;
 
 /**
@@ -10,7 +12,7 @@ import javafx.scene.paint.Color;
  *
  * @author Martin
  */
-public class Agent {
+public class Agent implements JsonSerializable {
     private MultitypeHashMap attributes = new MultitypeHashMap();
     private Location location;
 
@@ -28,6 +30,18 @@ public class Agent {
         a.attributes = attributes.clone();
 
         return a;
+    }
+
+    @Override
+    public JsonObject toJson() {
+        JsonObject me = new JsonObject();
+        me.add("location", location.toJson());
+
+        JsonObject attrs = attributes.toJson();
+        me.add("attributes", attributes.toJson());
+
+
+        return me;
     }
 
     // ====== Accessors ======

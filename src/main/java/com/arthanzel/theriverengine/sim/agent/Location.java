@@ -1,6 +1,8 @@
 package com.arthanzel.theriverengine.sim.agent;
 
+import com.arthanzel.theriverengine.data.JsonSerializable;
 import com.arthanzel.theriverengine.rivergen.RiverArc;
+import com.google.gson.JsonObject;
 import javafx.geometry.Point2D;
 
 /**
@@ -9,7 +11,7 @@ import javafx.geometry.Point2D;
  *
  * @author Martin
  */
-public class Location {
+public class Location implements JsonSerializable {
     private RiverArc arc;
     private double position;
 
@@ -32,6 +34,14 @@ public class Location {
      */
     public Point2D getPoint() {
         return arc.getPoint(position);
+    }
+
+    @Override
+    public JsonObject toJson() {
+        JsonObject me = new JsonObject();
+        me.addProperty("arc", arc.toString());
+        me.addProperty("position", position);
+        return me;
     }
 
     public String toString() {

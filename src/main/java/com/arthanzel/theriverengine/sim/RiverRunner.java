@@ -1,15 +1,24 @@
 package com.arthanzel.theriverengine.sim;
 
+import com.arthanzel.theriverengine.concurrent.QueueMode;
 import com.arthanzel.theriverengine.sim.influence.Influence;
 import com.arthanzel.theriverengine.util.FrameCounter;
+
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 public class RiverRunner {
 //    public static final int NUM_THREADS = 1;
     public static final int CLONE_INTERVAL_MILLIS = 1000 / 15; // 15 fps
+
+    final private BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>(64);
+    private QueueMode queueMode = QueueMode.BLOCK;
 
     private List<Influence> influences = new LinkedList<>();
     private RiverSystem system;
@@ -43,8 +52,33 @@ public class RiverRunner {
                 if (refreshHandler != null) {
                     refreshHandler.accept(cloned);
                 }
-            }
-            finally {
+
+                String message = system.toJson().toString();
+
+                // Add to the queue
+                if (messageQueue.remainingCapacity() == 0) {
+                    System.err.println("Queue is full!");
+                }
+
+                switch (queueMode) {
+                    case BLOCK:
+                        messageQueue.put(message);
+                        break;
+                    case DROP:
+                        synchronized (messageQueue) {
+                            if (messageQueue.remainingCapacity() == 0) {
+                                messageQueue.poll();
+                            }
+                            messageQueue.add(message);
+                        }
+                        break;
+                    case SKIP:
+                        messageQueue.offer(message);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                System.err.println("Interrupted!");
+            } finally {
                 systemLock.unlock();
             }
         }
@@ -142,5 +176,17 @@ public class RiverRunner {
         synchronized (runningMonitor) {
             runningMonitor.notifyAll();
         }
+    }
+
+    public BlockingQueue<String> getMessageQueue() {
+        return messageQueue;
+    }
+
+    public QueueMode getQueueMode() {
+        return queueMode;
+    }
+
+    public void setQueueMode(QueueMode queueMode) {
+        this.queueMode = queueMode;
     }
 }

@@ -1,5 +1,10 @@
 package com.arthanzel.theriverengine.util;
 
+import com.arthanzel.theriverengine.data.JsonSerializable;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import javafx.scene.paint.Color;
+
 import java.util.HashMap;
 
 /**
@@ -12,8 +17,12 @@ import java.util.HashMap;
  *
  * @author martin
  */
-public class MultitypeHashMap extends HashMap<String, Object> {
+public class MultitypeHashMap extends HashMap<String, Object> implements JsonSerializable {
     private static final long serialVersionUID = -5500702486726234370L;
+
+    public boolean getBoolean(String key) {
+        return (Boolean) this.get(key);
+    }
 
     public double getDouble(String key) {
         return (Double) this.get(key);
@@ -39,5 +48,34 @@ public class MultitypeHashMap extends HashMap<String, Object> {
         }
 
         return map;
+    }
+
+    @Override
+    public JsonObject toJson() {
+        JsonObject me = new JsonObject();
+        for (String k : this.keySet()) {
+            Object v = this.get(k);
+            if (v instanceof Number) {
+                me.addProperty(k, (Number) v);
+            }
+            else if (v instanceof Boolean) {
+                me.addProperty(k, (Boolean) v);
+            }
+            else if (v instanceof String) {
+                me.addProperty(k, (String) v);
+            }
+            else if (v instanceof Color) {
+                Color clr = (Color) v;
+                JsonObject c = new JsonObject();
+                c.addProperty("r", clr.getRed());
+                c.addProperty("g", clr.getGreen());
+                c.addProperty("b", clr.getBlue());
+                me.add(k, c);
+            }
+            else {
+                me.add(k, new Gson().toJsonTree(v));
+            }
+        }
+        return me;
     }
 }

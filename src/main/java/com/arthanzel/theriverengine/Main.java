@@ -8,6 +8,7 @@ import com.arthanzel.theriverengine.sim.environment.MatrixEnvironment;
 import com.arthanzel.theriverengine.sim.environment.TemperatureEnvironment;
 import com.arthanzel.theriverengine.sim.influence.*;
 import com.arthanzel.theriverengine.ui.RiverViewController;
+import com.oracle.javafx.jmx.json.JSONWriter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -32,7 +33,7 @@ public class Main extends Application {
         main.setTitle(windowTitle);
 
         // Create the system and add Environments to the data model
-        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 50);
+        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 800);
         system.getEnvironments().put("temperature", new TemperatureEnvironment());
         system.getEnvironments().put("nutrients", new DiscreteEnvironment(system.getNetwork()));
 
@@ -60,6 +61,19 @@ public class Main extends Application {
 
         Influence reproductionDynamics = new ReproductionDynamics(system);
         runner.getInfluences().add(reproductionDynamics);
+
+        // Message queue
+        Thread consumer = new Thread(() -> {
+            while (true) {
+                try {
+                    String msg = runner.getMessageQueue().take();
+                    int i = 0;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        consumer.start();
 
         // Load UI
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));

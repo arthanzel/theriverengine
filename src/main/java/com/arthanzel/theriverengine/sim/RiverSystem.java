@@ -1,11 +1,14 @@
 package com.arthanzel.theriverengine.sim;
 
+import com.arthanzel.theriverengine.data.JsonSerializable;
 import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
 import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.environment.Environment;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.*;
 
@@ -13,7 +16,7 @@ import java.util.*;
  * RiverSystem contains the entire model of a river system, including its population of agents, its topology, and its
  * environmental characteristics.
  */
-public class RiverSystem {
+public class RiverSystem implements JsonSerializable {
     private List<Agent> agents;
     private Map<String, Environment> environments = new HashMap<>();
     private final RiverNetwork network;
@@ -75,6 +78,26 @@ public class RiverSystem {
         }
 
         return rs;
+    }
+
+    @Override
+    public JsonObject toJson() {
+        JsonObject me = new JsonObject();
+
+        JsonArray agentsArray = new JsonArray();
+        for (Agent a : agents) {
+            agentsArray.add(a.toJson());
+        }
+        me.add("agents", agentsArray);
+
+        // TODO: Json serialize environments
+//        JsonObject envsArray = new JsonObject();
+//        for (String k : environments.keySet()) {
+//            envsArray.add(k, environments.get(k).toJson());
+//        }
+//        me.add("environments", envsArray);
+
+        return me;
     }
 
     // ====== Accessors ======
