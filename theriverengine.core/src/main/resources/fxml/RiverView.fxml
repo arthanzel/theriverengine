@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import theriverengine.ui.RiverRenderer?>
-<?import theriverengine.ui.controls.TimeLabel?>
+<?import com.arthanzel.theriverengine.ui.RiverRenderer?>
+<?import com.arthanzel.theriverengine.ui.controls.TimeLabel?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<?import theriverengine.ui.controls.IntegerTextField?>
+<?import com.arthanzel.theriverengine.ui.controls.IntegerTextField?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="theriverengine.ui.RiverViewController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.arthanzel.theriverengine.ui.RiverViewController">
     <right>
         <Accordion fx:id="optionsAccordion" prefWidth="200.0" BorderPane.alignment="CENTER" />
     </right>
