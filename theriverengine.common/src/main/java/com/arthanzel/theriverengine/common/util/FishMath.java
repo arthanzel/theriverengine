@@ -1,4 +1,4 @@
-package com.arthanzel.theriverengine.util;
+package com.arthanzel.theriverengine.common.util;
 
 import java.util.Random;
 import java.util.Set;
