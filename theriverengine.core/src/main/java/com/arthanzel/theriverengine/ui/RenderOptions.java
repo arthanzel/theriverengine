@@ -1,5 +1,9 @@
 package com.arthanzel.theriverengine.ui;
 
+import com.arthanzel.theriverengine.common.ui.binding.BindingName;
+import com.arthanzel.theriverengine.common.ui.binding.BooleanBinding;
+import com.arthanzel.theriverengine.common.ui.binding.SliderBinding;
+
 /**
  * TODO: Documentation
  *
@@ -18,13 +22,13 @@ public class RenderOptions {
     @BindingName("Show Network")
     private volatile boolean renderingNetwork = true;
 
-    @DoubleBinding(min = -10, max = 10)
+    @SliderBinding(min = -10, max = 10)
     private volatile double legendMin = 0.0;
 
-    @DoubleBinding(min = -10, max = 10)
+    @SliderBinding(min = -10, max = 10)
     private volatile double legendMax = 1.0;
 
-    @DoubleBinding(min = 0.1, max = 20)
+    @SliderBinding(min = 0.1, max = 20)
     private volatile double envTickInterval = 5;
 
     // ====== Accessors ======

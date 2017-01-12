@@ -1,13 +1,15 @@
 package com.arthanzel.theriverengine.ui.controls;
 
-import com.arthanzel.theriverengine.ui.DoubleBinding;
-import com.arthanzel.theriverengine.util.ReflectionUtils;
+import com.arthanzel.theriverengine.common.ui.DynamicLabel;
+import com.arthanzel.theriverengine.common.ui.fe.BindingInvocationException;
+import com.arthanzel.theriverengine.common.ui.fe.FieldEditor;
+import com.arthanzel.theriverengine.common.ui.fe.TypeMismatchException;
+import com.arthanzel.theriverengine.common.ui.binding.SliderBinding;
+import com.arthanzel.theriverengine.common.util.ReflectionUtils;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 
-import java.beans.IntrospectionException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * The BooleanValueEditor is a control that displays and modifies some double property of a bean (representing a real
@@ -15,12 +17,12 @@ import java.lang.reflect.InvocationTargetException;
  *
  * @author Martin
  */
-public class RealValueEditor extends BeanValueEditor<Double> {
-    public RealValueEditor(Field field, Object bean, DoubleBinding annotation) throws IntrospectionException, InvocationTargetException, IllegalAccessException {
+public class RealValueEditor extends FieldEditor<Double> {
+    public RealValueEditor(Field field, Object bean, SliderBinding annotation) throws BindingInvocationException, TypeMismatchException {
         super(field, bean);
 
         double val = this.getValue();
-        String name = ReflectionUtils.getBeanName(field);
+        String name = ReflectionUtils.getBoundName(field);
 
         DynamicLabel label = new DynamicLabel(name, val);
         this.getChildren().add(label);

@@ -1,15 +1,15 @@
 package com.arthanzel.theriverengine.ui.controls;
 
-import com.arthanzel.theriverengine.ui.BooleanBinding;
-import com.arthanzel.theriverengine.ui.DoubleBinding;
-import com.arthanzel.theriverengine.util.ReflectionUtils;
-import com.arthanzel.theriverengine.util.TextUtils;
+import com.arthanzel.theriverengine.common.ui.fe.BooleanValueEditor;
+import com.arthanzel.theriverengine.common.ui.binding.BooleanBinding;
+import com.arthanzel.theriverengine.common.ui.binding.SliderBinding;
+import com.arthanzel.theriverengine.common.util.ReflectionUtils;
+import com.arthanzel.theriverengine.common.util.TextUtils;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 
 import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -52,7 +52,7 @@ public class BeanEditPane extends TitledPane {
 
     private void initUI(String title) throws IntrospectionException {
         // Sets the text visible in the accordion
-        this.setText(title != null ? title : ReflectionUtils.getBeanName(bean));
+        this.setText(title != null ? title : ReflectionUtils.getBoundName(bean));
 
         VBox container = new VBox(7);
         this.setContent(container);
@@ -62,10 +62,8 @@ public class BeanEditPane extends TitledPane {
         fields.sort(Comparator.comparing(Field::getName));
         for (Field f : fields) {
             try {
-                PropertyDescriptor pd = new PropertyDescriptor(f.getName(), bean.getClass());
-
-                if (f.isAnnotationPresent(DoubleBinding.class)) {
-                    container.getChildren().add(new RealValueEditor(f, bean, f.getAnnotation(DoubleBinding.class)));
+                if (f.isAnnotationPresent(SliderBinding.class)) {
+                    container.getChildren().add(new RealValueEditor(f, bean, f.getAnnotation(SliderBinding.class)));
                 }
                 else if (f.isAnnotationPresent(BooleanBinding.class)) {
                     container.getChildren().add(new BooleanValueEditor(f, bean));

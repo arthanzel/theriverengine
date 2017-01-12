@@ -22,7 +22,6 @@ public class RiverRunner {
 
     private volatile double interval = 0.5;
 
-
     public RiverRunner(RiverSystem system) {
         this.system = system;
     }

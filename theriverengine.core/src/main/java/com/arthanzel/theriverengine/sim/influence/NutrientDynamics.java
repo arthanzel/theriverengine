@@ -2,8 +2,8 @@ package com.arthanzel.theriverengine.sim.influence;
 
 import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.RiverSystem;
-import com.arthanzel.theriverengine.ui.BindingName;
-import com.arthanzel.theriverengine.ui.DoubleBinding;
+import com.arthanzel.theriverengine.common.ui.binding.BindingName;
+import com.arthanzel.theriverengine.common.ui.binding.SliderBinding;
 
 /**
  * Base implementation of an Influence. BaseInfluence does very little except provide getters and setters for the
@@ -13,11 +13,11 @@ import com.arthanzel.theriverengine.ui.DoubleBinding;
  */
 public class NutrientDynamics extends BaseInfluence {
     @BindingName("Growth Rate (constant)")
-    @DoubleBinding(min = 0, max = 1)
+    @SliderBinding(min = 0, max = 1)
     private volatile double growthRate = 0.02;
 
     @BindingName("Death Rate (% of population)")
-    @DoubleBinding(min = 0, max = 1)
+    @SliderBinding(min = 0, max = 1)
     private volatile double deathRate = 0.05;
 
     @Override

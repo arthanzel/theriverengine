@@ -7,8 +7,8 @@ import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
 import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.environment.DiscretePoint;
-import com.arthanzel.theriverengine.ui.BindingName;
-import com.arthanzel.theriverengine.ui.DoubleBinding;
+import com.arthanzel.theriverengine.common.ui.binding.BindingName;
+import com.arthanzel.theriverengine.common.ui.binding.SliderBinding;
 import com.arthanzel.theriverengine.common.util.TimeUtils;
 
 /**
@@ -21,11 +21,11 @@ public class FeedingInfluence extends BaseInfluence {
     private DiscreteEnvironment env;
     private double dt;
 
-    @DoubleBinding(min = 0, max = 2)
+    @SliderBinding(min = 0, max = 2)
     @BindingName("Feed Rate (/day)")
     private double feedRate = 0.1;
 
-    @DoubleBinding(min = 1, max = 25)
+    @SliderBinding(min = 1, max = 25)
     private double feedRadius = 10;
 
     @Override

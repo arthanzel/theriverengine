@@ -2,8 +2,8 @@ package com.arthanzel.theriverengine.sim.influence;
 
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
-import com.arthanzel.theriverengine.ui.BindingName;
-import com.arthanzel.theriverengine.ui.DoubleBinding;
+import com.arthanzel.theriverengine.common.ui.binding.BindingName;
+import com.arthanzel.theriverengine.common.ui.binding.SliderBinding;
 
 import java.util.Iterator;
 
@@ -13,7 +13,7 @@ import java.util.Iterator;
  * @author Martin
  */
 public class DeathDynamics extends BaseInfluence {
-    @DoubleBinding(min = 0, max = 10)
+    @SliderBinding(min = 0, max = 10)
     @BindingName("Survival Threshold (k)")
     private volatile double threshold = 0.0;
 

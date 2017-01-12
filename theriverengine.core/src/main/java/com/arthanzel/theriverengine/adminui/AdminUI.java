@@ -39,7 +39,6 @@ public class AdminUI extends Stage {
     private ToggleButton playButton;
     // endregion
 
-    // region
     private BooleanProperty playing = new SimpleBooleanProperty(true);
 
     public AdminUI(RiverRunner runner) throws IOException {
@@ -52,7 +51,6 @@ public class AdminUI extends Stage {
         this.setTitle("The River Engine - Admin UI");
         this.setScene(new Scene(root));
         this.show();
-        EnumComboBox<QueueMode> cmb = new EnumComboBox<>(QueueMode.class);
     }
 
     public void initialize() {

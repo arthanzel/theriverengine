@@ -1,6 +1,6 @@
 package com.arthanzel.theriverengine.ui.controls;
 
-import com.arthanzel.theriverengine.util.TextUtils;
+import com.arthanzel.theriverengine.common.util.TextUtils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.RadioButton;

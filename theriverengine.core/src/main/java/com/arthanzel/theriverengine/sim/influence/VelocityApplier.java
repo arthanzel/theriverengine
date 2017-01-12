@@ -4,7 +4,7 @@ import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
-import com.arthanzel.theriverengine.ui.DoubleBinding;
+import com.arthanzel.theriverengine.common.ui.binding.SliderBinding;
 import com.arthanzel.theriverengine.common.util.FishMath;
 
 import java.util.Set;
@@ -15,7 +15,7 @@ import java.util.Set;
  * @author Martin
  */
 public class VelocityApplier extends BaseInfluence {
-    @DoubleBinding(min = 0, max = 10) private volatile double maxVelocity = 2.0;
+    @SliderBinding(min = 0, max = 10) private volatile double maxVelocity = 2.0;
 
     public void influence(RiverSystem system, double dt) {
         for (Agent a : system.getAgents()) {

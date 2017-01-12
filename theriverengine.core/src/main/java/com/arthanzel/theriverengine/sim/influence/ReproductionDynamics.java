@@ -2,7 +2,7 @@ package com.arthanzel.theriverengine.sim.influence;
 
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
-import com.arthanzel.theriverengine.ui.DoubleBinding;
+import com.arthanzel.theriverengine.common.ui.binding.SliderBinding;
 import com.arthanzel.theriverengine.common.util.FishMath;
 
 import java.util.LinkedList;
@@ -15,10 +15,10 @@ import java.util.Random;
  * @author Martin
  */
 public class ReproductionDynamics extends BaseInfluence {
-    @DoubleBinding(min = 0, max = 10)
+    @SliderBinding(min = 0, max = 10)
     private int minOffspring = 0;
 
-    @DoubleBinding(min = 0, max = 10)
+    @SliderBinding(min = 0, max = 10)
     private int maxOffspring = 10;
 
     private Random r = new Random();

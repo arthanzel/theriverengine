@@ -1,4 +1,4 @@
-package com.arthanzel.theriverengine.util;
+package com.arthanzel.theriverengine.common.util;
 
 import org.apache.commons.lang3.StringUtils;
 

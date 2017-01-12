@@ -7,7 +7,7 @@ import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.ui.controls.BeanEditPane;
 import com.arthanzel.theriverengine.ui.controls.RadioField;
 import com.arthanzel.theriverengine.common.ui.TimeLabel;
-import com.arthanzel.theriverengine.util.TextUtils;
+import com.arthanzel.theriverengine.common.util.TextUtils;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;

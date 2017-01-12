@@ -3,7 +3,7 @@ package com.arthanzel.theriverengine.sim.influence;
 import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.environment.Environment;
-import com.arthanzel.theriverengine.ui.DoubleBinding;
+import com.arthanzel.theriverengine.common.ui.binding.SliderBinding;
 import com.arthanzel.theriverengine.common.util.TimeUtils;
 
 /**
@@ -13,16 +13,16 @@ import com.arthanzel.theriverengine.common.util.TimeUtils;
  * @author Martin
  */
 public class NutrientDynamicsLog extends BaseInfluence {
-    @DoubleBinding(min = 0, max = 1)
+    @SliderBinding(min = 0, max = 1)
     private volatile double growthRate = 0.02; // What about doubling time of 24 hrs?
 
-    @DoubleBinding(min = 0, max = 1)
+    @SliderBinding(min = 0, max = 1)
     private volatile double carryingCapacity = 0.05;
 
-    @DoubleBinding(min = 0, max = 1)
+    @SliderBinding(min = 0, max = 1)
     private volatile double capacityPerDegree = 0.1;
 
-    @DoubleBinding(min = 0, max = 1)
+    @SliderBinding(min = 0, max = 1)
     private volatile double spawnRate = 0.05;
 
     @Override

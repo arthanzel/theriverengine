@@ -1,6 +1,6 @@
 package com.arthanzel.theriverengine.sim.influence;
 
-import com.arthanzel.theriverengine.ui.BooleanBinding;
+import com.arthanzel.theriverengine.common.ui.binding.BooleanBinding;
 
 /**
  * Base implementation of an Influence. BaseInfluence does very little except provide getters and setters for the

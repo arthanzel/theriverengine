@@ -30,7 +30,7 @@ public class FileReporter implements Consumer<String> {
     @Override
     public void accept(String s) {
         try {
-            writer.write(s);
+            writer.write(s + "\n");
         } catch (IOException e) {
             e.printStackTrace();
         }

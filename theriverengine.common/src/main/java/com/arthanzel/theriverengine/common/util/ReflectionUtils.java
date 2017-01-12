@@ -1,8 +1,9 @@
-package com.arthanzel.theriverengine.util;
+package com.arthanzel.theriverengine.common.util;
 
-import com.arthanzel.theriverengine.ui.BindingName;
+import com.arthanzel.theriverengine.common.ui.binding.BindingName;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ReflectionUtils {
      * @param obj The bean.
      * @return The bean's bound name, or computed name.
      */
-    public static String getBeanName(Object obj) {
+    public static String getBoundName(Object obj) {
         if (obj instanceof Field) {
             Field f = (Field) obj;
             if (f.isAnnotationPresent(BindingName.class)) {
@@ -51,6 +52,21 @@ public class ReflectionUtils {
                 return obj.getClass().getAnnotation(BindingName.class).value();
             }
             return TextUtils.toWords(obj.getClass().getSimpleName());
+        }
+    }
+
+    /**
+     * Returns the method for accessing a JavaFX property. Assumes that the
+     * method is named by the default naming convention:
+     * <code>(name)Property</code>. Returns null if no such method exists.
+     * @param name Name of the property.
+     * @param cls Class containing the property.
+     */
+    public static Method getPropertyMethod(String name, Class<?> cls) {
+        try {
+            return cls.getMethod(name + "Property");
+        } catch (NoSuchMethodException e) {
+            return null;
         }
     }
 }
