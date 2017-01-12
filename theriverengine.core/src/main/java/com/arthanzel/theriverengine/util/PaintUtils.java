@@ -1,5 +1,7 @@
 package com.arthanzel.theriverengine.util;
 
+import com.arthanzel.theriverengine.common.util.FishMath;
+
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 

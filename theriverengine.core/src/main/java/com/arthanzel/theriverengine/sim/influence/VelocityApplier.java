@@ -5,7 +5,7 @@ import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
-import com.arthanzel.theriverengine.util.FishMath;
+import com.arthanzel.theriverengine.common.util.FishMath;
 
 import java.util.Set;
 

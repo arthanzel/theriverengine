@@ -1,5 +1,6 @@
 package com.arthanzel.theriverengine.util;
 
+import com.arthanzel.theriverengine.common.util.FishMath;
 import com.arthanzel.theriverengine.rivergen.RiverArc;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.rivergen.RiverNode;

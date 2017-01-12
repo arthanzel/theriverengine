@@ -103,8 +103,6 @@ public class RiverRunner {
         // Is it time to trigger a message?
         double timeElapsed = (System.nanoTime() - lastReportNanos) / 1.0e9;
         if (timeElapsed > options.getReportingInterval()) {
-            System.out.println("REPORTING");
-            System.out.println(options.getQueueMode());
             sendMessage();
             lastReportNanos = System.nanoTime();
         }

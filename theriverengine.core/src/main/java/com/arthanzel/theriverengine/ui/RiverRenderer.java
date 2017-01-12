@@ -6,7 +6,7 @@ import com.arthanzel.theriverengine.rivergen.RiverNode;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.environment.Environment;
-import com.arthanzel.theriverengine.util.FishMath;
+import com.arthanzel.theriverengine.common.util.FishMath;
 import com.arthanzel.theriverengine.util.PaintUtils;
 import javafx.beans.property.*;
 import javafx.geometry.Point2D;

@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 public class RunnerOptions {
     private ObjectProperty<QueueMode> queueMode = new SimpleObjectProperty<>(QueueMode.BLOCK);
-    private DoubleProperty reportingInterval = new SimpleDoubleProperty(0.5);
+    private DoubleProperty reportingInterval = new SimpleDoubleProperty(5);
     private String dataDirectory;
     private String currentFile;
     private int initialAgents = 100;

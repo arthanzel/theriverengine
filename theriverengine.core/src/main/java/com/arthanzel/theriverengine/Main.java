@@ -1,6 +1,8 @@
 package com.arthanzel.theriverengine;
 
 import com.arthanzel.theriverengine.adminui.AdminUI;
+import com.arthanzel.theriverengine.reporting.FileReporter;
+import com.arthanzel.theriverengine.reporting.RiverReporter;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
@@ -13,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import com.arthanzel.theriverengine.sim.influence.*;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -103,8 +106,20 @@ public class Main extends Application {
 
         AdminUI adminUI = new AdminUI(runner);
 
+        // Reporter
+        RiverReporter reporter = new RiverReporter(runner);
+        reporter.getConsumers().add(s -> {
+            System.out.println(s);
+        });
+        reporter.getConsumers().add(new FileReporter(new File("results.txt")));
+        reporter.start();
+
         runner.start();
         runner.setEnabled(true);
+
+        adminUI.setOnCloseRequest(event -> {
+            System.exit(0);
+        });
     }
 
     @Override
