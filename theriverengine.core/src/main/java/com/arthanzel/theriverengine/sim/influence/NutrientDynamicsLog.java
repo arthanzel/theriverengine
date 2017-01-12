@@ -4,7 +4,7 @@ import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.environment.Environment;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
-import com.arthanzel.theriverengine.util.TimeUtils;
+import com.arthanzel.theriverengine.common.util.TimeUtils;
 
 /**
  * Base implementation of an Influence. BaseInfluence does very little except provide getters and setters for the

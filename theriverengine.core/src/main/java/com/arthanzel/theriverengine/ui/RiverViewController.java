@@ -6,7 +6,7 @@ import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.ui.controls.BeanEditPane;
 import com.arthanzel.theriverengine.ui.controls.RadioField;
-import com.arthanzel.theriverengine.ui.controls.TimeLabel;
+import com.arthanzel.theriverengine.common.ui.TimeLabel;
 import com.arthanzel.theriverengine.util.TextUtils;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.BooleanProperty;

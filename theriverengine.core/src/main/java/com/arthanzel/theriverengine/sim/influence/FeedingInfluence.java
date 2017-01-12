@@ -9,7 +9,7 @@ import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import com.arthanzel.theriverengine.sim.environment.DiscretePoint;
 import com.arthanzel.theriverengine.ui.BindingName;
 import com.arthanzel.theriverengine.ui.DoubleBinding;
-import com.arthanzel.theriverengine.util.TimeUtils;
+import com.arthanzel.theriverengine.common.util.TimeUtils;
 
 /**
  * @author Martin

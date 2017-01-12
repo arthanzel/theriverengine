@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.arthanzel.theriverengine.ui.RiverRenderer?>
-<?import com.arthanzel.theriverengine.ui.controls.TimeLabel?>
+<?import com.arthanzel.theriverengine.common.ui.TimeLabel?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>

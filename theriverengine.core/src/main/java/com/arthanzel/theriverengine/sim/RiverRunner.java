@@ -12,75 +12,16 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 public class RiverRunner {
-//    public static final int NUM_THREADS = 1;
-    public static final int CLONE_INTERVAL_MILLIS = 1000 / 15; // 15 fps
-
+    private final RunnerOptions options = new RunnerOptions();
     final private BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>(64);
-    private QueueMode queueMode = QueueMode.BLOCK;
-
     private List<Influence> influences = new LinkedList<>();
     private RiverSystem system;
     private volatile boolean enabled = false;
     private final Object runningMonitor = new Object();
+    long lastReportNanos = System.nanoTime();
 
     private volatile double interval = 0.5;
 
-    // Event handler: called when the RiverSystem is cloned and the UI may be refreshed.
-    private Consumer<RiverSystem> refreshHandler;
-
-    // Fair lock that ensures that the RiverRunner does not perform more than one operation on its RiverSystem at once.
-    private ReentrantLock systemLock = new ReentrantLock(true);
-
-    // Thread that tries to clone the RiverSystem at a certain interval and calls an event handler.
-    private Thread cloner = new Thread(() -> {
-        while (true) {
-            try {
-                Thread.sleep(CLONE_INTERVAL_MILLIS);
-            } catch (InterruptedException e) {
-                break;
-            }
-            if (Thread.interrupted()) {
-                break;
-            }
-
-            // Try to clone
-            systemLock.lock();
-            try {
-                RiverSystem cloned = system.clone();
-                if (refreshHandler != null) {
-                    refreshHandler.accept(cloned);
-                }
-
-                String message = system.toJson().toString();
-
-                // Add to the queue
-                if (messageQueue.remainingCapacity() == 0) {
-                    System.err.println("Queue is full!");
-                }
-
-                switch (queueMode) {
-                    case BLOCK:
-                        messageQueue.put(message);
-                        break;
-                    case DROP:
-                        synchronized (messageQueue) {
-                            if (messageQueue.remainingCapacity() == 0) {
-                                messageQueue.poll();
-                            }
-                            messageQueue.add(message);
-                        }
-                        break;
-                    case SKIP:
-                        messageQueue.offer(message);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                System.err.println("Interrupted!");
-            } finally {
-                systemLock.unlock();
-            }
-        }
-    });
 
     public RiverRunner(RiverSystem system) {
         this.system = system;
@@ -89,6 +30,36 @@ public class RiverRunner {
     public void forward() {
         System.out.println("Forwarding one frame");
         tick(interval);
+    }
+
+    private void sendMessage() {
+        try {
+            String message = system.toJson().toString();
+
+            // Add to the queue
+            if (messageQueue.remainingCapacity() == 0) {
+                System.err.println("Queue is full!");
+            }
+
+            switch (options.getQueueMode()) {
+                case BLOCK:
+                    messageQueue.put(message);
+                    break;
+                case DROP:
+                    synchronized (messageQueue) {
+                        if (messageQueue.remainingCapacity() == 0) {
+                            messageQueue.poll();
+                        }
+                        messageQueue.add(message);
+                    }
+                    break;
+                case SKIP:
+                    messageQueue.offer(message);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.err.println("Interrupted!");
+        }
     }
 
     public void start() {
@@ -112,8 +83,6 @@ public class RiverRunner {
             }
         });
         t.start();
-
-        cloner.start();
     }
 
     /**
@@ -122,20 +91,22 @@ public class RiverRunner {
      * @param dt Time interval. Higher values are quicker, but less precise, and may lead to artifacts.
      */
     public void tick(double dt) {
-        systemLock.lock();
-        try {
-            for (Influence i : influences) {
-                if (!i.isEnabled()) {
-                    continue;
-                }
-
-                i.influence(system, dt);
-                //pool.waitForCompletion();
+        for (Influence i : influences) {
+            if (!i.isEnabled()) {
+                continue;
             }
+
+            i.influence(system, dt);
         }
-        finally {
-            systemLock.unlock();
-            system.setTime(system.getTime() + dt);
+        system.setTime(system.getTime() + dt);
+
+        // Is it time to trigger a message?
+        double timeElapsed = (System.nanoTime() - lastReportNanos) / 1.0e9;
+        if (timeElapsed > options.getReportingInterval()) {
+            System.out.println("REPORTING");
+            System.out.println(options.getQueueMode());
+            sendMessage();
+            lastReportNanos = System.nanoTime();
         }
     }
 
@@ -147,14 +118,6 @@ public class RiverRunner {
 
     public List<Influence> getInfluences() {
         return influences;
-    }
-
-    public Consumer<RiverSystem> getRefreshHandler() {
-        return refreshHandler;
-    }
-
-    public void setRefreshHandler(Consumer<RiverSystem> refreshHandler) {
-        this.refreshHandler = refreshHandler;
     }
 
     public double getInterval() {
@@ -180,11 +143,7 @@ public class RiverRunner {
         return messageQueue;
     }
 
-    public QueueMode getQueueMode() {
-        return queueMode;
-    }
-
-    public void setQueueMode(QueueMode queueMode) {
-        this.queueMode = queueMode;
+    public RunnerOptions getOptions() {
+        return options;
     }
 }
