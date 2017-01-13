@@ -60,40 +60,6 @@ public class Main extends Application {
 //        Influence reproductionDynamics = new ReproductionDynamics(system);
 //        runner.getInfluences().add(reproductionDynamics);
 //
-//        // Message queue
-//        Thread consumer = new Thread(() -> {
-//            while (true) {
-//                try {
-//                    String msg = runner.getMessageQueue().take();
-//                    int i = 0;
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//        consumer.start();
-//
-//        // Load UI
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));
-//        Scene scene = new Scene(loader.load(), 800, 600);
-//        RiverViewController controller = loader.getController();
-//        main.setScene(scene);
-//        controller.initialize(system.clone(), runner);
-//        controller.speedProperty().addListener((observable, oldValue, newValue) -> {
-//            runner.setInterval((double) newValue);
-//        });
-//        controller.playingProperty().addListener((observable, oldValue, newValue) -> {
-//            runner.setEnabled(newValue);
-//        });
-//        controller.setOnForward(event -> runner.forward());
-//
-//        main.setOnCloseRequest(event -> {
-//            System.out.println("Exiting");
-//            main.close();
-//        });
-//
-//        runner.setRefreshHandler(controller::setSystem);
-//
 //        main.show();
 //        Thread.currentThread().setPriority(Thread.MIN_PRIORITY); // UI thread
 //
@@ -120,6 +86,8 @@ public class Main extends Application {
         adminUI.setOnCloseRequest(event -> {
             System.exit(0);
         });
+
+        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
     }
 
     @Override
