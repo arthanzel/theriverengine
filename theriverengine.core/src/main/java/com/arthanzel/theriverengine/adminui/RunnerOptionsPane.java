@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 
@@ -35,16 +36,11 @@ public class RunnerOptionsPane extends TitledPane {
         }
 
         try {
-            Node n = Bindings.createFor(model.getClass().getDeclaredField("dataDirectory"), model);
-            this.setContent(n);
+            VBox vbox = new VBox(5);
+            vbox.getChildren().addAll(Bindings.createForBean(model));
+            this.setContent(vbox);
         }
-        catch (BindingInvocationException e) {
-            e.printStackTrace();
-        }
-        catch (TypeMismatchException e) {
-            e.printStackTrace();
-        }
-        catch (NoSuchFieldException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

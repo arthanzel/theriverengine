@@ -15,7 +15,8 @@ import java.util.Objects;
 
 /**
  * FieldEditor is a control that provides read and write access to a field of
- * some object. This field must provide either public gett
+ * some object. This field must provide either public getters/setters or a
+ * public JavaFX property accessor.
  *
  * @author Martin
  */
@@ -26,7 +27,14 @@ public abstract class FieldEditor<T> extends HBox {
     private ObjectProperty<T> value = new SimpleObjectProperty<>();
 
     @SuppressWarnings("unchecked")
-    public FieldEditor(Field field, Object bean) throws BindingInvocationException, TypeMismatchException {
+    public FieldEditor(Field field, Object bean) throws BindingInvocationException {
+        this.setSpacing(7);
+
+        /*
+        FieldEditor is *not* type-safe. Be VERY careful and make sure that bound
+        fields' types match their annotations.
+         */
+
         this.field = field;
         this.bean = bean;
         boolean isProperty = Property.class.isAssignableFrom(field.getType());
@@ -42,11 +50,11 @@ public abstract class FieldEditor<T> extends HBox {
                 Method propAccessor = ReflectionUtils.getPropertyMethod(field.getName(), bean.getClass());
                 Property<T> prop = (Property<T>) Objects.requireNonNull(propAccessor).invoke(bean);
                 value.set(prop.getValue());
-                value.bindBidirectional(prop);
+                prop.bindBidirectional(value);
             }
-            catch (ClassCastException e) {
-                throw new TypeMismatchException(field);
-            }
+//            catch (ClassCastException e) {
+//                throw new TypeMismatchException(field);
+//            }
             catch (InvocationTargetException | IllegalAccessException | NullPointerException e) {
                 throw new BindingInvocationException(field, bean.getClass());
             }
@@ -74,9 +82,9 @@ public abstract class FieldEditor<T> extends HBox {
                     }
                 });
             }
-            catch (ClassCastException e) {
-                throw new TypeMismatchException(field);
-            }
+//            catch (ClassCastException e) {
+//                throw new TypeMismatchException(field);
+//            }
             catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
                 throw new BindingInvocationException(field, bean.getClass());
             }

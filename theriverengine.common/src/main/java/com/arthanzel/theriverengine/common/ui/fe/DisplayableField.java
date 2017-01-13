@@ -12,7 +12,7 @@ import java.lang.reflect.Field;
  * @author Martin
  */
 public class DisplayableField<T> extends FieldEditor<T> {
-    public DisplayableField(Field field, Object bean, DisplayableBinding annotation) throws BindingInvocationException, TypeMismatchException {
+    public DisplayableField(Field field, Object bean, DisplayableBinding annotation) throws BindingInvocationException {
         super(field, bean);
 
         String newline = annotation.newline() ? "\n" : "";

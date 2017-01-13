@@ -14,9 +14,7 @@
          xmlns="http://javafx.com/javafx/8.0.112">
     <text>Simulation Options</text>
 
-    <fx:define>
-        <RunnerOptions fx:id="model"/>
-    </fx:define>
+
 
     <VBox spacing="7">
         <HBox alignment="CENTER_LEFT" spacing="5">

@@ -14,12 +14,12 @@ import java.io.File;
 import java.lang.reflect.Field;
 
 /**
- *
+ * FileField allows the user to select files or folders.
  *
  * @author Martin
  */
 public class FileField extends FieldEditor<File> {
-    public FileField(Field field, Object bean, FileBinding annotation) throws BindingInvocationException, TypeMismatchException {
+    public FileField(Field field, Object bean, FileBinding annotation) throws BindingInvocationException {
         super(field, bean);
         boolean folders = annotation.folders();
 

@@ -1,5 +1,6 @@
 package com.arthanzel.theriverengine.sim;
 
+import com.arthanzel.theriverengine.common.ui.binding.DoubleSpinnerBinding;
 import com.arthanzel.theriverengine.common.ui.binding.FileBinding;
 import com.arthanzel.theriverengine.concurrent.QueueMode;
 import javafx.beans.property.DoubleProperty;
@@ -18,16 +19,18 @@ import java.util.UUID;
  */
 public class RunnerOptions {
     private ObjectProperty<QueueMode> queueMode = new SimpleObjectProperty<>(QueueMode.BLOCK);
+
+    @DoubleSpinnerBinding(min = 0.25, max = 10)
     private DoubleProperty reportingInterval = new SimpleDoubleProperty(5);
 
-    @FileBinding(folders = true)
+    @FileBinding
     private File dataDirectory;
 
     private String currentFile;
     private int initialAgents = 100;
 
     public RunnerOptions() {
-        dataDirectory = new File(System.getProperty("user.home"), "theriverengine");
+        dataDirectory = new File(System.getenv("user.home"), "theriverengine");
 
         String uuid = UUID.randomUUID().toString().substring(0, 4);
         currentFile = String.format("%s-%s.json",
