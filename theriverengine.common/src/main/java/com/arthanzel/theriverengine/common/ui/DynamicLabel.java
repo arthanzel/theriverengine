@@ -19,9 +19,11 @@ public class DynamicLabel<T> extends Label {
      * Create a DynamicLabel with a template string and initial value.
      */
     public DynamicLabel(String template, T val) {
+        this.template.set(template);
+        this.value.set(val);
         this.template.addListener((observable, oldValue, newValue) -> update());
         this.value.addListener((observable, oldValue, newValue) -> update());
-        value.set(val);
+        update();
     }
 
     /**
@@ -34,7 +36,7 @@ public class DynamicLabel<T> extends Label {
     }
 
     private void update() {
-        super.setText(String.format(template.get(), value.get()));
+        this.setText(String.format(template.get(), value.get()));
     }
 
     public String getTemplate() {

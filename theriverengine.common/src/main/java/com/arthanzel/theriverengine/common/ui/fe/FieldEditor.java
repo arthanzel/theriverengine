@@ -23,6 +23,7 @@ import java.util.Objects;
 public abstract class FieldEditor<T> extends HBox {
     private final Field field;
     private final Object bean;
+    private final Class type;
 
     private ObjectProperty<T> value = new SimpleObjectProperty<>();
 
@@ -49,6 +50,7 @@ public abstract class FieldEditor<T> extends HBox {
             try {
                 Method propAccessor = ReflectionUtils.getPropertyMethod(field.getName(), bean.getClass());
                 Property<T> prop = (Property<T>) Objects.requireNonNull(propAccessor).invoke(bean);
+                this.type = prop.getValue().getClass();
                 value.set(prop.getValue());
                 prop.bindBidirectional(value);
             }
@@ -67,6 +69,8 @@ public abstract class FieldEditor<T> extends HBox {
             underlying field, and will try to overwrite it even if is not in
             sync.
              */
+
+            this.type = field.getType();
 
             try {
                 PropertyDescriptor pd = new PropertyDescriptor(field.getName(), bean.getClass());
@@ -92,6 +96,10 @@ public abstract class FieldEditor<T> extends HBox {
     }
 
     // ====== Accessors ======
+
+    protected Class getType() {
+        return type;
+    }
 
     public Object getBean() {
         return bean;

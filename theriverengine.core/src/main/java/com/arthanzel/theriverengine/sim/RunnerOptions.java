@@ -1,7 +1,6 @@
 package com.arthanzel.theriverengine.sim;
 
-import com.arthanzel.theriverengine.common.ui.binding.DoubleSpinnerBinding;
-import com.arthanzel.theriverengine.common.ui.binding.FileBinding;
+import com.arthanzel.theriverengine.common.ui.binding.*;
 import com.arthanzel.theriverengine.concurrent.QueueMode;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -18,15 +17,19 @@ import java.util.UUID;
  * Created by martin on 2017-01-10.
  */
 public class RunnerOptions {
+    @EnumBinding
     private ObjectProperty<QueueMode> queueMode = new SimpleObjectProperty<>(QueueMode.BLOCK);
 
     @DoubleSpinnerBinding(min = 0.25, max = 10)
     private DoubleProperty reportingInterval = new SimpleDoubleProperty(5);
 
-    @FileBinding
+    @FileBinding(folders = true)
     private File dataDirectory;
 
+    @DisplayableBinding(newline = true)
     private String currentFile;
+
+    @IntegerSpinnerBinding(min = 1, max = 9999)
     private int initialAgents = 100;
 
     public RunnerOptions() {

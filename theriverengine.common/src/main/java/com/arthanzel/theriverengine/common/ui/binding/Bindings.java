@@ -24,6 +24,12 @@ public class Bindings {
         if (f.isAnnotationPresent(DoubleSpinnerBinding.class)) {
             return new DoubleSpinnerField(f, bean, f.getAnnotation(DoubleSpinnerBinding.class));
         }
+        if (f.isAnnotationPresent(IntegerSpinnerBinding.class)) {
+            return new IntegerSpinnerField(f, bean, f.getAnnotation(IntegerSpinnerBinding.class));
+        }
+        if (f.isAnnotationPresent(EnumBinding.class)) {
+            return new EnumComboField(f, bean, f.getAnnotation(EnumBinding.class));
+        }
         return null;
     }
 

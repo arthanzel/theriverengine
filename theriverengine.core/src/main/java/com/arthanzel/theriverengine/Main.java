@@ -109,7 +109,7 @@ public class Main extends Application {
         // Reporter
         RiverReporter reporter = new RiverReporter(runner);
         reporter.getConsumers().add(s -> {
-            System.out.println(runner.getOptions().getReportingInterval());
+            System.out.println(runner.getOptions().getQueueMode());
         });
         reporter.getConsumers().add(new FileReporter(new File("results.txt")));
         reporter.start();
