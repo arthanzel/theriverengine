@@ -1,6 +1,7 @@
 *.class
 
 target
+results.txt
 
 # User-specific stuff:
 .idea

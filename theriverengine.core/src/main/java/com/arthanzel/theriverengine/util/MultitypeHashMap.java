@@ -1,6 +1,6 @@
 package com.arthanzel.theriverengine.util;
 
-import com.arthanzel.theriverengine.data.JsonSerializable;
+import com.arthanzel.theriverengine.common.data.JsonSerializable;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.scene.paint.Color;

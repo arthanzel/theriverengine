@@ -1,5 +1,7 @@
-package com.arthanzel.theriverengine.rivergen;
+package com.arthanzel.theriverengine.common.rivergen;
 
+import com.arthanzel.theriverengine.common.data.JsonSerializable;
+import com.google.gson.JsonObject;
 import javafx.geometry.Point2D;
 
 import java.util.HashSet;
@@ -11,7 +13,7 @@ import java.util.UUID;
  *
  * @author Martin
  */
-public class RiverNode {
+public class RiverNode implements JsonSerializable {
     private String name = "";
     private Point2D position = Point2D.ZERO;
     private Set<RiverArc> downstreamArcs = new HashSet<>();
@@ -28,6 +30,14 @@ public class RiverNode {
     public RiverNode(String name, Point2D position) {
         this.name = name;
         this.position = position;
+    }
+
+    @Override
+    public JsonObject toJson() {
+        JsonObject me = new JsonObject();
+        me.addProperty("x", position.getX());
+        me.addProperty("y", position.getY());
+        return me;
     }
 
     public String toString() {

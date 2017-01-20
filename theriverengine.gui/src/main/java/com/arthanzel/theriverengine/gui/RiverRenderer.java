@@ -1,6 +1,9 @@
 package com.arthanzel.theriverengine.gui;
 
-import com.arthanzel.theriverengine.gui.util.JsonUtils;
+import com.arthanzel.theriverengine.common.rivergen.RiverArc;
+import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
+import com.arthanzel.theriverengine.common.rivergen.RiverNode;
+import com.arthanzel.theriverengine.common.util.Benchmarks;
 import com.arthanzel.theriverengine.gui.util.UIUtils;
 import com.google.gson.*;
 import javafx.animation.AnimationTimer;
@@ -15,19 +18,26 @@ import javafx.scene.text.Font;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * TODO: Documentation
  *
  * @author Martin
  */
 public class RiverRenderer extends Pane {
-    private JsonElement root;
-    private Canvas canvas;
+    private JsonObject root;
     private GraphicsContext g;
     private RenderOptions options;
 
+    // Network cache
+    private Map<String, RiverNode> nodes = new HashMap<>();
+    private Map<String, RiverArc> arcs = new HashMap<>();
+
     public RiverRenderer() {
-        canvas = new Canvas();
+        Canvas canvas = new Canvas();
         this.getChildren().add(canvas);
         canvas.widthProperty().bind(this.widthProperty());
         canvas.heightProperty().bind(this.heightProperty());
@@ -50,8 +60,15 @@ public class RiverRenderer extends Pane {
         synchronized (this) {
             JsonParser p = new JsonParser();
             long n = System.nanoTime();
-            root = p.parse(json);
-            System.out.println((System.nanoTime() - n) * 1.0 / 1000000);
+            Benchmarks.run("parsing", () -> root = p.parse(json).getAsJsonObject());
+
+//            if (root.has("network")) {
+//                try {
+//                    updateNetworkCache(root.getAsJsonObject("network"));
+//                } catch (IOException e) {
+//                    System.err.println("Can't read network input!");
+//                }
+//            }
         }
     }
 
@@ -59,6 +76,8 @@ public class RiverRenderer extends Pane {
 
     private void draw() {
         if (root == null) {
+            g.clearRect(0, 0, this.getWidth(), this.getHeight());
+            g.fillText("Waiting for data...", 10, 20);
             return;
         }
 
@@ -69,20 +88,37 @@ public class RiverRenderer extends Pane {
             drawScreenSpaceElements();
             g.restore();
 
-            drawAgents();
+            if (options.isRenderingNetwork()) drawNetwork();
+            if (options.isRenderingAgents()) drawAgents();
         }
     }
 
     private void drawAgents() {
-        for (JsonElement j : root.getAsJsonObject().getAsJsonArray("agents")) {
+        for (JsonElement j : root.getAsJsonArray("agents")) {
             JsonObject agent = j.getAsJsonObject();
-            Point2D point = JsonUtils.parseLocation(agent.get("location").getAsJsonObject());
+            String arc = agent.getAsJsonObject("location").get("arc").getAsString();
+            double pos = agent.getAsJsonObject("location").get("position").getAsDouble();
+            Point2D point = arcs.get(arc).getPoint(pos);
             double size = 5 / scale;
             // Draw agents in black if an environment is selected.
 //            if (getRenderableEnvironment() == null) {
 //                gfx.setFill((Color) a.getAttributes().get("color"));
 //            }
             g.fillOval(point.getX() - size / 2, point.getY() - size / 2, size, size);
+        }
+    }
+
+    private void drawNetwork() {
+        for (RiverArc arc : arcs.values()) {
+            RiverNode origin = arc.getUpstreamNode();
+            RiverNode dest = arc.getDownstreamNode();
+            g.setLineCap(StrokeLineCap.ROUND);
+            g.setLineWidth(1.2 / this.scale);
+            g.setStroke(Color.DARKBLUE);
+            g.strokeLine(origin.getPosition().getX(),
+                    origin.getPosition().getY(),
+                    dest.getPosition().getX(),
+                    dest.getPosition().getY());
         }
     }
 
@@ -213,8 +249,17 @@ public class RiverRenderer extends Pane {
         try {
             return transform.inverseTransform(x, y);
         } catch (NonInvertibleTransformException e) {
-            System.out.println("Non invertible on " + x + ", " + y);
+            System.err.println("Non invertible on " + x + ", " + y);
             return new Point2D(0, 0);
+        }
+    }
+
+    public void updateNetworkCache(RiverNetwork network) {
+        for (RiverNode node : network.vertexSet()) {
+            this.nodes.put(node.getName(), node);
+        }
+        for (RiverArc arc : network.edgeSet()) {
+            this.arcs.put(arc.toString(), arc);
         }
     }
 

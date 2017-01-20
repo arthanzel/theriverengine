@@ -1,6 +1,6 @@
 package com.arthanzel.theriverengine.sim.agent;
 
-import com.arthanzel.theriverengine.data.JsonSerializable;
+import com.arthanzel.theriverengine.common.data.JsonSerializable;
 import com.arthanzel.theriverengine.common.util.FishMath;
 import com.arthanzel.theriverengine.util.MultitypeHashMap;
 import com.google.gson.JsonObject;

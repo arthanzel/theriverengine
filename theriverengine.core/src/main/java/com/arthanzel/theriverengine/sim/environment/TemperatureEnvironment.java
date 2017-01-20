@@ -1,6 +1,6 @@
 package com.arthanzel.theriverengine.sim.environment;
 
-import com.arthanzel.theriverengine.rivergen.RiverArc;
+import com.arthanzel.theriverengine.common.rivergen.RiverArc;
 import javafx.geometry.Point2D;
 
 /**

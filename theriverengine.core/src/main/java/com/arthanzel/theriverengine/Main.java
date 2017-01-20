@@ -4,7 +4,7 @@ import com.arthanzel.theriverengine.adminui.AdminUI;
 import com.arthanzel.theriverengine.gui.RiverView;
 import com.arthanzel.theriverengine.reporting.FileReporter;
 import com.arthanzel.theriverengine.reporting.RiverReporter;
-import com.arthanzel.theriverengine.rivergen.RiverNetwork;
+import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import javafx.application.Application;
@@ -70,22 +70,6 @@ public class Main extends Application {
         flowInf.setEnabled(true);
         runner.getInfluences().add(flowInf);
         // endregion
-
-        // Reporter
-        RiverReporter reporter = new RiverReporter(runner);
-        reporter.getConsumers().add(s -> {
-            System.out.println(runner.getOptions().getQueueMode());
-        });
-        reporter.getConsumers().add(new FileReporter(new File("results.txt")));
-
-        // GUI
-        RiverView view = new RiverView();
-        view.show();
-        reporter.getConsumers().add(s -> {
-            view.updateModel(s);
-        });
-
-        reporter.start();
 
         runner.start();
         runner.setEnabled(true);

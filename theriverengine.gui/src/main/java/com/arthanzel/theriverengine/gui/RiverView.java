@@ -1,6 +1,7 @@
 package com.arthanzel.theriverengine.gui;
 
 
+import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.common.ui.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,10 +24,12 @@ public class RiverView extends Stage {
     @FXML
     private RiverRenderer riverRenderer;
 
-    private RenderOptions options;
+    private RenderOptions options = new RenderOptions();
+    private RiverNetwork network;
 
-    public RiverView() {
-        options = new RenderOptions();
+    public RiverView(RiverNetwork network) {
+        this.network = network;
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));
             loader.setController(this);
@@ -43,6 +46,7 @@ public class RiverView extends Stage {
 
     public void initialize() {
         riverRenderer.setOptions(options);
+        riverRenderer.updateNetworkCache(network);
         controlsContainer.getChildren().addAll(Bindings.createForBean(options));
     }
 

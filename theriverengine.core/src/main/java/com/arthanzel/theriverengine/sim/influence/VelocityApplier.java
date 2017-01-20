@@ -1,6 +1,6 @@
 package com.arthanzel.theriverengine.sim.influence;
 
-import com.arthanzel.theriverengine.rivergen.RiverArc;
+import com.arthanzel.theriverengine.common.rivergen.RiverArc;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
