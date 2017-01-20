@@ -23,7 +23,6 @@ public @interface DoubleSpinnerBinding {
 
     /**
      * Defines the step size imposed by the spinner.
-     * A step size of zero or less indicates no stepping.
      */
     double step() default 0.25;
 }

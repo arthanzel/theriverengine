@@ -3,6 +3,8 @@ package com.arthanzel.theriverengine.common.ui.fe;
 import com.arthanzel.theriverengine.common.ui.binding.FileBinding;
 import com.arthanzel.theriverengine.common.util.ReflectionUtils;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -10,7 +12,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 /**
@@ -26,10 +30,12 @@ public class FileField extends FieldEditor<File> {
         VBox vbox = new VBox();
         HBox hbox = new HBox(20);
         hbox.setAlignment(Pos.CENTER_LEFT);
-        Hyperlink changeLink = new Hyperlink("change");
+        Hyperlink changeLink = new Hyperlink("Change");
+        Hyperlink openLink = new Hyperlink(folders ? "Open" : "Open Folder");
         hbox.getChildren().addAll(
                 new Label(ReflectionUtils.getBoundName(field) + ": "),
-                changeLink);
+                changeLink,
+                openLink);
         Label fileLabel = new Label(getValue().getAbsolutePath());
         this.valueProperty().addListener((observable, oldValue, newValue) -> {
             fileLabel.setText(newValue.getAbsolutePath());
@@ -42,12 +48,36 @@ public class FileField extends FieldEditor<File> {
             if (folders) {
                 DirectoryChooser dc = new DirectoryChooser();
                 File file = dc.showDialog(this.getScene().getWindow());
-                this.setValue(file);
+                if (file != null) {
+                    this.setValue(file);
+                }
             }
             else {
                 FileChooser fc = new FileChooser();
                 File file = fc.showOpenDialog(this.getScene().getWindow());
-                this.setValue(file);
+                if (file != null) {
+                    this.setValue(file);
+                }
+            }
+        });
+
+        openLink.setOnAction(event -> {
+            File file = getValue();
+            try {
+                if (file.isFile()) {
+                    Desktop.getDesktop().open(file.getParentFile());
+                }
+                else {
+                    Desktop.getDesktop().open(file);
+                }
+            }
+            catch (Exception e) {
+                Alert alert = new Alert(
+                        Alert.AlertType.ERROR,
+                        "Could not open " + file.getAbsolutePath(),
+                        ButtonType.OK
+                );
+                alert.showAndWait();
             }
         });
     }

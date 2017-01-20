@@ -12,7 +12,7 @@ import java.lang.reflect.Field;
  * @author Martin
  */
 public class BooleanValueEditor extends FieldEditor<Boolean> {
-    public BooleanValueEditor(Field field, Object bean) throws BindingInvocationException, TypeMismatchException {
+    public BooleanValueEditor(Field field, Object bean) throws BindingInvocationException {
         super(field, bean);
 
         CheckBox checkbox = new CheckBox(ReflectionUtils.getBoundName(field));

@@ -1,5 +1,6 @@
 package com.arthanzel.theriverengine.sim.influence;
 
+import com.arthanzel.theriverengine.common.ui.binding.DoubleSpinnerBinding;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.common.ui.binding.BindingName;
@@ -13,7 +14,7 @@ import java.util.Random;
  * @author Martin
  */
 public class FlowMovement extends BaseInfluence {
-    @SliderBinding(min = -5, max = 5)
+    @DoubleSpinnerBinding(min = -5, max = 5)
     @BindingName("Flow speed (m/s)")
     private volatile double flow = 0.0;
     Random r = new Random();

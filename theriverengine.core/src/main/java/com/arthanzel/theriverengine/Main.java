@@ -1,22 +1,17 @@
 package com.arthanzel.theriverengine;
 
 import com.arthanzel.theriverengine.adminui.AdminUI;
+import com.arthanzel.theriverengine.gui.RiverView;
 import com.arthanzel.theriverengine.reporting.FileReporter;
 import com.arthanzel.theriverengine.reporting.RiverReporter;
 import com.arthanzel.theriverengine.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
-import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
-import com.arthanzel.theriverengine.sim.environment.TemperatureEnvironment;
-import com.arthanzel.theriverengine.ui.RiverViewController;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import com.arthanzel.theriverengine.sim.influence.*;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Entry point for The River Engine.
@@ -70,7 +65,11 @@ public class Main extends Application {
         RiverSystem system = new RiverSystem(network, 100);
         RiverRunner runner = new RiverRunner(system);
 
-        AdminUI adminUI = new AdminUI(runner);
+        // region Influences
+        Influence flowInf = new FlowMovement();
+        flowInf.setEnabled(true);
+        runner.getInfluences().add(flowInf);
+        // endregion
 
         // Reporter
         RiverReporter reporter = new RiverReporter(runner);
@@ -78,14 +77,26 @@ public class Main extends Application {
             System.out.println(runner.getOptions().getQueueMode());
         });
         reporter.getConsumers().add(new FileReporter(new File("results.txt")));
+
+        // GUI
+        RiverView view = new RiverView();
+        view.show();
+        reporter.getConsumers().add(s -> {
+            view.updateModel(s);
+        });
+
         reporter.start();
 
         runner.start();
         runner.setEnabled(true);
 
+        // region Admin UI
+        AdminUI adminUI = new AdminUI(runner);
+        // TODO: Wire root controls
         adminUI.setOnCloseRequest(event -> {
             System.exit(0);
         });
+        // endregion
 
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
     }

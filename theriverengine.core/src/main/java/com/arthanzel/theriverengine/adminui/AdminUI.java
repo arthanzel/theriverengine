@@ -1,11 +1,10 @@
 package com.arthanzel.theriverengine.adminui;
 
-import com.arthanzel.theriverengine.common.ui.EnumComboBox;
-import com.arthanzel.theriverengine.concurrent.QueueMode;
+import com.arthanzel.theriverengine.common.ui.binding.Bindings;
+import com.arthanzel.theriverengine.common.util.ReflectionUtils;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
-import com.arthanzel.theriverengine.sim.RunnerOptions;
-import com.arthanzel.theriverengine.ui.controls.BeanEditPane;
+import com.arthanzel.theriverengine.sim.influence.Influence;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
@@ -14,11 +13,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Queue;
 
 /**
  * AdminUI is the graphical administration console where parameters of the
@@ -56,11 +56,21 @@ public class AdminUI extends Stage {
     public void initialize() {
         optionsAccordion.getPanes().add(new RunnerOptionsPane(runner.getOptions()));
 
+        // Construct panes for influences
+        for (Influence i : runner.getInfluences()) {
+            addBean(i);
+        }
+
         playing.bindBidirectional(playButton.selectedProperty());
     }
 
-    public void addBean(Object bean) {
-        optionsAccordion.getPanes().add(new BeanEditPane(bean));
+    private void addBean(Object bean) {
+        VBox vbox = new VBox(5);
+        vbox.getChildren().addAll(Bindings.createForBean(bean));
+        optionsAccordion.getPanes().add(new TitledPane(
+                ReflectionUtils.getBoundName(bean),
+                vbox
+        ));
     }
 
     public boolean isPlaying() {

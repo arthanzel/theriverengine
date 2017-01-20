@@ -4,6 +4,7 @@ import com.arthanzel.theriverengine.common.util.ReflectionUtils;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 
 import java.beans.IntrospectionException;
@@ -30,6 +31,7 @@ public abstract class FieldEditor<T> extends HBox {
     @SuppressWarnings("unchecked")
     public FieldEditor(Field field, Object bean) throws BindingInvocationException {
         this.setSpacing(7);
+        this.setAlignment(Pos.CENTER_LEFT);
 
         /*
         FieldEditor is *not* type-safe. Be VERY careful and make sure that bound

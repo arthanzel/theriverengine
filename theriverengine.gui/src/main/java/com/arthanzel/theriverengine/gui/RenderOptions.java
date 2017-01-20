@@ -1,4 +1,4 @@
-package com.arthanzel.theriverengine.ui;
+package com.arthanzel.theriverengine.gui;
 
 import com.arthanzel.theriverengine.common.ui.binding.BindingName;
 import com.arthanzel.theriverengine.common.ui.binding.BooleanBinding;

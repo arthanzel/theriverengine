@@ -15,6 +15,7 @@ public class Bindings {
     private Bindings() {}
 
     public static Node createFor(Field f, Object bean) throws BindingInvocationException {
+        //TODO: Remove class from constructor
         if (f.isAnnotationPresent(DisplayableBinding.class)) {
             return new DisplayableField<>(f, bean, f.getAnnotation(DisplayableBinding.class));
         }
@@ -29,6 +30,9 @@ public class Bindings {
         }
         if (f.isAnnotationPresent(EnumBinding.class)) {
             return new EnumComboField(f, bean, f.getAnnotation(EnumBinding.class));
+        }
+        if (f.isAnnotationPresent(BooleanBinding.class)) {
+            return new BooleanValueEditor(f, bean);
         }
         return null;
     }

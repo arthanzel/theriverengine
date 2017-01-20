@@ -1,11 +1,11 @@
-package com.arthanzel.theriverengine.ui;
+package com.arthanzel.theriverengine.gui;
 
 /**
  * TODO: Documentation
  *
  * @author Martin
  */
-public final class UIConstants {
+public final class R {
     /** Specifies the initial height of the application. */
     public static final double INITIAL_HEIGHT = 600;
 
@@ -21,6 +21,9 @@ public final class UIConstants {
     /** Specifies the factor by which each zoom operation should scale. */
     public static final double ZOOM_FACTOR = 1.2;
 
+    /** Specifies the maximum hue on the legend bar. */
+    public static final double MAX_HUE = 360 * 0.85;
+
     /** Private constructor - class can't be instantiated */
-    private UIConstants () {}
+    private R() {}
 }
