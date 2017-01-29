@@ -1,6 +1,10 @@
 package com.arthanzel.theriverengine.util;
 
+import com.arthanzel.theriverengine.common.util.TextUtils;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 
 /**
  * Created by martin on 2016-10-26.
