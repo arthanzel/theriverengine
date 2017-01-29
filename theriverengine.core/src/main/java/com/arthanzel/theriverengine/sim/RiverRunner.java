@@ -1,24 +1,25 @@
 package com.arthanzel.theriverengine.sim;
 
-import com.arthanzel.theriverengine.concurrent.QueueMode;
+import com.arthanzel.theriverengine.reporting.RiverReporter;
 import com.arthanzel.theriverengine.sim.influence.Influence;
 import com.arthanzel.theriverengine.util.FrameCounter;
+import com.google.gson.JsonObject;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
 
 public class RiverRunner {
+    private final RiverReporter reporter = new RiverReporter(this);
     private final RunnerOptions options = new RunnerOptions();
-    final private BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>(64);
+    private final BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>(64);
     private List<Influence> influences = new LinkedList<>();
     private RiverSystem system;
     private volatile boolean enabled = false;
     private final Object runningMonitor = new Object();
-    long lastReportNanos = System.nanoTime();
+    private long lastReportNanos = System.nanoTime();
+    private boolean firstMessage = true;
 
     private volatile double interval = 0.5;
 
@@ -33,13 +34,19 @@ public class RiverRunner {
 
     private void sendMessage() {
         try {
-            String message = system.toJson().toString();
+            JsonObject json = system.toJson();
+
+            // Add initial information to the message
+            if (firstMessage) {
+                firstMessage = false;
+                json.add("network", system.getNetwork().toJson());
+            }
 
             // Add to the queue
+            String message = json.toString();
             if (messageQueue.remainingCapacity() == 0) {
                 System.err.println("Queue is full!");
             }
-
             switch (options.getQueueMode()) {
                 case BLOCK:
                     messageQueue.put(message);
@@ -82,6 +89,7 @@ public class RiverRunner {
             }
         });
         t.start();
+        reporter.start();
     }
 
     /**
@@ -97,14 +105,15 @@ public class RiverRunner {
 
             i.influence(system, dt);
         }
-        system.setTime(system.getTime() + dt);
 
         // Is it time to trigger a message?
         double timeElapsed = (System.nanoTime() - lastReportNanos) / 1.0e9;
-        if (timeElapsed > options.getReportingInterval()) {
+        if (system.getTime() == 0 || timeElapsed > options.getReportingInterval()) {
             sendMessage();
             lastReportNanos = System.nanoTime();
         }
+
+        system.setTime(system.getTime() + dt);
     }
 
     // ====== Accessors ======
@@ -142,5 +151,9 @@ public class RiverRunner {
 
     public RunnerOptions getOptions() {
         return options;
+    }
+
+    public RiverReporter getReporter() {
+        return reporter;
     }
 }

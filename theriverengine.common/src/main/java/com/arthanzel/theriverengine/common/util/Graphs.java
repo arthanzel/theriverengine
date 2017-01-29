@@ -1,9 +1,9 @@
-package com.arthanzel.theriverengine.util;
+package com.arthanzel.theriverengine.common.util;
 
 import com.arthanzel.theriverengine.common.util.FishMath;
-import com.arthanzel.theriverengine.rivergen.RiverArc;
-import com.arthanzel.theriverengine.rivergen.RiverNetwork;
-import com.arthanzel.theriverengine.rivergen.RiverNode;
+import com.arthanzel.theriverengine.common.rivergen.RiverArc;
+import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
+import com.arthanzel.theriverengine.common.rivergen.RiverNode;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import org.jgrapht.DirectedGraph;

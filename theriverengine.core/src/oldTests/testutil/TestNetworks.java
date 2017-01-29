@@ -1,6 +1,6 @@
 package com.arthanzel.theriverengine.testutil;
 
-import com.arthanzel.theriverengine.rivergen.RiverNetwork;
+import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
 
 import java.io.IOException;
 

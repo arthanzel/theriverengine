@@ -1,4 +1,4 @@
-package com.arthanzel.theriverengine.data;
+package com.arthanzel.theriverengine.common.data;
 
 import com.google.gson.JsonObject;
 

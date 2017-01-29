@@ -1,4 +1,4 @@
-package com.arthanzel.theriverengine.util;
+package com.arthanzel.theriverengine.common.util;
 
 /**
  * Provides helper functions for dealing with graph files.

@@ -2,6 +2,7 @@ package com.arthanzel.theriverengine.adminui;
 
 import com.arthanzel.theriverengine.common.ui.binding.Bindings;
 import com.arthanzel.theriverengine.common.util.ReflectionUtils;
+import com.arthanzel.theriverengine.gui.RiverView;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.influence.Influence;
@@ -19,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 /**
  * AdminUI is the graphical administration console where parameters of the
@@ -37,6 +39,9 @@ public class AdminUI extends Stage {
 
     @FXML
     private ToggleButton playButton;
+
+    @FXML
+    private Button guiButton;
     // endregion
 
     private BooleanProperty playing = new SimpleBooleanProperty(true);
@@ -62,6 +67,14 @@ public class AdminUI extends Stage {
         }
 
         playing.bindBidirectional(playButton.selectedProperty());
+
+        guiButton.setOnAction(event -> {
+            RiverView view = new RiverView(runner.getSystem().getNetwork());
+            view.show();
+            Consumer<String> consumer = view::updateModel;
+            runner.getReporter().getConsumers().add(consumer);
+            view.setOnCloseRequest((ev) -> runner.getReporter().getConsumers().remove(consumer));
+        });
     }
 
     private void addBean(Object bean) {
@@ -71,6 +84,12 @@ public class AdminUI extends Stage {
                 ReflectionUtils.getBoundName(bean),
                 vbox
         ));
+    }
+
+    public void wireToRunner() {
+        playing.addListener((observable, oldValue, newValue) -> {
+            runner.setEnabled(newValue);
+        });
     }
 
     public boolean isPlaying() {

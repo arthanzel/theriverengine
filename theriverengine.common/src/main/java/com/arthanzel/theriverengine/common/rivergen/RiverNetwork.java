@@ -1,12 +1,17 @@
-package com.arthanzel.theriverengine.rivergen;
+package com.arthanzel.theriverengine.common.rivergen;
 
-import com.arthanzel.theriverengine.util.GraphFiles;
-import com.arthanzel.theriverengine.util.Graphs;
+import com.arthanzel.theriverengine.common.data.JsonSerializable;
+import com.arthanzel.theriverengine.common.util.GraphFiles;
+import com.arthanzel.theriverengine.common.util.Graphs;
+import com.google.gson.JsonObject;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.jgrapht.graph.SimpleDirectedGraph;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,23 +22,35 @@ import java.util.Map;
  *
  * @author Martin
  */
-public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> {
+public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> implements JsonSerializable {
+    private String source;
+
     public RiverNetwork() {
         super(RiverArc.class);
     }
 
     public static RiverNetwork fromResource(String resource) throws IOException {
+        // Locate the file and parse it into a resource
+        File file;
+        file = new File(RiverNetwork.class.getResource(resource).getFile());
+        byte[] data = Files.readAllBytes(file.toPath());
+        return RiverNetwork.fromSource(new String(data, "UTF-8"));
+    }
+
+    public static RiverNetwork fromSource(String source) throws IOException {
         RiverNetwork network = new RiverNetwork();
 
         // Locate the file and parse it into a resource
         Ini ini;
         try {
-            ini = new Ini(RiverNetwork.class.getResource(resource));
+            ini = new Ini(new StringReader(source));
         } catch (InvalidFileFormatException e) {
             throw e;
         } catch (IOException | NullPointerException e) {
-            throw new IOException("Can't find file " + resource);
+            throw new IOException("Can't parse network definition!");
         }
+
+        network.source = source;
 
         // Get the scale
         Double scaleX = ini.get("graph", "scalex", Double.class);
@@ -69,6 +86,7 @@ public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> {
         return network;
     }
 
+
     /**
      * Caches several elements within vertices and edges of this RiverNetwork for easier and faster access.
      */
@@ -86,5 +104,24 @@ public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> {
             node.getUpstreamArcs().clear();
             node.getUpstreamArcs().addAll(this.incomingEdgesOf(node));
         }
+    }
+
+    public JsonObject toJson() {
+        JsonObject json = new JsonObject();
+        json.addProperty("source", this.source);
+
+        JsonObject nodes = new JsonObject();
+        for (RiverNode node : this.vertexSet()) {
+            nodes.add(node.getName(), node.toJson());
+        }
+        json.add("nodes", nodes);
+
+        JsonObject arcs = new JsonObject();
+        for (RiverArc arc : this.edgeSet()) {
+            arcs.add(arc.toString(), arc.toJson());
+        }
+        json.add("arcs", arcs);
+
+        return json;
     }
 }

@@ -1,7 +1,7 @@
 package com.arthanzel.theriverengine.sim.agent;
 
-import com.arthanzel.theriverengine.data.JsonSerializable;
-import com.arthanzel.theriverengine.rivergen.RiverArc;
+import com.arthanzel.theriverengine.common.data.JsonSerializable;
+import com.arthanzel.theriverengine.common.rivergen.RiverArc;
 import com.google.gson.JsonObject;
 import javafx.geometry.Point2D;
 

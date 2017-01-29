@@ -1,8 +1,8 @@
 package com.arthanzel.theriverengine.sim.environment;
 
-import com.arthanzel.theriverengine.rivergen.RiverArc;
-import com.arthanzel.theriverengine.rivergen.RiverNetwork;
-import com.arthanzel.theriverengine.rivergen.RiverNode;
+import com.arthanzel.theriverengine.common.rivergen.RiverArc;
+import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
+import com.arthanzel.theriverengine.common.rivergen.RiverNode;
 import com.arthanzel.theriverengine.common.util.FishMath;
 
 import java.util.HashMap;
