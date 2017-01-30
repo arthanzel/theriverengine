@@ -2,6 +2,7 @@
 
 target
 results.txt
+*.json
 
 # User-specific stuff:
 .idea

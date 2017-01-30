@@ -64,22 +64,6 @@ public class RiverSystem implements JsonSerializable {
         }
     }
 
-    public RiverSystem clone() {
-        RiverSystem rs = new RiverSystem(network); // The network is immutable, so the clone can contain a reference.
-        rs.time = time;
-
-        rs.agents = new LinkedList<>();
-        for (Agent a : agents) {
-            rs.agents.add(a.clone());
-        }
-
-        for (String s : environments.keySet()) {
-            rs.environments.put(s, Environment.clone(environments.get(s)));
-        }
-
-        return rs;
-    }
-
     @Override
     public JsonObject toJson() {
         JsonObject me = new JsonObject();
@@ -92,12 +76,11 @@ public class RiverSystem implements JsonSerializable {
         }
         me.add("agents", agentsArray);
 
-        // TODO: Json serialize environments
-//        JsonObject envsArray = new JsonObject();
-//        for (String k : environments.keySet()) {
-//            envsArray.add(k, environments.get(k).toJson());
-//        }
-//        me.add("environments", envsArray);
+        JsonObject envs = new JsonObject();
+        for (String k : environments.keySet()) {
+            envs.add(k, environments.get(k).toJson());
+        }
+        me.add("environments", envs);
 
         return me;
     }

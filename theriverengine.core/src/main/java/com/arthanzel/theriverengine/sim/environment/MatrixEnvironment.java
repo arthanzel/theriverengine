@@ -49,17 +49,4 @@ public class MatrixEnvironment implements Environment {
         }
         return 0;
     }
-
-    public MatrixEnvironment clone() {
-        MatrixEnvironment env = new MatrixEnvironment();
-        env.values = new double[this.values.length][this.values[0].length];
-        env.dimensions = this.dimensions;
-        env.resolution = resolution;
-        for (int x = 0; x < values.length; x++) {
-            for (int y = 0; y < values[x].length; y++) {
-                env.values[x][y] = this.values[x][y];
-            }
-        }
-        return env;
-    }
 }

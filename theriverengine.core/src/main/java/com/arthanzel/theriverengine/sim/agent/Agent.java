@@ -21,16 +21,6 @@ public class Agent implements JsonSerializable {
         attributes.put("velocity", 0.0);
     }
 
-    public Agent clone() {
-        Agent a = new Agent();
-        // The river network is immutable, so we can get away with a reference to the arc
-        a.location = new Location(location.getArc(), location.getPosition());
-
-        a.attributes = attributes.clone();
-
-        return a;
-    }
-
     @Override
     public JsonObject toJson() {
         JsonObject me = new JsonObject();

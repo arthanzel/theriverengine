@@ -4,6 +4,8 @@ import com.arthanzel.theriverengine.common.rivergen.RiverArc;
 import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.common.rivergen.RiverNode;
 import com.arthanzel.theriverengine.common.util.FishMath;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -142,5 +144,27 @@ public class DiscreteEnvironment implements Environment {
             env.separations.put(arc, separations.get(arc));
         }
         return env;
+    }
+
+    public JsonObject toJson() {
+        JsonObject me = new JsonObject();
+
+        JsonObject nodes = new JsonObject();
+        for (RiverNode node : this.nodeValues.keySet()) {
+            nodes.addProperty(node.getName(), String.format("%.2f", nodeValues.get(node).getValue()));
+        }
+        me.add("nodes", nodes);
+
+        JsonObject arcs = new JsonObject();
+        for (RiverArc arc : this.arcValues.keySet()) {
+            JsonArray arr = new JsonArray();
+            for (DiscretePoint dp : arcValues.get(arc)) {
+                arr.add(String.format("%.2f", dp.getValue()));
+            }
+            arcs.add(arc.toString(), arr);
+        }
+        me.add("arcs", arcs);
+
+        return me;
     }
 }

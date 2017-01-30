@@ -40,7 +40,7 @@ public class Location implements JsonSerializable {
     public JsonObject toJson() {
         JsonObject me = new JsonObject();
         me.addProperty("arc", arc.toString());
-        me.addProperty("position", position);
+        me.addProperty("position", String.format("%.2f", position));
         return me;
     }
 

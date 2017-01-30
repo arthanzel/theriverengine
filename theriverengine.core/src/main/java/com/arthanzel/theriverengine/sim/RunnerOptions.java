@@ -21,7 +21,7 @@ public class RunnerOptions {
     private ObjectProperty<QueueMode> queueMode = new SimpleObjectProperty<>(QueueMode.BLOCK);
 
     @DoubleSpinnerBinding(min = 0.25, max = 10)
-    private DoubleProperty reportingInterval = new SimpleDoubleProperty(5);
+    private DoubleProperty reportingInterval = new SimpleDoubleProperty(2);
 
     @FileBinding(folders = true)
     private File dataDirectory;

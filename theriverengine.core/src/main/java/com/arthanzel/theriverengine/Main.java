@@ -7,6 +7,7 @@ import com.arthanzel.theriverengine.reporting.RiverReporter;
 import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
+import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import com.arthanzel.theriverengine.sim.influence.*;
@@ -24,12 +25,6 @@ import java.io.IOException;
  * @author Martin
  */
 public class Main extends Application {
-//    public void start(Stage main) throws Exception {
-//        TheRiverEngineApplication
-
-//        String windowTitle = "The River Engine - Test UI";
-//        main.setTitle(windowTitle);
-//
 //        // Create the system and add Environments to the data model
 //        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 800);
 //        system.getEnvironments().put("temperature", new TemperatureEnvironment());
@@ -60,13 +55,17 @@ public class Main extends Application {
 //        Influence reproductionDynamics = new ReproductionDynamics(system);
 //        runner.getInfluences().add(reproductionDynamics);
 //
-//        main.show();
-//        Thread.currentThread().setPriority(Thread.MIN_PRIORITY); // UI thread
-//
 //        runner.start();
+    private static RiverRunner runner;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // TODO: Get runner/model instance from Spring?
+        AdminUI ui = new AdminUI(runner);
+
+        // There are runtime exit hooks elsewhere in the code...
+        ui.setOnCloseRequest(event -> System.exit(0));
+
+        ui.show();
     }
 
     @Override
@@ -81,7 +80,7 @@ public class Main extends Application {
 
         CommandLine cmd = new DefaultParser().parse(options(), args);
 
-        RiverRunner runner = setupSimulation();
+        runner = setupSimulation();
 
         if (cmd.hasOption("x")) {
             // Run in headless mode without spinning up a JavaFX thread
@@ -92,6 +91,9 @@ public class Main extends Application {
             // TODO: Require a finite end time
         }
         else {
+            runner.setEnabled(true);
+            runner.start();
+
             // Launch JavaFX
             Main.launch(args); // Blocking
         }
@@ -102,9 +104,16 @@ public class Main extends Application {
             RiverNetwork network = RiverNetwork.fromResource("/graphs/binarytree-3.ini");
             RiverSystem system = new RiverSystem(network, 100);
             RiverRunner runner = new RiverRunner(system);
+
+            system.getEnvironments().put("nutrients", new DiscreteEnvironment(network));
+
+            // Reporters
+            runner.getReporter().getConsumers().add(new FileReporter(new File("results.json")));
+            runner.getReporter().getConsumers().add((s) -> System.out.println("Report!"));
+
             return runner;
         }
-        catch (IOException e) {
+        catch (Exception e) {
             // Error setting up the simulation.
             // Can't really recover from this...
             e.printStackTrace();

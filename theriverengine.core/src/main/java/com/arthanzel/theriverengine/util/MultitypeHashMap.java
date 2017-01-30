@@ -40,16 +40,6 @@ public class MultitypeHashMap extends HashMap<String, Object> implements JsonSer
         return (String) this.get(key);
     }
 
-    public MultitypeHashMap clone() {
-        MultitypeHashMap map = new MultitypeHashMap();
-
-        for (String s : this.keySet()) {
-            map.put(s, this.get(s));
-        }
-
-        return map;
-    }
-
     @Override
     public JsonObject toJson() {
         JsonObject me = new JsonObject();
@@ -67,9 +57,9 @@ public class MultitypeHashMap extends HashMap<String, Object> implements JsonSer
             else if (v instanceof Color) {
                 Color clr = (Color) v;
                 JsonObject c = new JsonObject();
-                c.addProperty("r", clr.getRed());
-                c.addProperty("g", clr.getGreen());
-                c.addProperty("b", clr.getBlue());
+                c.addProperty("r", String.format("%.2f", clr.getRed()));
+                c.addProperty("g", String.format("%.2f", clr.getGreen()));
+                c.addProperty("b", String.format("%.2f", clr.getBlue()));
                 me.add(k, c);
             }
             else {
