@@ -18,7 +18,6 @@ import javafx.scene.text.Font;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +59,7 @@ public class RiverRenderer extends Pane {
         synchronized (this) {
             JsonParser p = new JsonParser();
             long n = System.nanoTime();
-            Benchmarks.run("parsing", () -> root = p.parse(json).getAsJsonObject());
+            Benchmarks.print("parsing", () -> root = p.parse(json).getAsJsonObject());
 
 //            if (root.has("network")) {
 //                try {

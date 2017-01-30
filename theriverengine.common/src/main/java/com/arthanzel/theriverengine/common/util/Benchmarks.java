@@ -1,18 +1,36 @@
 package com.arthanzel.theriverengine.common.util;
 
 /**
- * Created by martin on 2017-01-20.
+ * Provides methods for benchmarking code.
  */
 public class Benchmarks {
-    public static void run(Runnable r) {
-        Benchmarks.run("[anonymous]", r);
+    /**
+     * Benchmarks a task and prints the elapsed time.
+     * @param r Task to run.
+     */
+    public static void print(Runnable r) {
+        Benchmarks.print("[anonymous]", r);
     }
 
-    public static void run(String name, Runnable r) {
+    /**
+     * Benchmarks a task and prints the elapsed time.
+     * @param name Human-readable task name.
+     * @param r Task to run.
+     */
+    public static void print(String name, Runnable r) {
+        double elapsedMs = run(r);
+        System.out.println(String.format("Benchmark %s completed in %.2f ms", name, elapsedMs));
+    }
+
+    /**
+     * Benchmarks a task.
+     * @param r Task to run.
+     * @return Elapsed time, in milliseconds.
+     */
+    public static double run(Runnable r) {
         long start = System.nanoTime();
         r.run();
         long elapsed = System.nanoTime() - start;
-        double elapsedMs = elapsed / 1.0e6;
-        System.out.println(String.format("Benchmark %s completed in %.2f ms", name, elapsedMs));
+        return elapsed / 1.0e6;
     }
 }

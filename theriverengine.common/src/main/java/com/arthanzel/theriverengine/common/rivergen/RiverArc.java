@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Represents a run of a river system between two RiverNodes.
+ * Represents a print of a river system between two RiverNodes.
  *
  * @author Martin
  */

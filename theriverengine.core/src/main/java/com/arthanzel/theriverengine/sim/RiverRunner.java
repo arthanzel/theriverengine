@@ -10,21 +10,42 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * RiverRunner is the heart of The River Engine's simulation. It handles the
+ * details of simulating a river system.
+ *
+ * <p>A RiverRunner continually simulates a river system and, at regular
+ * intervals, sends messages containing the state of the system to a
+ * RiverReporter. A RiverReporter is invariably bound to a RiverRunner.</p>
+ */
 public class RiverRunner {
-    private final RiverReporter reporter = new RiverReporter(this);
+    // RiverReporter receives messages in parallel.
+    private final RiverReporter reporter;
+
+    // Various options concerning how the sim is run and reported.
     private final RunnerOptions options = new RunnerOptions();
+
+    // Queue containing messages that contain the state of the system.
     private final BlockingQueue<String> messageQueue = new LinkedBlockingQueue<>(64);
-    private List<Influence> influences = new LinkedList<>();
-    private RiverSystem system;
+
+    // Influences affect the behaviour of the river system.
+    private final List<Influence> influences = new LinkedList<>();
+
+    // The system to be simulated. Rather important.
+    private final RiverSystem system;
+
+    // Support pausing of the system.
     private volatile boolean enabled = false;
     private final Object runningMonitor = new Object();
+
+    // Time of the last report.
     private long lastReportNanos = System.nanoTime();
-    private boolean firstMessage = true;
 
     private volatile double interval = 0.5;
 
     public RiverRunner(RiverSystem system) {
         this.system = system;
+        this.reporter = new RiverReporter(messageQueue);
     }
 
     public void forward() {
@@ -35,12 +56,6 @@ public class RiverRunner {
     private void sendMessage() {
         try {
             JsonObject json = system.toJson();
-
-            // Add initial information to the message
-            if (firstMessage) {
-                firstMessage = false;
-                json.add("network", system.getNetwork().toJson());
-            }
 
             // Add to the queue
             String message = json.toString();
@@ -88,6 +103,7 @@ public class RiverRunner {
                 tick(interval); // tick takes an interval in seconds
             }
         });
+        t.setPriority(Thread.MAX_PRIORITY);
         t.start();
         reporter.start();
     }
@@ -141,7 +157,7 @@ public class RiverRunner {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         synchronized (runningMonitor) {
-            runningMonitor.notifyAll();
+            runningMonitor.notifyAll(); // Wake the thread from pause
         }
     }
 

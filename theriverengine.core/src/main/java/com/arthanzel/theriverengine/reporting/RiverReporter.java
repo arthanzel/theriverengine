@@ -5,6 +5,7 @@ import com.arthanzel.theriverengine.sim.RiverRunner;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.function.Consumer;
 
 /**
@@ -14,7 +15,6 @@ import java.util.function.Consumer;
  * consumer blocks the chain until it is finished processing its message.
  */
 public class RiverReporter {
-    private final RiverRunner runner;
     private boolean running = false;
     private final List<Consumer<String>> consumers = Collections.synchronizedList(new LinkedList<>());
     private Runnable spinner;
@@ -22,12 +22,11 @@ public class RiverReporter {
     /**
      * Construct a new RiverReporter that listens to a RiverRunner.
      */
-    public RiverReporter(RiverRunner runner) {
-        this.runner = runner;
+    public RiverReporter(BlockingQueue<String> queue) {
         spinner = () -> {
             while (running) {
                 try {
-                    String message = this.runner.getMessageQueue().take();
+                    String message = queue.take();
 
                     synchronized (this.consumers) {
                         for (Consumer<String> consumer : this.consumers) {

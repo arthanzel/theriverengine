@@ -25,7 +25,7 @@ public class RandomMovement extends BaseInfluence {
 //        if (parallel) {
 //            for (final Agent a : system.getAgents()) {
 //                getPool().submit(() -> {
-//                    run(a);
+//                    print(a);
 //                });
 //            }
 //        }

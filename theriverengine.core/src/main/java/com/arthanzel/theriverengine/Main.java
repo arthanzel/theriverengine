@@ -10,8 +10,13 @@ import com.arthanzel.theriverengine.sim.RiverSystem;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import com.arthanzel.theriverengine.sim.influence.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Entry point for The River Engine.
@@ -61,28 +66,7 @@ public class Main extends Application {
 //        runner.start();
     @Override
     public void start(Stage primaryStage) throws Exception {
-        RiverNetwork network = RiverNetwork.fromResource("/graphs/binarytree-3.ini");
-        RiverSystem system = new RiverSystem(network, 100);
-        RiverRunner runner = new RiverRunner(system);
-
-        // region Influences
-        Influence flowInf = new FlowMovement();
-        flowInf.setEnabled(true);
-        runner.getInfluences().add(flowInf);
-        // endregion
-
-        runner.start();
-        runner.setEnabled(true);
-
-        // region Admin UI
-        AdminUI adminUI = new AdminUI(runner);
-        // TODO: Wire root controls
-        adminUI.setOnCloseRequest(event -> {
-            System.exit(0);
-        });
-        // endregion
-
-        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+        // TODO: Get runner/model instance from Spring?
     }
 
     @Override
@@ -90,7 +74,53 @@ public class Main extends Application {
         super.stop();
     }
 
-    public static void main(String[] args) {
-        Main.launch(args);
+    public static void main(String[] args) throws ParseException {
+        // Set min priority on the MONITORING/UI thread.
+        // The simulation runs in a different thread entirely.
+        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+
+        CommandLine cmd = new DefaultParser().parse(options(), args);
+
+        RiverRunner runner = setupSimulation();
+
+        if (cmd.hasOption("x")) {
+            // Run in headless mode without spinning up a JavaFX thread
+            runner.setEnabled(true);
+            runner.start();
+
+            // Program does not terminate here as long as RiverRunner spins.
+            // TODO: Require a finite end time
+        }
+        else {
+            // Launch JavaFX
+            Main.launch(args); // Blocking
+        }
+    }
+
+    private static RiverRunner setupSimulation() {
+        try {
+            RiverNetwork network = RiverNetwork.fromResource("/graphs/binarytree-3.ini");
+            RiverSystem system = new RiverSystem(network, 100);
+            RiverRunner runner = new RiverRunner(system);
+            return runner;
+        }
+        catch (IOException e) {
+            // Error setting up the simulation.
+            // Can't really recover from this...
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return null;
+    }
+
+    /**
+     * Generates a structure defining command-line options.
+     */
+    private static Options options() {
+        Options options = new Options();
+        options.addOption("x", "headless", false, "Run in headless mode without launching a JavaFX application");
+        options.addOption("e", "end", true, "If headless, specify and end time in seconds (s, default), days (d), or years (y).");
+        options.addOption("o", "out", true, "Output directory. Defaults to the current directory if missing or invalid.");
+        return options;
     }
 }
