@@ -10,6 +10,7 @@ public class TypeMismatchException extends Exception {
         super(msg);
     }
 
+    // TODO: This message should apply for sets as well as creates.
     public TypeMismatchException(Field field) {
         super("Tried to create a FieldEditor on " + field.getName()
                 + " that doesn't match type " + field.getType());

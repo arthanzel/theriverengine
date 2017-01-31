@@ -32,9 +32,25 @@ public class FieldEditorTest {
             i2Editor.setValue(4);
             assertEquals(i1Editor.getValue().intValue(), 4);
             assertEquals(i2Editor.getValue().intValue(), 4);
+            assertEquals(intValue, 4);
+            assertEquals(int2Value.getValue().intValue(), 4);
         } catch (Exception e) {
             fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void testFieldMismatch() {
+        try {
+            FieldEditor<String> str = new FieldEditor<>(field("intValue"), this, String.class);
+        }
+        catch (TypeMismatchException e) {
+            return;
+        }
+        catch (Exception e) {
+            fail();
+        }
+        fail();
     }
 
     private Field field(String name) {

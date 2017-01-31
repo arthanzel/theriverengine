@@ -109,7 +109,7 @@ public class Main extends Application {
 
             // Reporters
             runner.getReporter().getConsumers().add(new FileReporter(new File("results.json")));
-            runner.getReporter().getConsumers().add((s) -> System.out.println("Report!"));
+            runner.getReporter().getConsumers().add((s) -> System.out.println(runner.getOptions().getQueueMode()));
 
             return runner;
         }

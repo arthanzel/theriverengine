@@ -28,7 +28,7 @@ public class Bindings {
             return new IntegerSpinnerField(f, bean);
         }
         if (f.isAnnotationPresent(EnumBinding.class)) {
-            //return new EnumComboField(f, (Enum) bean);
+            return new EnumComboField(f, bean, Enum.class);
         }
         if (f.isAnnotationPresent(BooleanBinding.class)) {
             return new BooleanValueEditor(f, bean);
