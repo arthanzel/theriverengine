@@ -59,7 +59,7 @@ public class AdminUI extends Stage {
     }
 
     public void initialize() {
-        optionsAccordion.getPanes().add(new RunnerOptionsPane(runner.getOptions()));
+        addBean(runner.getOptions());
 
         // Construct panes for influences
         for (Influence i : runner.getInfluences()) {
@@ -68,6 +68,7 @@ public class AdminUI extends Stage {
 
         playing.bindBidirectional(playButton.selectedProperty());
 
+        // Show renderer button
         guiButton.setOnAction(event -> {
             RiverView view = new RiverView(runner.getSystem().getNetwork());
             view.show();

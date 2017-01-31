@@ -13,9 +13,10 @@ import java.lang.reflect.Field;
  * @author Martin
  */
 public class DoubleSpinnerField extends FieldEditor<Double> {
-    public DoubleSpinnerField(Field field, Object bean, DoubleSpinnerBinding annotation) throws BindingInvocationException {
-        super(field, bean);
+    public DoubleSpinnerField(Field field, Object bean) throws BindingInvocationException, TypeMismatchException {
+        super(field, bean, Double.class);
 
+        DoubleSpinnerBinding annotation = field.getAnnotation(DoubleSpinnerBinding.class);
         Spinner<Double> spinner = new Spinner<>(annotation.min(), annotation.max(), this.getValue(), annotation.step());
         spinner.setEditable(true);
         spinner.getValueFactory().valueProperty().bindBidirectional(this.valueProperty());

@@ -1,12 +1,15 @@
 package com.arthanzel.theriverengine.common.util;
 
 import com.arthanzel.theriverengine.common.ui.binding.BindingName;
+import javafx.beans.property.Property;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Provides helper methods for dealing with reflection and introspection.
@@ -71,6 +74,32 @@ public class ReflectionUtils {
         catch (NoSuchMethodException e) {
             return null;
         }
+    }
+
+    /**
+     * Gets the type of a field. If the field is a JavaFX property, gets the
+     * type of the value contained in the property.
+     * @param f
+     * @return
+     */
+    public static Class<?> getPropertyType(Field f, Object bean) throws InvocationTargetException {
+        if (isProperty(f)) {
+            try {
+                Method propAccessor = ReflectionUtils.getPropertyMethod(f.getName(), f.getDeclaringClass());
+                Property prop = (Property) Objects.requireNonNull(propAccessor).invoke(bean);
+                return prop.getValue().getClass();
+            }
+            catch (Exception e) {
+                throw new InvocationTargetException(e);
+            }
+        }
+        else {
+            return f.getType();
+        }
+    }
+
+    public static boolean isProperty(Field f) {
+        return Property.class.isAssignableFrom(f.getType());
     }
 
     /**

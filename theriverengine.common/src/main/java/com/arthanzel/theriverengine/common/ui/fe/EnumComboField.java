@@ -1,12 +1,8 @@
 package com.arthanzel.theriverengine.common.ui.fe;
 
-import com.arthanzel.theriverengine.common.ui.DynamicLabel;
-import com.arthanzel.theriverengine.common.ui.binding.DisplayableBinding;
-import com.arthanzel.theriverengine.common.ui.binding.EnumBinding;
 import com.arthanzel.theriverengine.common.util.ReflectionUtils;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.effect.Reflection;
 
 import java.lang.reflect.Field;
 
@@ -15,16 +11,16 @@ import java.lang.reflect.Field;
  *
  * @author Martin
  */
-public class EnumComboField extends FieldEditor<Object> {
-    public EnumComboField(Field field, Object bean, EnumBinding annotation) throws BindingInvocationException {
-        super(field, bean);
+public class EnumComboField extends FieldEditor<Enum> {
+    public <K extends Enum> EnumComboField(Field field, Object bean, Class<K> enumClass) throws BindingInvocationException, TypeMismatchException {
+        super(field, bean, enumClass);
 
         Class cls = this.getType();
         assert cls.isEnum();
 
-        ComboBox<Object> comboBox = new ComboBox<>();
+        ComboBox<Enum> comboBox = new ComboBox<>();
         comboBox.valueProperty().bindBidirectional(this.valueProperty());
-        comboBox.getItems().setAll(cls.getEnumConstants());
+        comboBox.getItems().setAll((Enum[]) cls.getEnumConstants());
         this.getChildren().addAll(
                 new Label(ReflectionUtils.getBoundName(field) + ": "),
                 comboBox

@@ -12,8 +12,8 @@ import java.lang.reflect.Field;
  * @author Martin
  */
 public class BooleanValueEditor extends FieldEditor<Boolean> {
-    public BooleanValueEditor(Field field, Object bean) throws BindingInvocationException {
-        super(field, bean);
+    public BooleanValueEditor(Field field, Object bean) throws BindingInvocationException, TypeMismatchException {
+        super(field, bean, Boolean.class);
 
         CheckBox checkbox = new CheckBox(ReflectionUtils.getBoundName(field));
         checkbox.setSelected(this.getValue());

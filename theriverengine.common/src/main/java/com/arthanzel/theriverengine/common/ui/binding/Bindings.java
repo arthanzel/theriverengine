@@ -14,22 +14,21 @@ import java.util.List;
 public class Bindings {
     private Bindings() {}
 
-    public static Node createFor(Field f, Object bean) throws BindingInvocationException {
-        //TODO: Remove class from constructor
+    public static Node createFor(Field f, Object bean) throws BindingInvocationException, TypeMismatchException {
         if (f.isAnnotationPresent(DisplayableBinding.class)) {
-            return new DisplayableField<>(f, bean, f.getAnnotation(DisplayableBinding.class));
+            return new DisplayableField<>(f, bean, f.getType());
         }
         if (f.isAnnotationPresent(FileBinding.class)) {
-            return new FileField(f, bean, f.getAnnotation(FileBinding.class));
+            return new FileField(f, bean);
         }
         if (f.isAnnotationPresent(DoubleSpinnerBinding.class)) {
-            return new DoubleSpinnerField(f, bean, f.getAnnotation(DoubleSpinnerBinding.class));
+            return new DoubleSpinnerField(f, bean);
         }
         if (f.isAnnotationPresent(IntegerSpinnerBinding.class)) {
-            return new IntegerSpinnerField(f, bean, f.getAnnotation(IntegerSpinnerBinding.class));
+            return new IntegerSpinnerField(f, bean);
         }
         if (f.isAnnotationPresent(EnumBinding.class)) {
-            return new EnumComboField(f, bean, f.getAnnotation(EnumBinding.class));
+            //return new EnumComboField(f, (Enum) bean);
         }
         if (f.isAnnotationPresent(BooleanBinding.class)) {
             return new BooleanValueEditor(f, bean);
@@ -46,7 +45,7 @@ public class Bindings {
                     nodes.add(n);
                 }
             }
-            catch (BindingInvocationException e) {
+            catch (BindingInvocationException | TypeMismatchException e) {
                 // Do nothing
             }
         }

@@ -18,8 +18,9 @@ import java.lang.reflect.Field;
  * @author Martin
  */
 public class RealValueEditor extends FieldEditor<Double> {
-    public RealValueEditor(Field field, Object bean, SliderBinding annotation) throws BindingInvocationException, TypeMismatchException {
-        super(field, bean);
+    public RealValueEditor(Field field, Object bean) throws BindingInvocationException, TypeMismatchException {
+        super(field, bean, Double.class);
+        SliderBinding annotation = field.getAnnotation(SliderBinding.class);
 
         double val = this.getValue();
         String name = ReflectionUtils.getBoundName(field);

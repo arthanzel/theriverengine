@@ -13,9 +13,10 @@ import java.lang.reflect.Field;
  * @author Martin
  */
 public class DisplayableField<T> extends FieldEditor<T> {
-    public DisplayableField(Field field, Object bean, DisplayableBinding annotation) throws BindingInvocationException {
-        super(field, bean);
+    public DisplayableField(Field field, Object bean, Class<T> template) throws BindingInvocationException, TypeMismatchException {
+        super(field, bean, template);
 
+        DisplayableBinding annotation = field.getAnnotation(DisplayableBinding.class);
         String newline = annotation.newline() ? "\n" : "";
         DynamicLabel<T> dl = new DynamicLabel<>(
                 ReflectionUtils.getBoundName(field) + ": " + newline + "%s",

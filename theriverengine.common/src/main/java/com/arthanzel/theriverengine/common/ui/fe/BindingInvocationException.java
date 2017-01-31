@@ -12,11 +12,11 @@ public class BindingInvocationException extends Exception {
     }
 
     public BindingInvocationException(Field field) {
-        super("Cannot find or invoke accessor methods for field " + field.getName());
+        super("Cannot find or invoke accessor methods for field/property " + field.getName());
     }
 
     public BindingInvocationException(Field field, Class cls) {
-        super("Cannot find or invoke accessor methods for field " + field.getName()
+        super("Cannot find or invoke accessor methods for field/property " + field.getName()
                 + " on class " + cls.getTypeName());
     }
 }

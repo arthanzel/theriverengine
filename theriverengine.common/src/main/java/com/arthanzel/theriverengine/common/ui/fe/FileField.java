@@ -23,8 +23,9 @@ import java.lang.reflect.Field;
  * @author Martin
  */
 public class FileField extends FieldEditor<File> {
-    public FileField(Field field, Object bean, FileBinding annotation) throws BindingInvocationException {
-        super(field, bean);
+    public FileField(Field field, Object bean) throws BindingInvocationException, TypeMismatchException {
+        super(field, bean, File.class);
+        FileBinding annotation = field.getAnnotation(FileBinding.class);
         boolean folders = annotation.folders();
 
         VBox vbox = new VBox();
