@@ -1,0 +1,5 @@
+rootProject.name = 'theriverengine'
+
+include 'theriverengine.common'
+include 'theriverengine.core'
+include 'theriverengine.gui'

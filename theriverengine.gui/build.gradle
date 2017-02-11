@@ -1,0 +1,17 @@
+group 'com.arthanzel.theriverengine'
+version '1.0'
+
+apply plugin: 'java'
+
+description "The River Engine viewer GUI."
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(":theriverengine.common")
+    testCompile "junit:junit:4.12"
+}
