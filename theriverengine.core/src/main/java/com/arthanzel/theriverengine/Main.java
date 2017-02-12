@@ -24,7 +24,7 @@ import java.io.IOException;
  *
  * @author Martin
  */
-public class Main extends Application {
+public class Main {
 //        // Create the system and add Environments to the data model
 //        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 800);
 //        system.getEnvironments().put("temperature", new TemperatureEnvironment());
@@ -56,31 +56,19 @@ public class Main extends Application {
 //        runner.getInfluences().add(reproductionDynamics);
 //
 //        runner.start();
-    private static RiverRunner runner;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        AdminUI ui = new AdminUI(runner);
-
-        // There are runtime exit hooks elsewhere in the code...
-        ui.setOnCloseRequest(event -> System.exit(0));
-
-        ui.show();
-    }
-
-    @Override
-    public void stop() throws Exception {
-        super.stop();
-    }
+    public static RiverRunner RUNNER;
 
     public static void main(String[] args) throws ParseException {
+
         // Set min priority on the MONITORING/UI thread.
         // The simulation runs in a different thread entirely.
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 
         CommandLine cmd = new DefaultParser().parse(options(), args);
 
-        runner = setupSimulation();
+        RiverRunner runner = setupSimulation();
+        RUNNER = runner;
 
         if (cmd.hasOption("x")) {
             // Run in headless mode without spinning up a JavaFX thread
@@ -95,7 +83,7 @@ public class Main extends Application {
             runner.start();
 
             // Launch JavaFX
-            Main.launch(args); // Blocking
+            Application.launch(MainApplication.class, args); // Blocking
         }
     }
 
