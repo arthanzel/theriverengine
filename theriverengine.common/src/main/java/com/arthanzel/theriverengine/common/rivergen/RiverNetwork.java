@@ -4,6 +4,7 @@ import com.arthanzel.theriverengine.common.data.JsonSerializable;
 import com.arthanzel.theriverengine.common.util.GraphFiles;
 import com.arthanzel.theriverengine.common.util.Graphs;
 import com.google.gson.JsonObject;
+import org.apache.commons.io.IOUtils;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.jgrapht.graph.SimpleDirectedGraph;
@@ -30,11 +31,9 @@ public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> imple
     }
 
     public static RiverNetwork fromResource(String resource) throws IOException {
-        // Locate the file and parse it into a resource
-        File file;
-        file = new File(RiverNetwork.class.getResource(resource).getFile());
-        byte[] data = Files.readAllBytes(file.toPath());
-        return RiverNetwork.fromSource(new String(data, "UTF-8"));
+        // Get the resource's fulltext from a stream because it may live in a jarfile.
+        byte[] bytes = IOUtils.toByteArray(RiverNetwork.class.getResource(resource).openStream());
+        return RiverNetwork.fromSource(new String(bytes, "UTF-8"));
     }
 
     public static RiverNetwork fromSource(String source) throws IOException {
