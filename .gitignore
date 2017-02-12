@@ -1,14 +1,15 @@
 # Gradle
-.gradle
+.gradle/
 
 # Builds
 build/
 target/
+dist/
 
 # Model output
 results.txt
 *.json
 
 # User-specific stuff:
-.idea
+.idea/
 *.iml
