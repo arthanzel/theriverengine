@@ -1,6 +1,11 @@
-*.class
+# Gradle
+.gradle
 
-target
+# Builds
+build/
+target/
+
+# Model output
 results.txt
 *.json
 

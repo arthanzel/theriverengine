@@ -15,6 +15,7 @@ public class BenchmarksTest {
                 fail();
             }
         });
-        assertTrue(elapsed > 100 && elapsed < 200);
+        System.out.println(elapsed);
+        assertTrue("Elapsed time was " + elapsed,elapsed > 90);
     }
 }

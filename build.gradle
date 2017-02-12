@@ -1,0 +1,21 @@
+group "com.arthanzel.theriverengine"
+version "1.0"
+
+subprojects {
+    apply plugin: "java"
+    group rootProject.group
+    version rootProject.version
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    task hello {
+        doLast { println "Hello from $project.name" }
+    }
+
+    dependencies {
+        testCompile "junit:junit:4.12"
+    }
+}
