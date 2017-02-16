@@ -8,24 +8,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Represents a print of a river system between two RiverNodes.
+ * Represents a reach of a river system between two RiverNodes.
  *
  * @author Martin
  */
 public class RiverArc implements JsonSerializable {
-    private RiverNode upstreamNode, downstreamNode;
+    private final RiverNode upstreamNode, downstreamNode;
     private Set<RiverArc> upstreamArcs = new HashSet<>(), downstreamArcs = new HashSet<>();
-    private double len;
-
-    public RiverArc() {}
+    private final double len;
 
     public RiverArc(RiverNode upstream, RiverNode downstream) {
         this.upstreamNode = upstream;
         this.downstreamNode = downstream;
+        this.len = upstreamNode.getPosition().distance(downstreamNode.getPosition());
     }
 
     /**
-     * TODO
+     * Returns the cartesian coordinates of a point {@code p} units downstream
+     * of this RiverArc's source.
      */
     public Point2D getPoint(double p) {
         if (p < 0 || p > this.length()) {
@@ -39,22 +39,7 @@ public class RiverArc implements JsonSerializable {
                 pn * (dest.getY() - origin.getY()) + origin.getY());
     }
 
-    public Point2D getPointLerp(double f) {
-        if (f < 0 || f > this.length()) {
-            throw new IllegalArgumentException("Position must be between 0 and 1.");
-        }
-
-        return getPoint(f * length());
-    }
-
     public double length() {
-        if (len != 0) {
-            return len;
-        }
-        if (upstreamNode == null || downstreamNode == null) {
-            return 0;
-        }
-        len = upstreamNode.getPosition().distance(downstreamNode.getPosition());
         return len;
     }
 
@@ -78,16 +63,8 @@ public class RiverArc implements JsonSerializable {
         return upstreamNode;
     }
 
-    public void setUpstreamNode(RiverNode upstreamNode) {
-        this.upstreamNode = upstreamNode;
-    }
-
     public RiverNode getDownstreamNode() {
         return downstreamNode;
-    }
-
-    public void setDownstreamNode(RiverNode downstreamNode) {
-        this.downstreamNode = downstreamNode;
     }
 
     public Set<RiverArc> getUpstreamArcs() {

@@ -20,23 +20,18 @@ public class NutrientDynamicsLog extends BaseInfluence {
     private volatile double carryingCapacity = 0.05;
 
     @SliderBinding(min = 0, max = 1)
-    private volatile double capacityPerDegree = 0.1;
-
-    @SliderBinding(min = 0, max = 1)
     private volatile double spawnRate = 0.05;
 
     @Override
     public void influence(RiverSystem system, double dt) {
         DiscreteEnvironment env = (DiscreteEnvironment) system.getEnvironments().get("nutrients");
-        Environment temp = system.getEnvironments().get("temperature");
         env.transform((value) -> {
             final double n = value.getValue();
-            final double cc = carryingCapacity + capacityPerDegree * temp.get(value.getArc(), value.getPosition());
-            if (cc == 0) {
+            if (carryingCapacity == 0) {
                 value.setValue(0); // Avoid divide-by-zero
                 return;
             }
-            final double delta = growthRate * n * (1 - n / cc) * TimeUtils.days(dt);
+            final double delta = growthRate * n * (1 - n / carryingCapacity) * TimeUtils.days(dt);
             final double spawnDelta = spawnRate * TimeUtils.days(dt);
             value.setValue(n + delta + spawnDelta);
         });
@@ -64,13 +59,5 @@ public class NutrientDynamicsLog extends BaseInfluence {
 
     public void setSpawnRate(double spawnRate) {
         this.spawnRate = spawnRate;
-    }
-
-    public double getCapacityPerDegree() {
-        return capacityPerDegree;
-    }
-
-    public void setCapacityPerDegree(double capacityPerDegree) {
-        this.capacityPerDegree = capacityPerDegree;
     }
 }

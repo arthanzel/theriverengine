@@ -14,14 +14,10 @@ import java.util.UUID;
  * @author Martin
  */
 public class RiverNode implements JsonSerializable {
-    private String name = "";
-    private Point2D position = Point2D.ZERO;
+    private final String name;
+    private final Point2D position;
     private Set<RiverArc> downstreamArcs = new HashSet<>();
     private Set<RiverArc> upstreamArcs = new HashSet<>();
-
-    public RiverNode() {
-        this.name = UUID.randomUUID().toString();
-    }
 
     public RiverNode(String name, double x, double y) {
         this(name, new Point2D(x, y));
@@ -50,16 +46,8 @@ public class RiverNode implements JsonSerializable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Point2D getPosition() {
         return position;
-    }
-
-    public void setPosition(Point2D position) {
-        this.position = position;
     }
 
     public Set<RiverArc> getDownstreamArcs() {

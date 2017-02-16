@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.ComboBox;
 
 /**
- * Automatically constructs
+ *
  */
 public class EnumComboBox<T extends Enum> extends ComboBox<T> {
     private ObjectProperty<Class<T>> enumClass = new SimpleObjectProperty<>();

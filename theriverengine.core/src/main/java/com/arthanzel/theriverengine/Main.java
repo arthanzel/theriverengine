@@ -28,38 +28,6 @@ import java.util.UUID;
  * @author Martin
  */
 public class Main {
-//        // Create the system and add Environments to the data model
-//        RiverSystem system = new RiverSystem(RiverNetwork.fromResource("/graphs/binarytree-3.ini"), 800);
-//        system.getEnvironments().put("temperature", new TemperatureEnvironment());
-//        system.getEnvironments().put("nutrients", new DiscreteEnvironment(system.getNetwork()));
-//
-//        // Create the runner and add Influences to change behaviour.
-//        RiverRunner runner = new RiverRunner(system);
-//        runner.getInfluences().add(new RandomMovement());
-//        runner.getInfluences().add(new FlowMovement());
-//        runner.getInfluences().add(new VelocityApplier());
-//
-//        Influence nutrientDynamics = new NutrientDynamics();
-//        nutrientDynamics.setEnabled(false);
-//        runner.getInfluences().add(nutrientDynamics);
-//
-//        Influence nutrientDynamicsLog = new NutrientDynamicsLog();
-//        nutrientDynamicsLog.setEnabled(false);
-//        runner.getInfluences().add(nutrientDynamicsLog);
-//
-//        Influence feedingInfluence = new FeedingInfluence();
-//        feedingInfluence.setEnabled(false);
-//        runner.getInfluences().add(feedingInfluence);
-//
-//        Influence deathDynamics = new DeathDynamics();
-//        deathDynamics.setEnabled(false);
-//        runner.getInfluences().add(deathDynamics);
-//
-//        Influence reproductionDynamics = new ReproductionDynamics(system);
-//        runner.getInfluences().add(reproductionDynamics);
-//
-//        runner.start();
-
     /**
      * Global simulation runner.
      * Globals are evil, but they are also the easiest way to pass a runner
@@ -109,7 +77,17 @@ public class Main {
             RiverSystem system = new RiverSystem(network, 100);
             RiverRunner runner = new RiverRunner(system);
 
+            // Environments
             system.getEnvironments().put("nutrients", new DiscreteEnvironment(network));
+
+            // Influences
+            runner.getInfluences().add(new RandomMovement());
+            runner.getInfluences().add(new FlowMovement());
+            runner.getInfluences().add(new VelocityApplier());
+            runner.getInfluences().add(new NutrientDynamicsLog());
+            runner.getInfluences().add(new FeedingInfluence());
+            runner.getInfluences().add(new DeathDynamics());
+            runner.getInfluences().add(new ReproductionDynamics(system));
 
             // Reporters
             String uuid = UUID.randomUUID().toString().substring(0, 4);

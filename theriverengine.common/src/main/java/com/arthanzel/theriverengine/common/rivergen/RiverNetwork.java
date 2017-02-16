@@ -19,8 +19,6 @@ import java.util.Map;
 /**
  * Represents a river network.
  *
- * TODO: Move Graphs logic here.
- *
  * @author Martin
  */
 public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> implements JsonSerializable {
@@ -30,12 +28,18 @@ public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> imple
         super(RiverArc.class);
     }
 
+    /**
+     * Creates a RiverNetwork from a resource specifying an ini-file.
+     */
     public static RiverNetwork fromResource(String resource) throws IOException {
         // Get the resource's fulltext from a stream because it may live in a jarfile.
         byte[] bytes = IOUtils.toByteArray(RiverNetwork.class.getResource(resource).openStream());
         return RiverNetwork.fromSource(new String(bytes, "UTF-8"));
     }
 
+    /**
+     * Creates a RiverNetwork from a source string.
+     */
     public static RiverNetwork fromSource(String source) throws IOException {
         RiverNetwork network = new RiverNetwork();
 

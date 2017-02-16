@@ -68,6 +68,7 @@ public class RiverSystem implements JsonSerializable {
         JsonObject me = new JsonObject();
 
         me.addProperty("time", this.time);
+        me.addProperty("numAgents", agents.size());
 
         JsonArray agentsArray = new JsonArray();
         for (Agent a : agents) {
