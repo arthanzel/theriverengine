@@ -1,6 +1,10 @@
 group "com.arthanzel.theriverengine"
 version "1.0"
 
+task cleanData(type: Delete,) {
+        delete "data/"
+}
+
 subprojects {
     apply plugin: "java"
     group rootProject.group

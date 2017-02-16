@@ -1,6 +1,7 @@
 package com.arthanzel.theriverengine.util;
 
 import com.arthanzel.theriverengine.common.data.JsonSerializable;
+import com.arthanzel.theriverengine.common.util.FishMath;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.scene.paint.Color;
@@ -57,9 +58,9 @@ public class MultitypeHashMap extends HashMap<String, Object> implements JsonSer
             else if (v instanceof Color) {
                 Color clr = (Color) v;
                 JsonObject c = new JsonObject();
-                c.addProperty("r", String.format("%.2f", clr.getRed()));
-                c.addProperty("g", String.format("%.2f", clr.getGreen()));
-                c.addProperty("b", String.format("%.2f", clr.getBlue()));
+                c.addProperty("r", FishMath.toDecimal(clr.getRed()));
+                c.addProperty("g", FishMath.toDecimal(clr.getGreen()));
+                c.addProperty("b", FishMath.toDecimal(clr.getBlue()));
                 me.add(k, c);
             }
             else {

@@ -18,6 +18,9 @@ import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 /**
  * Entry point for The River Engine.
@@ -57,19 +60,29 @@ public class Main {
 //
 //        runner.start();
 
+    /**
+     * Global simulation runner.
+     * Globals are evil, but they are also the easiest way to pass a runner
+     * to the admin application, since JavaFX has a weird-as-fudge launch
+     * process.
+     */
     public static RiverRunner RUNNER;
 
-    public static void main(String[] args) throws ParseException {
+    private static CommandLine cmd;
 
+    public static void main(String[] args) throws ParseException {
         // Set min priority on the MONITORING/UI thread.
         // The simulation runs in a different thread entirely.
         Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
 
-        CommandLine cmd = new DefaultParser().parse(options(), args);
+        cmd = new DefaultParser().parse(options(), args);
 
         RiverRunner runner = setupSimulation();
         RUNNER = runner;
 
+        // -x starts in headless mode, without spawning a JavaFX application and
+        // showing the admin UI. Use on servers running scheduled or batch
+        // simulations.
         if (cmd.hasOption("x")) {
             // Run in headless mode without spinning up a JavaFX thread
             runner.setEnabled(true);
@@ -87,6 +100,9 @@ public class Main {
         }
     }
 
+    /**
+     * Constructs a RiverRunner fully configured to run a simulation.
+     */
     private static RiverRunner setupSimulation() {
         try {
             RiverNetwork network = RiverNetwork.fromResource("/graphs/binarytree-3.ini");
@@ -96,8 +112,11 @@ public class Main {
             system.getEnvironments().put("nutrients", new DiscreteEnvironment(network));
 
             // Reporters
-            runner.getReporter().getConsumers().add(new FileReporter(new File("results.json")));
-            runner.getReporter().getConsumers().add((s) -> System.out.println(runner.getOptions().getQueueMode()));
+            String uuid = UUID.randomUUID().toString().substring(0, 4);
+            String fileName = String.format("%s-%s.json",
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH.mm.ss")),
+                    uuid);
+            runner.getReporter().getConsumers().add(new FileReporter(new File("data/" + fileName)));
 
             return runner;
         }

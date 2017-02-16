@@ -151,7 +151,7 @@ public class DiscreteEnvironment implements Environment {
 
         JsonObject nodes = new JsonObject();
         for (RiverNode node : this.nodeValues.keySet()) {
-            nodes.addProperty(node.getName(), String.format("%.2f", nodeValues.get(node).getValue()));
+            nodes.addProperty(node.getName(), FishMath.toDecimal(nodeValues.get(node).getValue()));
         }
         me.add("nodes", nodes);
 
@@ -159,7 +159,7 @@ public class DiscreteEnvironment implements Environment {
         for (RiverArc arc : this.arcValues.keySet()) {
             JsonArray arr = new JsonArray();
             for (DiscretePoint dp : arcValues.get(arc)) {
-                arr.add(String.format("%.2f", dp.getValue()));
+                arr.add(FishMath.toDecimal(dp.getValue()));
             }
             arcs.add(arc.toString(), arr);
         }

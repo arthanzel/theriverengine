@@ -3,6 +3,7 @@ package com.arthanzel.theriverengine.sim;
 import com.arthanzel.theriverengine.common.data.JsonSerializable;
 import com.arthanzel.theriverengine.common.rivergen.RiverArc;
 import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
+import com.arthanzel.theriverengine.common.util.FishMath;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
 import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
@@ -49,14 +50,12 @@ public class RiverSystem implements JsonSerializable {
 
         // Re-initialize agents and place them randomly in the river system
         for (int i = 0; i < numAgents; i++) {
-            Random r = new Random();
-
             // Pick a random arc. Shorts arcs should be selected less than long arcs.
             RiverArc arc;
             double pos;
             do {
-                arc = arcs[r.nextInt(arcs.length)];
-                pos = r.nextDouble() * maxLength;
+                arc = arcs[FishMath.randomInt(0, arcs.length)];
+                pos = FishMath.random(0, maxLength);
             } while (pos > arc.length());
             Agent a = new Agent();
             a.setLocation(new Location(arc, pos));

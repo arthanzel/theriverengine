@@ -7,14 +7,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-import java.io.File;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.UUID;
-
 /**
- * Created by martin on 2017-01-10.
+ * Contains several options for configuring the RiverRunner.
  */
 public class RunnerOptions {
     @EnumBinding
@@ -23,22 +17,8 @@ public class RunnerOptions {
     @DoubleSpinnerBinding(min = 0.25, max = 10)
     private DoubleProperty reportingInterval = new SimpleDoubleProperty(2);
 
-    @FileBinding(folders = true)
-    private File dataDirectory;
-
-    @DisplayableBinding(newline = true)
-    private String currentFile;
-
-    @IntegerSpinnerBinding(min = 1, max = 9999)
-    private int initialAgents = 100;
-
     public RunnerOptions() {
-        dataDirectory = new File(System.getenv("user.home"), "theriverengine");
 
-        String uuid = UUID.randomUUID().toString().substring(0, 4);
-        currentFile = String.format("%s-%s.json",
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH.mm.ss")),
-                uuid);
     }
 
     public QueueMode getQueueMode() {
@@ -63,29 +43,5 @@ public class RunnerOptions {
 
     public void setReportingInterval(double reportingInterval) {
         this.reportingInterval.set(reportingInterval);
-    }
-
-    public File getDataDirectory() {
-        return dataDirectory;
-    }
-
-    public void setDataDirectory(File dataDirectory) {
-        this.dataDirectory = dataDirectory;
-    }
-
-    public String getCurrentFile() {
-        return currentFile;
-    }
-
-    public void setCurrentFile(String currentFile) {
-        this.currentFile = currentFile;
-    }
-
-    public int getInitialAgents() {
-        return initialAgents;
-    }
-
-    public void setInitialAgents(int initialAgents) {
-        this.initialAgents = initialAgents;
     }
 }

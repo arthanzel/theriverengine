@@ -2,6 +2,7 @@ package com.arthanzel.theriverengine.sim.agent;
 
 import com.arthanzel.theriverengine.common.data.JsonSerializable;
 import com.arthanzel.theriverengine.common.rivergen.RiverArc;
+import com.arthanzel.theriverengine.common.util.FishMath;
 import com.google.gson.JsonObject;
 import javafx.geometry.Point2D;
 
@@ -40,7 +41,7 @@ public class Location implements JsonSerializable {
     public JsonObject toJson() {
         JsonObject me = new JsonObject();
         me.addProperty("arc", arc.toString());
-        me.addProperty("position", String.format("%.2f", position));
+        me.addProperty("position", FishMath.toDecimal(position));
         return me;
     }
 

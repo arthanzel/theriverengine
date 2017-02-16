@@ -6,7 +6,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
- * Created by martin on 2017-02-11.
+ * Main entry point for the Java-FX enabled application of The River Engine.
  */
 public class MainApplication extends Application {
     private RiverRunner runner;

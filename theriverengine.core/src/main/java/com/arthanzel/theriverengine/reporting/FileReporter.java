@@ -6,13 +6,14 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 /**
- *
+ * FileReporter writes JSON messages to a file.
  */
 public class FileReporter implements Consumer<String> {
     private FileWriter writer = null;
     private boolean requireComma = false; // Don't need a comma on first write.
 
     public FileReporter(File file) {
+        file.getParentFile().mkdirs();
         try {
             writer = new FileWriter(file, false);
             writer.write("{\n\"states\": [\n");
