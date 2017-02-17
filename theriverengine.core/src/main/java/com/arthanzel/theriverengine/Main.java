@@ -60,7 +60,6 @@ public class Main {
             // TODO: Require a finite end time
         }
         else {
-            runner.setEnabled(true);
             runner.start();
 
             // Launch JavaFX
@@ -76,6 +75,7 @@ public class Main {
             RiverNetwork network = RiverNetwork.fromResource("/graphs/binarytree-3.ini");
             RiverSystem system = new RiverSystem(network, 100);
             RiverRunner runner = new RiverRunner(system);
+            runner.setEnabled(false);
 
             // Environments
             system.getEnvironments().put("nutrients", new DiscreteEnvironment(network));

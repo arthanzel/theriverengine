@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.arthanzel.theriverengine.common.ui.DynamicLabel?>
 <?import com.arthanzel.theriverengine.common.ui.NumberField?>
 <?import com.arthanzel.theriverengine.common.ui.TimeLabel?>
 <?import javafx.geometry.Insets?>
@@ -43,7 +44,7 @@
                 <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
             </padding>
             <TimeLabel fx:id="timeLabel"/>
-            <Label text="500 steps/s"/>
+            <Label fx:id="fpsLabel" />
         </HBox>
     </bottom>
 </BorderPane>

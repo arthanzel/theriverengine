@@ -1,21 +1,22 @@
 package com.arthanzel.theriverengine.adminui;
 
+import com.arthanzel.theriverengine.common.ui.NumberField;
+import com.arthanzel.theriverengine.common.ui.TimeLabel;
 import com.arthanzel.theriverengine.common.ui.binding.Bindings;
+import com.arthanzel.theriverengine.common.util.FXTimer;
 import com.arthanzel.theriverengine.common.util.ReflectionUtils;
 import com.arthanzel.theriverengine.gui.RiverView;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.influence.Influence;
+import javafx.animation.AnimationTimer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.Button;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -42,7 +43,19 @@ public class AdminUI extends Stage {
 
     @FXML
     private Button guiButton;
+
+    @FXML
+    private TimeLabel timeLabel;
+
+    @FXML
+    private NumberField stepSizeField;
+
+    @FXML
+    private Label fpsLabel;
     // endregion
+
+    // Used to calculate the FPS
+    double lastTime = 0;
 
     private BooleanProperty playing = new SimpleBooleanProperty(true);
 
@@ -67,6 +80,9 @@ public class AdminUI extends Stage {
         }
 
         playing.bindBidirectional(playButton.selectedProperty());
+        playing.addListener((observable, oldValue, newValue) -> {
+            runner.setEnabled(newValue);
+        });
 
         // Show renderer button
         guiButton.setOnAction(event -> {
@@ -74,7 +90,35 @@ public class AdminUI extends Stage {
             view.show();
             Consumer<String> consumer = view::updateModel;
             runner.getReporter().getConsumers().add(consumer);
-            view.setOnCloseRequest((ev) -> runner.getReporter().getConsumers().remove(consumer));
+            view.setOnCloseRequest((ev) -> {
+                runner.getReporter().getConsumers().remove(consumer);
+            });
+        });
+
+        // Show the time
+        AnimationTimer timeTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                timeLabel.setTime(system.getTime());
+            }
+        };
+        timeTimer.start();
+
+        // Frame rate
+        lastTime = system.getTime();
+        FXTimer.setInterval(1, () -> {
+            double factor = system.getTime() - lastTime;
+            fpsLabel.setText(String.format("%,.1f X realtime", factor));
+            lastTime = system.getTime();
+        });
+
+        // Step size
+        stepSizeField.setValue(runner.getInterval());
+        stepSizeField.valueProperty().addListener((observable, oldValue, newValue) -> {
+            double interval = (double) newValue;
+            if (interval > 0) {
+                runner.setInterval(interval);
+            }
         });
     }
 

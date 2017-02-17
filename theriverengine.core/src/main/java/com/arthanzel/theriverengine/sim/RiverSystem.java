@@ -21,7 +21,7 @@ public class RiverSystem implements JsonSerializable {
     private List<Agent> agents;
     private Map<String, Environment> environments = new HashMap<>();
     private final RiverNetwork network;
-    private double time = 0; // Seconds
+    private volatile double time = 0; // Seconds
 
     private RiverSystem(RiverNetwork network) {
         this.network = network;

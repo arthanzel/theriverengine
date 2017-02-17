@@ -25,15 +25,15 @@ public class TimeLabel extends Label {
             sb.append("+ ");
 
             double years = TimeUtils.years(seconds);
-            if (years >= 1) sb.append((int) years).append(" y, ");
-            double days = TimeUtils.days(seconds);
-            if (days >= 1) sb.append((int) days).append(" d, ");
-            double hours = TimeUtils.hours(seconds);
-            if (hours >= 1) sb.append((int) hours).append(" h, ");
-            double minutes = TimeUtils.minutes(seconds);
-            if (minutes >= 1) sb.append((int) minutes).append(" m, ");
+            sb.append((int) years).append(" y, ");
+            double days = TimeUtils.days(seconds) % 365;
+            sb.append((int) days).append(" d, ");
+            double hours = TimeUtils.hours(seconds) % 24;
+            sb.append(String.format("%02d h, ", (int) hours));
+            double minutes = TimeUtils.minutes(seconds) % 60;
+            sb.append(String.format("%02d m, ", (int) minutes));
 
-            sb.append(String.format("%.2f s", seconds));
+            sb.append(String.format("%05.2f s", seconds % 60));
 
             this.setText(sb.toString());
         });
