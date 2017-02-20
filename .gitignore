@@ -9,7 +9,6 @@ dist/
 # Model output
 data/
 results.txt
-*.json
 
 # User-specific stuff:
 .idea/

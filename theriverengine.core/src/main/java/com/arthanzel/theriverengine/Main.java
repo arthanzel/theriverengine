@@ -1,15 +1,11 @@
 package com.arthanzel.theriverengine;
 
-import com.arthanzel.theriverengine.adminui.AdminUI;
-import com.arthanzel.theriverengine.gui.RiverView;
 import com.arthanzel.theriverengine.reporting.FileReporter;
-import com.arthanzel.theriverengine.reporting.RiverReporter;
 import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
 import javafx.application.Application;
-import javafx.stage.Stage;
 import com.arthanzel.theriverengine.sim.influence.*;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -17,7 +13,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -63,7 +58,14 @@ public class Main {
             runner.start();
 
             // Launch JavaFX
-            Application.launch(MainApplication.class, args); // Blocking
+            try {
+                Application.launch(MainApplication.class, args); // Blocking
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("Error while launching the JavaFX application.");
+                System.err.println("Try using the -x flag to launch in headless mode.");
+            }
         }
     }
 
