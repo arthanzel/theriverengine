@@ -89,6 +89,16 @@ public class RiverNetwork extends SimpleDirectedGraph<RiverNode, RiverArc> imple
         return network;
     }
 
+    /**
+     * Returns the total length of all arcs in this RiverNetwork.
+     */
+    public double length() {
+        double sum = 0;
+        for (RiverArc arc : this.edgeSet()) {
+            sum += arc.length();
+        }
+        return sum;
+    }
 
     /**
      * Caches several elements within vertices and edges of this RiverNetwork for easier and faster access.

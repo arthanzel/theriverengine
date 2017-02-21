@@ -96,7 +96,7 @@ public class Main {
             String fileName = String.format("%s-%s.json",
                     LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH.mm.ss")),
                     uuid);
-            runner.getReporter().getConsumers().add(new FileReporter(new File("data/" + fileName)));
+            runner.getReporter().getConsumers().add(new FileReporter(new File("data/" + fileName), system));
 
             return runner;
         }

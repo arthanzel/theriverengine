@@ -1,5 +1,7 @@
 package com.arthanzel.theriverengine.reporting;
 
+import com.arthanzel.theriverengine.sim.RiverSystem;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,7 +14,7 @@ public class FileReporter implements Consumer<String> {
     private FileWriter writer = null;
     private boolean requireComma = false; // Don't need a comma on first write.
 
-    public FileReporter(File file) {
+    public FileReporter(File file, RiverSystem system) {
         file.getParentFile().mkdirs();
         try {
             writer = new FileWriter(file, false);
