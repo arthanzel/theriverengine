@@ -1,9 +1,11 @@
 package com.arthanzel.theriverengine.sim.influence;
 
+import com.arthanzel.theriverengine.common.util.TimeUtils;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.common.ui.binding.SliderBinding;
 import com.arthanzel.theriverengine.common.util.FishMath;
+import com.arthanzel.theriverengine.sim.agent.Location;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +25,7 @@ public class ReproductionDynamics extends BaseInfluence {
 
     private Random r = new Random();
     private RiverSystem system;
-    private boolean reproduce = false;
+    private int lastYear = 0;
 
     public ReproductionDynamics(RiverSystem system) {
         this.system = system;
@@ -31,23 +33,19 @@ public class ReproductionDynamics extends BaseInfluence {
 
     public void influence(RiverSystem system, double dt) {
         // TODO: Refactor to a FireableInfluence that *queues* events onto the processing thread
-        if (reproduce) {
-            reproduce = false;
-
+        if (lastYear != (int) TimeUtils.years(system.getTime())) {
             List<Agent> newAgents = new LinkedList<>();
             for (Agent a : system.getAgents()) {
                 int max = FishMath.randomInt(minOffspring, maxOffspring + 1);
                 for (int i = minOffspring; i <= max; i++) {
-                    newAgents.add(new Agent());
+                    Agent na = new Agent();
+                    na.setLocation(new Location(a.getLocation().getArc(), a.getLocation().getPosition()));
+                    newAgents.add(na);
                 }
             }
             system.getAgents().addAll(newAgents);
+            lastYear = (int) TimeUtils.years(system.getTime());
         }
-    }
-
-    public void fireReproduce() {
-        System.out.println("Reproduced");
-        reproduce = true;
     }
 
     public int getMinOffspring() {

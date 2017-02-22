@@ -90,7 +90,7 @@ public class Main {
             runner.getInfluences().add(new NutrientDynamicsLog());
             runner.getInfluences().add(new FeedingInfluence());
             runner.getInfluences().add(new DeathDynamics());
-            //runner.getInfluences().add(new ReproductionDynamics(system));
+            runner.getInfluences().add(new ReproductionDynamics(system));
 
             // Prefs
             RiverPrefs prefs = new RiverPrefs("/prefs/defaultPrefs.ini");
