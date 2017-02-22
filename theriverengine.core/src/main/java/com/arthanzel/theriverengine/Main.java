@@ -5,6 +5,7 @@ import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.environment.DiscreteEnvironment;
+import com.arthanzel.theriverengine.util.prefs.RiverPrefs;
 import javafx.application.Application;
 import com.arthanzel.theriverengine.sim.influence.*;
 import org.apache.commons.cli.CommandLine;
@@ -89,7 +90,11 @@ public class Main {
             runner.getInfluences().add(new NutrientDynamicsLog());
             runner.getInfluences().add(new FeedingInfluence());
             runner.getInfluences().add(new DeathDynamics());
-            runner.getInfluences().add(new ReproductionDynamics(system));
+            //runner.getInfluences().add(new ReproductionDynamics(system));
+
+            // Prefs
+            RiverPrefs prefs = new RiverPrefs("/prefs/defaultPrefs.ini");
+            prefs.set(runner.getInfluences());
 
             // Reporters
             String uuid = UUID.randomUUID().toString().substring(0, 4);

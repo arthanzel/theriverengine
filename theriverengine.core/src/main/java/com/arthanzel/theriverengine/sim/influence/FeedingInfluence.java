@@ -72,7 +72,7 @@ public class FeedingInfluence extends BaseInfluence {
             final double factor = Math.max(0, 1 - distance / feedRadius);
             final double rate = feedRate * factor * TimeUtils.days(dt);
             amountFed = Math.max(0, dp.getValue() - rate);
-            dp.setValue(amountFed);
+            dp.setValue(dp.getValue() - amountFed);
         }
 
         // Find the next discrete point

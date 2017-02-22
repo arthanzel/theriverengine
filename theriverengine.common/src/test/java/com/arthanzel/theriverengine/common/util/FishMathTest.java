@@ -47,6 +47,15 @@ public class FishMathTest {
     }
 
     @Test
+    public void testGaussian() {
+        for (int i = 0; i < 100; i++) {
+            double val = gaussian(10, 1, 5);
+            assertTrue(val > 5);
+            assertTrue(val < 15);
+        }
+    }
+
+    @Test
     public void ceil() throws Exception {
 
     }

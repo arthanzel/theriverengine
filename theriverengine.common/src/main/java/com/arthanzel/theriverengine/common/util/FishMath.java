@@ -12,6 +12,8 @@ import java.util.Set;
  * @author Martin
  */
 public class FishMath {
+    private static Random r = new Random();
+
     /**
      * Restricts a value to a certain range.
      * @param val The value to clamp.
@@ -79,6 +81,29 @@ public class FishMath {
      */
     public static double floor(double val, double multiple) {
         return Math.floor(val / multiple) * multiple;
+    }
+
+    /**
+     * Returns a normally-distributed value.
+     * @param mean Mean.
+     * @param sd Standard deviation.
+     */
+    public static double gaussian(double mean, double sd) {
+        return r.nextGaussian() * sd + mean;
+    }
+
+    /**
+     * Returns a normally-distributed value between bounds.
+     * @param mean Mean.
+     * @param sd Standard deviation.
+     * @param pm Bound, as a measure of {@code mean} plus/minus {@code pm}.
+     */
+    public static double gaussian(double mean, double sd, double pm) {
+        double val;
+        do {
+            val = gaussian(mean, sd);
+        } while (Math.abs(val - mean) > pm);
+        return val;
     }
 
     /**

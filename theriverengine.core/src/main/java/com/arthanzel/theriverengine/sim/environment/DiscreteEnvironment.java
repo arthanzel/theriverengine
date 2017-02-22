@@ -26,22 +26,24 @@ public class DiscreteEnvironment implements Environment {
     private final Map<RiverArc, DiscretePoint[]> arcValues = new HashMap<>();
     private final Map<RiverArc, Double> separations = new HashMap<>();
 
-    private DiscreteEnvironment() {}
-
     public DiscreteEnvironment(RiverNetwork network) {
-        // Generate values for each node
+        // Generate points for each node.
+        // The first and last points on each arc are pointers to DiscretePoints
+        // that sit on nodes. Points will prefer to sit at the beginning of
+        // arcs, unless they are on a terminal end, in which case they will sit
+        // at the end.
         for (RiverNode node : network.vertexSet()) {
             if (network.outgoingEdgesOf(node).size() > 0) {
                 RiverArc arc = network.outgoingEdgesOf(node).iterator().next();
-                nodeValues.put(node, new DiscretePoint(Math.random(), arc, 0, true));
+                nodeValues.put(node, new DiscretePoint(Math.random(), arc, 0));
             }
             else {
                 RiverArc arc = network.incomingEdgesOf(node).iterator().next();
-                nodeValues.put(node, new DiscretePoint(Math.random(), arc, arc.length(), true));
+                nodeValues.put(node, new DiscretePoint(Math.random(), arc, arc.length()));
             }
         }
 
-        // Generate values for every arc, spaced at most MAX_SEPARATION apart.
+        // Generate DiscretePoints for every arc, spaced at most MAX_SEPARATION apart.
         for (RiverArc arc : network.edgeSet()) {
             final double len = arc.length();
             final int nPoints = (int) Math.ceil(arc.length() / MAX_SEPARATION) + 1; // Include node termini
@@ -56,6 +58,16 @@ public class DiscreteEnvironment implements Environment {
 
             }
             arcValues.put(arc, vals);
+        }
+
+        // Compute neighbours for each DiscretePoint.
+        for (RiverArc arc : network.edgeSet()) {
+            DiscretePoint[] points = arcValues.get(arc);
+            double separation = separations.get(arc);
+            for (int i = 1; i <= points.length - 2; i++) {
+                points[i].addNeighbor(points[i + 1], separation);
+                points[i].addNeighbor(points[i - 1], separation);
+            }
         }
     }
 
@@ -125,26 +137,6 @@ public class DiscreteEnvironment implements Environment {
     }
 
      // ====== Accessors ======
-
-    //TODO: Pluggable interpolation functions
-
-    public Environment clone() {
-        DiscreteEnvironment env = new DiscreteEnvironment();
-        for (RiverNode node : this.nodeValues.keySet()) {
-            env.nodeValues.put(node, nodeValues.get(node).clone());
-        }
-        for (RiverArc arc : this.arcValues.keySet()) {
-            DiscretePoint[] values = arcValues.get(arc);
-            DiscretePoint[] dps = new DiscretePoint[values.length];
-            for (int i = 0; i < values.length; i++) {
-                dps[i] = values[i].clone();
-            }
-            env.arcValues.put(arc, dps);
-
-            env.separations.put(arc, separations.get(arc));
-        }
-        return env;
-    }
 
     public JsonObject toJson() {
         JsonObject me = new JsonObject();

@@ -16,30 +16,17 @@ public class RandomMovement extends BaseInfluence {
     @SliderBinding(min = 0, max = 10)
     private volatile double spread = 2.0;
 
-//    @BooleanBinding
-//    private volatile boolean parallel = false;
-
     Random r = new Random();
 
     public void influence(RiverSystem system, double dt) {
-//        if (parallel) {
-//            for (final Agent a : system.getAgents()) {
-//                getPool().submit(() -> {
-//                    print(a);
-//                });
-//            }
-//        }
-//        else {
         for (final Agent a : system.getAgents()) {
             run(a);
         }
-//        }
     }
 
     private void run(Agent a) {
-        // TODO: Put Random in a ThreadLocal
         final double v = a.getAttributes().getDouble("velocity");
-        a.getAttributes().put("velocity", v + FishMath.random(-spread, spread));
+        a.getAttributes().put("velocity", v + FishMath.gaussian(0, spread, spread * 2));
     }
 
     public double getSpread() {
@@ -49,12 +36,4 @@ public class RandomMovement extends BaseInfluence {
     public void setSpread(double spread) {
         this.spread = spread;
     }
-
-//    public boolean isParallel() {
-//        return parallel;
-//    }
-//
-//    public void setParallel(boolean parallel) {
-//        this.parallel = parallel;
-//    }
 }

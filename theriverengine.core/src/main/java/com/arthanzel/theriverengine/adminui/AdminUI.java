@@ -131,12 +131,6 @@ public class AdminUI extends Stage {
         ));
     }
 
-    public void wireToRunner() {
-        playing.addListener((observable, oldValue, newValue) -> {
-            runner.setEnabled(newValue);
-        });
-    }
-
     public boolean isPlaying() {
         return playing.get();
     }

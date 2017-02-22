@@ -26,7 +26,7 @@ public class RiverPrefs {
     /**
      * Applies the preferences contained within this RiverPrefs to a collection of beans.
      */
-    public void set(Collection<Object> beans) {
+    public void set(Collection<?> beans) {
         for (Profile.Section s : ini.values()) {
             String name = s.getName();
             Object bean = beans.stream().filter(o -> name.equalsIgnoreCase(o.getClass().getSimpleName())).findFirst().orElse(null);
