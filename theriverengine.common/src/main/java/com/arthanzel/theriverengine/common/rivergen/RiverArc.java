@@ -39,6 +39,10 @@ public class RiverArc implements JsonSerializable {
                 pn * (dest.getY() - origin.getY()) + origin.getY());
     }
 
+    public Point2D getPointLerp(double f) {
+        return getPoint(f * length());
+    }
+
     public double length() {
         return len;
     }

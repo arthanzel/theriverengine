@@ -47,7 +47,7 @@ public class MultitypeHashMap extends HashMap<String, Object> implements JsonSer
         for (String k : this.keySet()) {
             Object v = this.get(k);
             if (v instanceof Number) {
-                me.addProperty(k, (Number) v);
+                me.addProperty(k, FishMath.toDecimal(((Number) v).doubleValue()));
             }
             else if (v instanceof Boolean) {
                 me.addProperty(k, (Boolean) v);

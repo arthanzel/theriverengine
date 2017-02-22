@@ -4,6 +4,7 @@ import com.arthanzel.theriverengine.common.rivergen.RiverArc;
 import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.common.rivergen.RiverNode;
 import com.arthanzel.theriverengine.common.util.FishMath;
+import com.arthanzel.theriverengine.sim.agent.Location;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -55,7 +56,6 @@ public class DiscreteEnvironment implements Environment {
             vals[vals.length - 1] = nodeValues.get(arc.getDownstreamNode());
             for (int i = 1; i < vals.length - 1; i++) {
                 vals[i] = new DiscretePoint(Math.random(), arc, (i) * separation);
-
             }
             arcValues.put(arc, vals);
         }
@@ -78,6 +78,14 @@ public class DiscreteEnvironment implements Environment {
         if (pos < 0 || pos > arc.length()) {
             throw new IllegalArgumentException("Position must be greater or equal to 0 and less than or equal to the arc's length (" + arc.length() + ")");
         }
+    }
+
+    public DiscretePoint closestTo(Location loc) {
+        return closestTo(loc.getArc(), loc.getPosition());
+    }
+
+    public DiscretePoint closestTo(RiverArc arc, double pos) {
+        return arcValues.get(arc)[(int) Math.round(getVirtualIndex(arc, pos))];
     }
 
     public double get(RiverArc arc, double pos) {
@@ -141,11 +149,11 @@ public class DiscreteEnvironment implements Environment {
     public JsonObject toJson() {
         JsonObject me = new JsonObject();
 
-        JsonObject nodes = new JsonObject();
-        for (RiverNode node : this.nodeValues.keySet()) {
-            nodes.addProperty(node.getName(), FishMath.toDecimal(nodeValues.get(node).getValue()));
-        }
-        me.add("nodes", nodes);
+//        JsonObject nodes = new JsonObject();
+//        for (RiverNode node : this.nodeValues.keySet()) {
+//            nodes.addProperty(node.getName(), FishMath.toDecimal(nodeValues.get(node).getValue()));
+//        }
+//        me.add("nodes", nodes);
 
         JsonObject arcs = new JsonObject();
         for (RiverArc arc : this.arcValues.keySet()) {

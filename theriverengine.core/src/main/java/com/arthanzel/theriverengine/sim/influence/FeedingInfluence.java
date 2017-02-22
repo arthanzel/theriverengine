@@ -37,13 +37,11 @@ public class FeedingInfluence extends BaseInfluence {
         for (Agent a : system.getAgents()) {
             Location loc = a.getLocation();
             double vi = env.getVirtualIndex(loc.getArc(), loc.getPosition());
-            double dist = loc.getPosition() - env.getPosition(loc.getArc(), (int) vi);
-            assert dist < env.getSeparation(loc.getArc());
 
+            // Start feeding at the closest point.
             try {
                 double uptake = 0;
-                uptake += feedPoint(dist, loc.getArc(), (int) vi, false, false);
-                uptake += feedPoint(-dist, loc.getArc(), (int) vi, true, true);
+                uptake += feedPoint(0, env.closestTo(loc), null);
                 double energy = a.getAttributes().getDouble("energy");
                 a.getAttributes().put("energy", energy + uptake);
             } catch (Exception e) {
@@ -55,50 +53,22 @@ public class FeedingInfluence extends BaseInfluence {
     /**
      * Simulates feeding at a certain point on the nutrient environment.
      * @param distance Distance from the fish.
-     * @param arc Arc on which to feed.
-     * @param vi Virtual index of the discrete point.
-     * @param downstream Whether to propagate feeding in the downstream or upstream direction.
-     * @param skip Whether to skip the actual feeding and propagate only.
      */
-    private double feedPoint(double distance, RiverArc arc, int vi, boolean downstream, boolean skip) {
+    private double feedPoint(double distance, DiscretePoint point, DiscretePoint previousPoint) {
         if (distance > feedRadius) {
             return 0;
         }
 
-        DiscretePoint dp = env.getPoints(arc)[vi];
         double amountFed = 0;
 
-        if (!skip) {
-            final double factor = Math.max(0, 1 - distance / feedRadius);
-            final double rate = feedRate * factor * TimeUtils.days(dt);
-            amountFed = Math.max(0, dp.getValue() - rate);
-            dp.setValue(dp.getValue() - amountFed);
-        }
+        final double factor = Math.max(0, 1 - distance / feedRadius);
+        final double rate = feedRate * factor * TimeUtils.days(dt);
+        amountFed = Math.max(0, point.getValue() - rate);
+        point.setValue(point.getValue() - amountFed);
 
-        // Find the next discrete point
-        if (dp.isNode()) {
-            if (downstream) {
-                for (RiverArc nextArc : arc.getDownstreamArcs()) {
-                    boolean ds = arc.getDownstreamNode().getDownstreamArcs().contains(nextArc);
-                    int nextVI = ds ? 1 : env.getPoints(nextArc).length - 2;
-                    amountFed += feedPoint(distance + env.getSeparation(nextArc), nextArc, nextVI, ds, false);
-                }
-            }
-            else {
-                for (RiverArc nextArc : arc.getUpstreamArcs()) {
-                    boolean ds = arc.getUpstreamNode().getDownstreamArcs().contains(nextArc);
-                    int nextVI = ds ? 1 : env.getPoints(nextArc).length - 2;
-                    amountFed += feedPoint(distance + env.getSeparation(nextArc), nextArc, nextVI, ds, false);
-                }
-            }
-        }
-        else {
-            double separation = env.getSeparation(arc);
-            if (downstream) {
-                amountFed += feedPoint(distance + separation, arc, vi + 1, true, false);
-            }
-            else {
-                amountFed += feedPoint(distance + separation, arc, vi - 1, false, false);
+        for (DiscretePoint.DiscreteNeighbor n : point.getNeighbors()) {
+            if (n.getPoint() != previousPoint) {
+                amountFed += feedPoint(n.getDistance(), n.getPoint(), point);
             }
         }
 
