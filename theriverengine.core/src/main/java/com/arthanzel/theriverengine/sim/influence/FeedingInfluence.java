@@ -63,8 +63,8 @@ public class FeedingInfluence extends BaseInfluence {
 
         final double factor = Math.max(0, 1 - distance / feedRadius);
         final double rate = feedRate * factor * TimeUtils.days(dt);
-        amountFed = Math.max(0, point.getValue() - rate);
-        point.setValue(point.getValue() - amountFed);
+        amountFed = Math.min(point.getValue(), rate);
+        point.setValue(Math.max(0, point.getValue() - rate));
 
         for (DiscretePoint.DiscreteNeighbor n : point.getNeighbors()) {
             if (n.getPoint() != previousPoint) {
