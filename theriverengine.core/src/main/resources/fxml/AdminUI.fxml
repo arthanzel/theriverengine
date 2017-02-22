@@ -45,6 +45,7 @@
             </padding>
             <TimeLabel fx:id="timeLabel"/>
             <Label fx:id="fpsLabel" />
+            <Label text="(1 y/hr is 8760 X)" />
         </HBox>
     </bottom>
 </BorderPane>
