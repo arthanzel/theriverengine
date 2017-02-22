@@ -42,6 +42,9 @@ public class AdminUI extends Stage {
     private ToggleButton playButton;
 
     @FXML
+    private Button stepButton;
+
+    @FXML
     private Button guiButton;
 
     @FXML
@@ -79,9 +82,16 @@ public class AdminUI extends Stage {
             addBean(i);
         }
 
+        // Play
         playing.bindBidirectional(playButton.selectedProperty());
         playing.addListener((observable, oldValue, newValue) -> {
             runner.setEnabled(newValue);
+        });
+
+        // Step
+        stepButton.setOnAction(event -> {
+            runner.setEnabled(false);
+            runner.forward();
         });
 
         // Show renderer button

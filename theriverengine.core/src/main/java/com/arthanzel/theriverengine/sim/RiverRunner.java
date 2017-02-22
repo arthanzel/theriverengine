@@ -50,7 +50,8 @@ public class RiverRunner {
 
     public void forward() {
         System.out.println("Forwarding one frame");
-        tick(interval);
+        setEnabled(false);
+        tick(interval, true);
     }
 
     private void sendMessage() {
@@ -108,12 +109,16 @@ public class RiverRunner {
         reporter.start();
     }
 
+    public void tick(double dt) {
+        tick(dt, false);
+    }
+
     /**
      * Simulates the river system for one iteration.
      *
      * @param dt Time interval. Higher values are quicker, but less precise, and may lead to artifacts.
      */
-    public void tick(double dt) {
+    public void tick(double dt, boolean forceMessage) {
         for (Influence i : influences) {
             if (!i.isEnabled()) {
                 continue;
@@ -124,7 +129,7 @@ public class RiverRunner {
 
         // Is it time to trigger a message?
         double timeElapsed = (System.nanoTime() - lastReportNanos) / 1.0e9;
-        if (system.getTime() == 0 || timeElapsed > options.getReportingInterval()) {
+        if (forceMessage || system.getTime() == 0 || timeElapsed > options.getReportingInterval()) {
             sendMessage();
             lastReportNanos = System.nanoTime();
         }
