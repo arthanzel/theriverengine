@@ -55,6 +55,9 @@ public class AdminUI extends Stage {
 
     @FXML
     private Label fpsLabel;
+
+    @FXML
+    private Label agentsLabel;
     // endregion
 
     // Used to calculate the FPS
@@ -120,6 +123,11 @@ public class AdminUI extends Stage {
             double factor = system.getTime() - lastTime;
             fpsLabel.setText(String.format("%,.1f X realtime", factor));
             lastTime = system.getTime();
+        });
+
+        // Number of agents agents
+        FXTimer.setInterval(1, () -> {
+            agentsLabel.setText(String.format("%d agents", system.getAgents().size()));
         });
 
         // Step size
