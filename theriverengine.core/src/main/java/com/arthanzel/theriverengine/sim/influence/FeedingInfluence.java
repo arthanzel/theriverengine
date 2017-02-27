@@ -2,6 +2,7 @@ package com.arthanzel.theriverengine.sim.influence;
 
 import com.arthanzel.theriverengine.common.rivergen.RiverArc;
 import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
+import com.arthanzel.theriverengine.common.util.FishMath;
 import com.arthanzel.theriverengine.sim.RiverSystem;
 import com.arthanzel.theriverengine.sim.agent.Agent;
 import com.arthanzel.theriverengine.sim.agent.Location;
@@ -28,6 +29,9 @@ public class FeedingInfluence extends BaseInfluence {
     @SliderBinding(min = 1, max = 25)
     private double feedRadius = 10;
 
+    @SliderBinding(min = 1, max = 25)
+    private double satisfiedThreshold = 6;
+
     @Override
     public void influence(RiverSystem system, double dt) {
         network = system.getNetwork();
@@ -35,6 +39,11 @@ public class FeedingInfluence extends BaseInfluence {
         this.dt = dt;
 
         for (Agent a : system.getAgents()) {
+            double energy = a.getAttributes().getDouble("energy");
+            if (energy >= satisfiedThreshold) {
+                continue;
+            }
+
             Location loc = a.getLocation();
             double vi = env.getVirtualIndex(loc.getArc(), loc.getPosition());
 
@@ -42,7 +51,6 @@ public class FeedingInfluence extends BaseInfluence {
             try {
                 double uptake = 0;
                 uptake += feedPoint(0, env.closestTo(loc), null);
-                double energy = a.getAttributes().getDouble("energy");
                 a.getAttributes().put("energy", energy + uptake);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -61,14 +69,16 @@ public class FeedingInfluence extends BaseInfluence {
 
         double amountFed = 0;
 
-        final double factor = Math.max(0, 1 - distance / feedRadius);
+        final double factor = env.getSeparation(point.getArc()) / feedRadius;
         final double rate = feedRate * factor * TimeUtils.days(dt);
+
+        // A fish will never eat more food than available, or if it's full.
         amountFed = Math.min(point.getValue(), rate);
-        point.setValue(Math.max(0, point.getValue() - rate));
+        point.setValue(Math.max(0, point.getValue() - amountFed));
 
         for (DiscretePoint.DiscreteNeighbor n : point.getNeighbors()) {
             if (n.getPoint() != previousPoint) {
-                amountFed += feedPoint(n.getDistance(), n.getPoint(), point);
+                amountFed += feedPoint(distance + n.getDistance(), n.getPoint(), point);
             }
         }
 
@@ -89,5 +99,13 @@ public class FeedingInfluence extends BaseInfluence {
 
     public void setFeedRadius(double feedRadius) {
         this.feedRadius = feedRadius;
+    }
+
+    public double getSatisfiedThreshold() {
+        return satisfiedThreshold;
+    }
+
+    public void setSatisfiedThreshold(double satisfiedThreshold) {
+        this.satisfiedThreshold = satisfiedThreshold;
     }
 }

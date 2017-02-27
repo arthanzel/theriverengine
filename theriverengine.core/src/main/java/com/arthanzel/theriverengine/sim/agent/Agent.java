@@ -16,7 +16,7 @@ public class Agent implements JsonSerializable {
     private Location location;
 
     public Agent() {
-        attributes.put("color", Color.hsb(Math.random() * 360, 1, FishMath.random(0.75, 1)));
+        attributes.put("hue", FishMath.randomInt(0, 360));
         attributes.put("energy", 4.0);
         attributes.put("velocity", 0.0);
     }

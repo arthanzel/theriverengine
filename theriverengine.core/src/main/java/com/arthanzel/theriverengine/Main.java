@@ -76,7 +76,7 @@ public class Main {
     private static RiverRunner setupSimulation() {
         try {
             RiverNetwork network = RiverNetwork.fromResource("/graphs/binarytree-3.ini");
-            RiverSystem system = new RiverSystem(network, 100);
+            RiverSystem system = new RiverSystem(network, 3);
             RiverRunner runner = new RiverRunner(system);
             runner.setEnabled(false);
 

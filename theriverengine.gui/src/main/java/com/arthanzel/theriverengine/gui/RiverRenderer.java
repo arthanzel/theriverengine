@@ -88,22 +88,48 @@ public class RiverRenderer extends Pane {
     }
 
     private void drawAgents() {
+        g.save();
+        g.setFill(Color.BLACK);
+
+        boolean envSelected = isEnvironmentSelected();
+
         for (JsonElement j : root.getAsJsonArray("agents")) {
             JsonObject agent = j.getAsJsonObject();
             String arc = agent.getAsJsonObject("location").get("arc").getAsString();
             double pos = agent.getAsJsonObject("location").get("position").getAsDouble();
             Point2D point = arcs.get(arc).getPoint(pos);
             double size = 5 / scale;
-            // Draw agents in black if an environment is selected.
-//            if (getRenderableEnvironment() == null) {
-//                gfx.setFill((Color) a.getAttributes().get("color"));
-//            }
+
+            if (!envSelected) {
+                g.setFill(Color.hsb(agent.getAsJsonObject("attributes").get("hue").getAsDouble(), 0.85, 0.85));
+            }
+
             g.fillOval(point.getX() - size / 2, point.getY() - size / 2, size, size);
+
+            if (options.isRenderingExtras()) {
+                double e = agent.getAsJsonObject("attributes").get("energy").getAsDouble();
+                g.setTextAlign(TextAlignment.LEFT);
+                g.setTextBaseline(VPos.CENTER);
+
+                // JavaFX's fillText doesn't like to render very small text to
+                // scale later, so we need to project the desired world-space
+                // coords to screen-space coords and draw directly there.
+
+                Point2D p = g.getTransform().transform(point.getX(), point.getY());
+                g.save();
+                g.setTransform(new Affine());
+                g.fillText(String.format("%.2f", e),
+                        p.getX() + 10,
+                        p.getY());
+                g.restore();
+            }
         }
+
+        g.restore();
     }
 
     private void drawEnvironment() {
-        if (!root.getAsJsonObject("environments").has(selectedEnvironment)) {
+        if (!isEnvironmentSelected()) {
             return;
         }
 
@@ -120,7 +146,7 @@ public class RiverRenderer extends Pane {
             for (int i = 0; i < vals.size(); i++) {
                 double f = 1.0 * i / (vals.size() - 1); // Position of the point on the arc
                 double v = vals.get(i).getAsDouble(); // Value at that point
-                double hue = FishMath.clamp(FishMath.lerp(options.getLegendMin(), options.getLegendMax(), v), 0, 1) * R.MAX_HUE;
+                double hue = FishMath.clamp(FishMath.inverseLerp(options.getLegendMin(), options.getLegendMax(), v), 0, 1) * R.MAX_HUE;
                 Point2D p = arc.getPointLerp(f);
 
                 // Construct a gradient line from the current point to the previous one
@@ -165,6 +191,8 @@ public class RiverRenderer extends Pane {
     }
 
     private void drawScreenSpaceElements() {
+        g.save();
+
         final double w = this.getWidth();
         final double h = this.getHeight();
 
@@ -190,7 +218,7 @@ public class RiverRenderer extends Pane {
                 w - R.PADDING_X - lineSize,
                 h - R.PADDING_Y);
 
-        if (/*renderableEnvironment.get() != null*/true) {
+        if (isEnvironmentSelected()) {
             // Stop labels
             final double barWidth = w / 2 - R.PADDING_X;
             g.setLineWidth(1);
@@ -224,6 +252,8 @@ public class RiverRenderer extends Pane {
                     w / 2,
                     h - R.PADDING_Y - 20);
         }
+
+        g.restore();
     }
 
     // endregion
@@ -285,6 +315,10 @@ public class RiverRenderer extends Pane {
 
     // region Utility Methods
 
+    private boolean isEnvironmentSelected() {
+        return root.getAsJsonObject("environments").has(selectedEnvironment);
+    }
+
     private Point2D toWorldSpace(Affine transform, double x, double y) {
         try {
             return transform.inverseTransform(x, y);
@@ -325,34 +359,6 @@ public class RiverRenderer extends Pane {
 
     // endregion
 
-
-
-//
-//
-//    // endregion
-//
-//    // region Drawing Methods
-//    // ======================
-//
-//    /**
-//     * Draws markers that represent agents.
-//     *
-//     * @param agents Array of agents.
-//     */
-//    private void drawAgents(List<Agent> agents) {
-//        gfx.setFill(Color.BLACK);
-//        for (Agent a : agents) {
-//            Point2D point = a.getLocation().getPoint();
-//            double size = 5 / scale;
-//
-//            // Draw agents in black if an environment is selected.
-//            if (getRenderableEnvironment() == null) {
-//                gfx.setFill((Color) a.getAttributes().get("color"));
-//            }
-//
-//            gfx.fillOval(point.getX() - size / 2, point.getY() - size / 2, size, size);
-//        }
-//    }
 //
 //    /**
 //     * Draws extra information on the screen.
@@ -374,28 +380,4 @@ public class RiverRenderer extends Pane {
 //        }
 //    }
 //
-//    // endregion
-//
-//    // endregion
-//
-//    // region Accessors
-//    // ================
-//
-//    public RenderOptions getOptions() {
-//        return options;
-//    }
-//
-//    public String getRenderableEnvironment() {
-//        return renderableEnvironment.get();
-//    }
-//
-//    public StringProperty renderableEnvironmentProperty() {
-//        return renderableEnvironment;
-//    }
-//
-//    public void setRenderableEnvironment(String renderableEnvironment) {
-//        this.renderableEnvironment.set(renderableEnvironment);
-//    }
-//
-//    // endregion
 }

@@ -1,4 +1,4 @@
-package com.arthanzel.theriverengine.ui.controls;
+package com.arthanzel.theriverengine.common.ui;
 
 import com.arthanzel.theriverengine.common.util.TextUtils;
 import javafx.beans.property.SimpleStringProperty;

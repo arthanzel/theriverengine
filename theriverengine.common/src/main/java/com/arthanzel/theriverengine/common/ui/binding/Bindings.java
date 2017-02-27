@@ -3,6 +3,7 @@ package com.arthanzel.theriverengine.common.ui.binding;
 import com.arthanzel.theriverengine.common.ui.fe.*;
 import com.arthanzel.theriverengine.common.util.ReflectionUtils;
 import javafx.scene.Node;
+import javafx.scene.control.Slider;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -32,6 +33,9 @@ public class Bindings {
         }
         if (f.isAnnotationPresent(BooleanBinding.class)) {
             return new BooleanValueEditor(f, bean);
+        }
+        if (f.isAnnotationPresent(SliderBinding.class)) {
+            return new RealValueEditor(f, bean);
         }
         return null;
     }

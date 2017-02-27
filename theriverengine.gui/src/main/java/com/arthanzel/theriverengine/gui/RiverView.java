@@ -41,6 +41,10 @@ public class RiverView extends Stage {
 
     public RiverView(RiverNetwork network) {
         this.network = network;
+        this.setWidth(800);
+        this.setHeight(600);
+        this.setX(100);
+        this.setY(100);
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RiverView.fxml"));

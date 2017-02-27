@@ -1,6 +1,7 @@
-package com.arthanzel.theriverengine.ui.controls;
+package com.arthanzel.theriverengine.common.ui.fe;
 
 import com.arthanzel.theriverengine.common.ui.DynamicLabel;
+import com.arthanzel.theriverengine.common.ui.NumberPrompt;
 import com.arthanzel.theriverengine.common.ui.fe.BindingInvocationException;
 import com.arthanzel.theriverengine.common.ui.fe.FieldEditor;
 import com.arthanzel.theriverengine.common.ui.fe.TypeMismatchException;
@@ -25,7 +26,7 @@ public class RealValueEditor extends FieldEditor<Double> {
         double val = this.getValue();
         String name = ReflectionUtils.getBoundName(field);
 
-        DynamicLabel label = new DynamicLabel(name, val);
+        DynamicLabel<Double> label = new DynamicLabel<>(name + " (%.3f)", val);
         this.getChildren().add(label);
 
         Slider slider = new Slider(annotation.min(), annotation.max(), val);

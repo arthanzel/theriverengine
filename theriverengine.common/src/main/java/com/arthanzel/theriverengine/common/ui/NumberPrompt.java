@@ -1,4 +1,4 @@
-package com.arthanzel.theriverengine.ui.controls;
+package com.arthanzel.theriverengine.common.ui;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
