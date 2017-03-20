@@ -1,0 +1,11 @@
+dist/bin/theriverengine.core -x -i 0.5 -r 2 -e 10y -p prefs/gradient-growthrate/growthrate01.ini
+dist/bin/theriverengine.core -x -i 0.5 -r 2 -e 10y -p prefs/gradient-growthrate/growthrate02.ini
+dist/bin/theriverengine.core -x -i 0.5 -r 2 -e 10y -p prefs/gradient-growthrate/growthrate03.ini
+dist/bin/theriverengine.core -x -i 0.5 -r 2 -e 10y -p prefs/gradient-growthrate/growthrate04.ini
+dist/bin/theriverengine.core -x -i 0.5 -r 2 -e 10y -p prefs/gradient-growthrate/growthrate05.ini
+dist/bin/theriverengine.core -x -i 0.5 -r 2 -e 10y -p prefs/gradient-growthrate/growthrate06.ini
+dist/bin/theriverengine.core -x -i 0.5 -r 2 -e 10y -p prefs/gradient-growthrate/growthrate07.ini
+dist/bin/theriverengine.core -x -i 0.5 -r 2 -e 10y -p prefs/gradient-growthrate/growthrate08.ini
+dist/bin/theriverengine.core -x -i 0.5 -r 2 -e 10y -p prefs/gradient-growthrate/growthrate09.ini
+dist/bin/theriverengine.core -x -i 0.5 -r 2 -e 10y -p prefs/gradient-growthrate/growthrate10.ini
+dist/bin/theriverengine.core -x -i 0.5 -r 2 -e 10y -p prefs/gradient-growthrate/growthrate11.ini
