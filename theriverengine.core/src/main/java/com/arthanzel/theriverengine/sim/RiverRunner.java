@@ -2,7 +2,6 @@ package com.arthanzel.theriverengine.sim;
 
 import com.arthanzel.theriverengine.reporting.RiverReporter;
 import com.arthanzel.theriverengine.sim.influence.Influence;
-import com.arthanzel.theriverengine.util.FrameCounter;
 import com.google.gson.JsonObject;
 
 import java.util.LinkedList;
@@ -37,6 +36,11 @@ public class RiverRunner {
     // Support pausing of the system.
     private volatile boolean enabled = false;
     private final Object runningMonitor = new Object();
+
+    // Support finite quit time
+    private double endTime = 0.0;
+    private boolean hasQuit = false;
+    private final Object quitMonitor = new Object();
 
     // Time of the last report.
     private long lastReportNanos = System.nanoTime();
@@ -86,10 +90,7 @@ public class RiverRunner {
 
     public void start() {
         Thread t = new Thread(() -> {
-            FrameCounter counter = new FrameCounter("Simulation", 1000);
-            counter.setPrintToOut(true);
-            counter.start();
-            while (true) {
+            while (endTime != 0.0 && system.getTime() < endTime) {
                 while (!enabled) {
                     try {
                         synchronized (runningMonitor) {
@@ -100,8 +101,12 @@ public class RiverRunner {
                     }
                 }
 
-                counter.increment();
                 tick(interval); // tick takes an interval in seconds
+            }
+            sendMessage();
+            hasQuit = true;
+            synchronized (quitMonitor) {
+                quitMonitor.notify();
             }
         });
         t.setPriority(Thread.MAX_PRIORITY);
@@ -135,6 +140,18 @@ public class RiverRunner {
         }
 
         system.setTime(system.getTime() + dt);
+    }
+
+    public void waitFor() {
+        while (!hasQuit) {
+            synchronized (quitMonitor) {
+                try {
+                    quitMonitor.wait();
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        }
     }
 
     // ====== Accessors ======
@@ -176,5 +193,13 @@ public class RiverRunner {
 
     public RiverReporter getReporter() {
         return reporter;
+    }
+
+    public double getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(double endTime) {
+        this.endTime = endTime;
     }
 }

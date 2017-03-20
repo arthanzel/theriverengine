@@ -7,7 +7,7 @@ target/
 dist/
 
 # Model output
-data/
+/data/
 results.txt
 
 # User-specific stuff:

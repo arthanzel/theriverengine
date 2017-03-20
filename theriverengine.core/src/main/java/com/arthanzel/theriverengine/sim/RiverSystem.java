@@ -38,6 +38,13 @@ public class RiverSystem implements JsonSerializable {
      * Initializes this river system's array of agents with random locations and properties.
      */
     public void initAgentsRandomly(int numAgents) {
+        for (int i = 0; i < numAgents; i++) {
+            this.agents.add(new Agent());
+        }
+        place(this.agents);
+    }
+
+    public void place(Collection<Agent> agents) {
         // Get the arcs into an array and find the longest length
         RiverArc[] arcs = network.edgeSet().toArray(new RiverArc[0]);
         double maxLength = 0;
@@ -48,8 +55,7 @@ public class RiverSystem implements JsonSerializable {
             }
         }
 
-        // Re-initialize agents and place them randomly in the river system
-        for (int i = 0; i < numAgents; i++) {
+        for (Agent a : agents) {
             // Pick a random arc. Shorts arcs should be selected less than long arcs.
             RiverArc arc;
             double pos;
@@ -57,10 +63,12 @@ public class RiverSystem implements JsonSerializable {
                 arc = arcs[FishMath.randomInt(0, arcs.length)];
                 pos = FishMath.random(0, maxLength);
             } while (pos > arc.length());
-            Agent a = new Agent();
             a.setLocation(new Location(arc, pos));
-            agents.add(a);
         }
+    }
+
+    public void place(Agent... agents) {
+        place(Arrays.asList(agents));
     }
 
     @Override

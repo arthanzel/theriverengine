@@ -1,5 +1,6 @@
 package com.arthanzel.theriverengine;
 
+import com.arthanzel.theriverengine.common.util.TimeUtils;
 import com.arthanzel.theriverengine.reporting.FileReporter;
 import com.arthanzel.theriverengine.common.rivergen.RiverNetwork;
 import com.arthanzel.theriverengine.sim.RiverRunner;
@@ -12,6 +13,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -35,25 +37,37 @@ public class Main {
     private static CommandLine cmd;
 
     public static void main(String[] args) throws ParseException {
-        // Set min priority on the MONITORING/UI thread.
-        // The simulation runs in a different thread entirely.
-        Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-
         cmd = new DefaultParser().parse(options(), args);
 
         RiverRunner runner = setupSimulation();
+        assert runner != null;
         RUNNER = runner;
 
         // -x starts in headless mode, without spawning a JavaFX application and
         // showing the admin UI. Use on servers running scheduled or batch
         // simulations.
         if (cmd.hasOption("x")) {
+            try {
+                runner.setEndTime(parseEndTime());
+
+                if (cmd.hasOption("i")) {
+                    runner.setInterval(Double.parseDouble(cmd.getOptionValue("i")));
+                }
+                if (cmd.hasOption("r")) {
+                    runner.getOptions().setReportingInterval(Double.parseDouble(cmd.getOptionValue("r")));
+                }
+
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
+
             // Run in headless mode without spinning up a JavaFX thread
             runner.setEnabled(true);
             runner.start();
 
-            // Program does not terminate here as long as RiverRunner spins.
-            // TODO: Require a finite end time
+            runner.waitFor();
+            System.exit(0);
         }
         else {
             runner.start();
@@ -93,14 +107,20 @@ public class Main {
             runner.getInfluences().add(new ReproductionDynamics(system));
 
             // Prefs
-            RiverPrefs prefs = new RiverPrefs("/prefs/defaultPrefs.ini");
+            String prefsFileName = cmd.getOptionValue("p");
+            RiverPrefs prefs;
+            if (StringUtils.isBlank(prefsFileName)) {
+                prefs = new RiverPrefs("/prefs/defaultPrefs.ini");
+            }
+            else {
+                prefs = new RiverPrefs(new File(prefsFileName));
+            }
             prefs.set(runner.getInfluences());
 
             // Reporters
-            String uuid = UUID.randomUUID().toString().substring(0, 4);
             String fileName = String.format("%s-%s.json",
                     LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH.mm.ss")),
-                    uuid);
+                    UUID.randomUUID().toString().substring(0, 4));
             runner.getReporter().getConsumers().add(new FileReporter(new File("data/" + fileName), system));
 
             return runner;
@@ -122,6 +142,35 @@ public class Main {
         options.addOption("x", "headless", false, "Run in headless mode without launching a JavaFX application");
         options.addOption("e", "end", true, "If headless, specify and end time in seconds (s, default), days (d), or years (y).");
         options.addOption("o", "out", true, "Output directory. Defaults to the current directory if missing or invalid.");
+        options.addOption("i", "interval", true, "Simulation time-step");
+        options.addOption("r", "reporting", true, "Reporting interval");
+        options.addOption("p", "prefs", true, "Prefs-file");
         return options;
+    }
+
+    private static double parseEndTime() {
+        try {
+            if (cmd.hasOption("e")) {
+                String str = cmd.getOptionValue("e");
+                double num = Double.parseDouble(str);
+                if (str.endsWith("m")) {
+                    num *= 60;
+                }
+                else if (str.endsWith("h")) {
+                    num *= 60 * 60;
+                }
+                else if (str.endsWith("d")) {
+                    num *= 60 * 60 * 24;
+                }
+                else if (str.endsWith("y")) {
+                    num += 60 * 60 * 24 * 365;
+                }
+                return num;
+            }
+            return Double.POSITIVE_INFINITY;
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Bad end time");
+        }
     }
 }

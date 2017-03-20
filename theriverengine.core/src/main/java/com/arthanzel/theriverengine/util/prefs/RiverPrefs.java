@@ -6,6 +6,7 @@ import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Profile;
 
 import java.beans.PropertyDescriptor;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -16,11 +17,13 @@ public class RiverPrefs {
     public RiverPrefs(String resourceName) throws IOException {
         try {
             ini = new Ini(RiverPrefs.class.getResource(resourceName));
-        } catch (InvalidFileFormatException e) {
-            throw e;
         } catch (IOException | NullPointerException e) {
             throw new IOException("Can't find file " + resourceName);
         }
+    }
+
+    public RiverPrefs(File file) throws IOException {
+        ini = new Ini(file);
     }
 
     /**

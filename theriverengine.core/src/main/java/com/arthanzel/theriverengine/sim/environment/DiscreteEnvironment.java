@@ -26,6 +26,7 @@ public class DiscreteEnvironment implements Environment {
     private final Map<RiverNode, DiscretePoint> nodeValues = new HashMap<>();
     private final Map<RiverArc, DiscretePoint[]> arcValues = new HashMap<>();
     private final Map<RiverArc, Double> separations = new HashMap<>();
+    private int numPoints = 0;
 
     public DiscreteEnvironment(RiverNetwork network) {
         // Generate points for each node.
@@ -34,6 +35,7 @@ public class DiscreteEnvironment implements Environment {
         // arcs, unless they are on a terminal end, in which case they will sit
         // at the end.
         for (RiverNode node : network.vertexSet()) {
+            numPoints++;
             if (network.outgoingEdgesOf(node).size() > 0) {
                 RiverArc arc = network.outgoingEdgesOf(node).iterator().next();
                 nodeValues.put(node, new DiscretePoint(Math.random(), arc, 0));
@@ -55,6 +57,7 @@ public class DiscreteEnvironment implements Environment {
             vals[0] = nodeValues.get(arc.getUpstreamNode());
             vals[vals.length - 1] = nodeValues.get(arc.getDownstreamNode());
             for (int i = 1; i < vals.length - 1; i++) {
+                numPoints++;
                 vals[i] = new DiscretePoint(Math.random(), arc, (i) * separation);
             }
             arcValues.put(arc, vals);
@@ -164,6 +167,7 @@ public class DiscreteEnvironment implements Environment {
             arcs.add(arc.toString(), arr);
         }
         me.add("arcs", arcs);
+        me.addProperty("numPoints", numPoints);
 
         return me;
     }

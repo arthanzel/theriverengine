@@ -58,7 +58,7 @@ public class RiverArc implements JsonSerializable {
         if (upstreamNode == null || downstreamNode == null) {
             return "Unconnected Arc";
         }
-        return upstreamNode.getName() + " -> " + downstreamNode.getName();
+        return upstreamNode.getName() + "_" + downstreamNode.getName();
     }
 
     // ====== Accessors ======

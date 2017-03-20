@@ -44,7 +44,7 @@
                 <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
             </padding>
             <TimeLabel fx:id="timeLabel"/>
-            <Label fx:id="fpsLabel" />
+            <Label fx:id="fpsLabel"/>
             <Label text="(1 y/hr is 8760 X)" />
             <Label fx:id="agentsLabel" />
         </HBox>

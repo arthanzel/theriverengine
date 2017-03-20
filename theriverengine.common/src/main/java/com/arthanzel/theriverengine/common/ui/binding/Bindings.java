@@ -37,6 +37,9 @@ public class Bindings {
         if (f.isAnnotationPresent(SliderBinding.class)) {
             return new RealValueEditor(f, bean);
         }
+        if (f.isAnnotationPresent(FireableBinding.class)) {
+            return new BindingActionButton(f, bean);
+        }
         return null;
     }
 

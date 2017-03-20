@@ -1,3 +1,9 @@
+Findings
+========
+- With r = 1, k = 1, s = 0.05, populations are steady until n = 75. Anything more and the population has a risk of tanking within a year. When n = 80, the population drops to 20-25, then stabilizes.
+- Higher populations decrease the stabilized size. n = 140 (after an annual reproduction event, for instance) reduces to 10-15 agents.
+- Fish congregate around nodes. Nodes are likely to start the chain reaction. Why?
+
 TODO
 ====
 - (DONE) Fish consumption radius
