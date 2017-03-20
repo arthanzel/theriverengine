@@ -151,22 +151,30 @@ public class Main {
     private static double parseEndTime() {
         try {
             if (cmd.hasOption("e")) {
+                // Extract the unit from the string, if present.
                 String str = cmd.getOptionValue("e");
+                char unit = 's';
+                if (!Character.isDigit(str.charAt(str.length() - 1))) {
+                    unit = str.charAt(str.length() - 1);
+                    str = str.substring(0, str.length() - 1);
+                }
+
                 double num = Double.parseDouble(str);
-                if (str.endsWith("m")) {
+                if (unit == 'm') {
                     num *= 60;
                 }
-                else if (str.endsWith("h")) {
+                else if (unit == 'h') {
                     num *= 60 * 60;
                 }
-                else if (str.endsWith("d")) {
+                else if (unit == 'd') {
                     num *= 60 * 60 * 24;
                 }
-                else if (str.endsWith("y")) {
-                    num += 60 * 60 * 24 * 365;
+                else if (unit == 'y') {
+                    num *= 60 * 60 * 24 * 365;
                 }
                 return num;
             }
+            System.out.println("Warning: no end time provided. Running indefinitely.");
             return Double.POSITIVE_INFINITY;
         }
         catch (Exception e) {
